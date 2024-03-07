@@ -31,6 +31,7 @@ Implementation Notes
 
 import struct
 import time
+import asyncio
 
 try:
     from micropython import const
@@ -137,17 +138,19 @@ class Seesaw:
     INPUT_PULLUP = const(0x02)
     INPUT_PULLDOWN = const(0x03)
 
-    def __init__(self, i2c, addr=0x49, drdy=None, reset=True):
+    def __init__(self, i2c, addr=0x49, drdy=None):
         self._drdy = drdy
         if drdy is not None:
             drdy.switch_to_input()
 
         self.addr = addr
         self.i2c = i2c
-        if reset:
-            self.sw_reset()
 
-        self.chip_id = self.read8(_STATUS_BASE, _STATUS_HW_ID)
+    async def start(self, reset=True):
+        if reset:
+            await self.sw_reset()
+
+        self.chip_id = await self.read8(_STATUS_BASE, _STATUS_HW_ID)
         if self.chip_id not in (
             _ATTINY806_HW_ID_CODE,
             _ATTINY807_HW_ID_CODE,
@@ -162,8 +165,8 @@ class Seesaw:
                 "correct! Please check your wiring."
             )
 
-        pid = self.get_version() >> 16
         self.pin_mapping = {"analog_pins": {}, "pwm_pins": {}, "touch_pins": {}}
+        # pid = self.get_version() >> 16
 
         # # pylint: disable=import-outside-toplevel
         # if pid == _CRICKIT_PID:
@@ -195,22 +198,22 @@ class Seesaw:
         #     self.pin_mapping = ATtiny8x7_Pinmap
         # # pylint: enable=import-outside-toplevel
 
-    def sw_reset(self, post_reset_delay=0.5):
+    async def sw_reset(self, post_reset_delay=0.5):
         """Trigger a software reset of the SeeSaw chip"""
         self.write8(_STATUS_BASE, _STATUS_SWRST, 0xFF)
-        time.sleep(post_reset_delay)
+        await asyncio.sleep(post_reset_delay)
 
-    def get_options(self):
+    async def get_options(self):
         """Retrieve the 'options' word from the SeeSaw board"""
         buf = bytearray(4)
-        self.read(_STATUS_BASE, _STATUS_OPTIONS, buf)
+        await self.read(_STATUS_BASE, _STATUS_OPTIONS, buf)
         ret = struct.unpack(">I", buf)[0]
         return ret
 
-    def get_version(self):
+    async def get_version(self):
         """Retrieve the 'version' word from the SeeSaw board"""
         buf = bytearray(4)
-        self.read(_STATUS_BASE, _STATUS_VERSION, buf)
+        await self.read(_STATUS_BASE, _STATUS_VERSION, buf)
         ret = struct.unpack(">I", buf)[0]
         return ret
 
@@ -228,16 +231,16 @@ class Seesaw:
         else:
             self.digital_write_bulk(1 << pin, value)
 
-    def digital_read(self, pin):
+    async def digital_read(self, pin):
         """Get the value of an input pin by number"""
         if pin >= 32:
-            return self.digital_read_bulk_b((1 << (pin - 32))) != 0
-        return self.digital_read_bulk((1 << pin)) != 0
+            return await self.digital_read_bulk_b((1 << (pin - 32))) != 0
+        return await self.digital_read_bulk((1 << pin)) != 0
 
-    def digital_read_bulk(self, pins, delay=0.008):
+    async def digital_read_bulk(self, pins, delay=0.008):
         """Get the values of all the pins on the 'A' port as a bitmask"""
         buf = bytearray(4)
-        self.read(_GPIO_BASE, _GPIO_BULK, buf, delay=delay)
+        await self.read(_GPIO_BASE, _GPIO_BULK, buf, delay=delay)
         try:
             ret = struct.unpack(">I", buf)[0]
         except OverflowError:
@@ -245,10 +248,10 @@ class Seesaw:
             ret = struct.unpack(">I", buf)[0]
         return ret & pins
 
-    def digital_read_bulk_b(self, pins, delay=0.008):
+    async def digital_read_bulk_b(self, pins, delay=0.008):
         """Get the values of all the pins on the 'B' port as a bitmask"""
         buf = bytearray(8)
-        self.read(_GPIO_BASE, _GPIO_BULK, buf, delay=delay)
+        await self.read(_GPIO_BASE, _GPIO_BULK, buf, delay=delay)
         ret = struct.unpack(">I", buf[4:])[0]
         return ret & pins
 
@@ -260,13 +263,13 @@ class Seesaw:
         else:
             self.write(_GPIO_BASE, _GPIO_INTENCLR, cmd)
 
-    def get_GPIO_interrupt_flag(self, delay=0.008):
+    async def get_GPIO_interrupt_flag(self, delay=0.008):
         """Read and clear GPIO interrupts that have fired"""
         buf = bytearray(4)
-        self.read(_GPIO_BASE, _GPIO_INTFLAG, buf, delay=delay)
+        await self.read(_GPIO_BASE, _GPIO_INTFLAG, buf, delay=delay)
         return struct.unpack(">I", buf)[0]
 
-    def analog_read(self, pin, delay=0.008):
+    async def analog_read(self, pin, delay=0.008):
         """Read the value of an analog pin by number"""
         buf = bytearray(2)
         if pin not in self.pin_mapping.analog_pins:
@@ -277,18 +280,18 @@ class Seesaw:
         else:
             offset = pin
 
-        self.read(_ADC_BASE, _ADC_CHANNEL_OFFSET + offset, buf, delay)
+        await self.read(_ADC_BASE, _ADC_CHANNEL_OFFSET + offset, buf, delay)
         ret = struct.unpack(">H", buf)[0]
         return ret
 
-    def touch_read(self, pin):
+    async def touch_read(self, pin):
         """Read the value of a touch pin by number"""
         buf = bytearray(2)
 
         if pin not in self.pin_mapping.touch_pins:
             raise ValueError("Invalid touch pin")
 
-        self.read(
+        await self.read(
             _TOUCH_BASE,
             _TOUCH_CHANNEL_OFFSET + self.pin_mapping.touch_pins.index(pin),
             buf,
@@ -296,18 +299,18 @@ class Seesaw:
         ret = struct.unpack(">H", buf)[0]
         return ret
 
-    def moisture_read(self):
+    async def moisture_read(self):
         """Read the value of the moisture sensor"""
         buf = bytearray(2)
 
-        self.read(_TOUCH_BASE, _TOUCH_CHANNEL_OFFSET, buf, 0.005)
+        await self.read(_TOUCH_BASE, _TOUCH_CHANNEL_OFFSET, buf, 0.005)
         ret = struct.unpack(">H", buf)[0]
         time.sleep(0.001)
 
         # retry if reading was bad
         count = 0
         while ret > 4095:
-            self.read(_TOUCH_BASE, _TOUCH_CHANNEL_OFFSET, buf, 0.005)
+            await self.read(_TOUCH_BASE, _TOUCH_CHANNEL_OFFSET, buf, 0.005)
             ret = struct.unpack(">H", buf)[0]
             time.sleep(0.001)
             count += 1
@@ -381,10 +384,10 @@ class Seesaw:
         self.write(_TIMER_BASE, _TIMER_PWM, cmd)
         time.sleep(0.001)
 
-    def get_temp(self):
+    async def get_temp(self):
         """Read the temperature"""
         buf = bytearray(4)
-        self.read(_STATUS_BASE, _STATUS_TEMP, buf, 0.005)
+        await self.read(_STATUS_BASE, _STATUS_TEMP, buf, 0.005)
         buf[0] = buf[0] & 0x3F
         ret = struct.unpack(">I", buf)[0]
         return 0.00001525878 * ret
@@ -413,10 +416,10 @@ class Seesaw:
         cmd = struct.pack(">i", pos)
         self.write(_ENCODER_BASE, _ENCODER_POSITION + encoder, cmd)
 
-    def encoder_delta(self, encoder=0):
+    async def encoder_delta(self, encoder=0):
         """The change in encoder position since it was last read"""
         buf = bytearray(4)
-        self.read(_ENCODER_BASE, _ENCODER_DELTA + encoder, buf)
+        await self.read(_ENCODER_BASE, _ENCODER_DELTA + encoder, buf)
         return struct.unpack(">i", buf)[0]
 
     def enable_encoder_interrupt(self, encoder=0):
@@ -466,9 +469,9 @@ class Seesaw:
         """Store a new address in the device's EEPROM and reboot it."""
         self.eeprom_write8(self._get_eeprom_i2c_addr(), addr)
 
-    def get_i2c_addr(self):
+    async def get_i2c_addr(self):
         """Return the device's I2C address stored in its EEPROM"""
-        return self.read8(_EEPROM_BASE, self._get_eeprom_i2c_addr())
+        return await self.read8(_EEPROM_BASE, self._get_eeprom_i2c_addr())
 
     def eeprom_write8(self, addr, val):
         """Write a single byte directly to the device's EEPROM"""
@@ -478,9 +481,9 @@ class Seesaw:
         """Write multiple bytes directly to the device's EEPROM"""
         self.write(_EEPROM_BASE, addr, buf)
 
-    def eeprom_read8(self, addr):
+    async def eeprom_read8(self, addr):
         """Read a single byte directly to the device's EEPROM"""
-        return self.read8(_EEPROM_BASE, addr)
+        return await self.read8(_EEPROM_BASE, addr)
 
     def uart_set_baud(self, baud):
         """Set the serial baudrate of the device"""
@@ -491,20 +494,20 @@ class Seesaw:
         """Write an arbitrary I2C byte register on the device"""
         self.write(reg_base, reg, bytearray([value]))
 
-    def read8(self, reg_base, reg):
+    async def read8(self, reg_base, reg):
         """Read an arbitrary I2C byte register on the device"""
         ret = bytearray(1)
-        self.read(reg_base, reg, ret)
+        await self.read(reg_base, reg, ret)
         return ret[0]
 
-    def read(self, reg_base, reg, buf, delay=0.008):
+    async def read(self, reg_base, reg, buf, delay=0.008):
         """Read an arbitrary I2C register range on the device"""
         self.write(reg_base, reg)
         if self._drdy is not None:
             while self._drdy.value is False:
-                pass
+                await asyncio.sleep(0)
         else:
-            time.sleep(delay)
+            await asyncio.sleep(delay)
 
         self.i2c.readfrom_into(self.addr, buf)
 

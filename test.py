@@ -87,25 +87,14 @@ async def main():
     print("Opening I2C / Seesaw sensors")
     i2c = I2C(0, scl=fern.I2C_SCL, sda=fern.I2C_SDA)
     encoder = seesaw.Seesaw(i2c, 0x36)
-    # asyncio.create_task(encoder_loop(encoder))
+    await encoder.start()
+    asyncio.create_task(encoder_loop(encoder))
 
     print("Starting canopy")
     canopy.init([fern.LED1_DATA, fern.LED2_DATA], 50)
     asyncio.create_task(render_loop(encoder))
 
     asyncio.get_event_loop().run_forever()
-
-    # segment = (0, 0, 50)
-    # pattern = canopy.Pattern(fern.PatternPurpProg)
-    # last = 0
-    # pattern.params["progress"] = 0.5
-    # while True:
-    #     value = encoder.encoder_position()
-    #     if value != last:
-    #         pattern.params["progress"] += (last - value) / 50.0
-    #     canopy.draw(segment, pattern)
-    #     canopy.render()
-    #     # await asyncio.sleep(0)
 
 
 asyncio.run(main())
