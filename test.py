@@ -22,16 +22,17 @@ async def tag_found(reader):
 
 
 async def encoder_loop(ss):
-    last = 0
+    last = await ss.encoder_position()
+    print("Encoder: ", last)
     while True:
-        value = ss.encoder_position()
+        value = await ss.encoder_position()
         if value != last:
             print("Encoder: ", value)
             last = value
         await asyncio.sleep(0.1)
 
 
-async def render_loop(encoder):
+async def render_loop():
     segment = (0, 0, 50)
     pattern = canopy.Pattern(PatternRainbow)
     pattern.params["progress"] = 0.7
@@ -81,17 +82,24 @@ async def continuous_play(audio_out, wav):
             await swriter.drain()
 
 async def main():
-    # print("Opening NFC reader")
-    # spi = SPI(
-    #     1, baudrate=7000000, sck=fern.NFC_SCK, mosi=fern.NFC_MOSI, miso=fern.NFC_MISO
-    # )
-    # reader = nfc.NfcReader(spi, fern.NFC_NSS, fern.NFC_BUSY, fern.NFC_RST)
-    # reader.onTagFound(tag_found)
-    # await reader.start()
-    # asyncio.create_task(reader.loop())
+    print("Opening NFC reader")
+    spi = SPI(
+        1, baudrate=7000000, sck=fern.NFC_SCK, mosi=fern.NFC_MOSI, miso=fern.NFC_MISO
+    )
+    reader = nfc.NfcReader(spi, fern.NFC_NSS, fern.NFC_BUSY, fern.NFC_RST)
+    reader.onTagFound(tag_found)
+    try:
+        await reader.start(verbose=True)
+        asyncio.create_task(reader.loop())
+    except Exception as e:
+        print("No NFC reader found: ", e)
+        raise
 
-    print("Opening I2C / Seesaw sensors")
+    print("Initing codec")
     i2c = I2C(0, scl=fern.I2C_SCL, sda=fern.I2C_SDA)
+    codec.init(i2c)
+
+    print("Initing encoder")
     encoder = seesaw.Seesaw(i2c, 0x36)
     try:
         await encoder.start()
@@ -100,33 +108,35 @@ async def main():
         print("No encoder found")
 
     print("Mount SD card")
+    mounted = False
     try:
         sd = fern.sdcard()
         os.mount(sd, "/sd")
+        mounted = True
     except:
         print("No SD card found")
 
-    print("Initing audio")
-    codec.init(i2c)
-    audio_out = I2S(
-        0,
-        sck=Pin(fern.I2S_BCK),
-        ws=Pin(fern.I2S_WS),
-        sd=Pin(fern.I2S_SDOUT),
-        mck=Pin(fern.I2S_MCK),
-        mode=I2S.TX,
-        bits=16,
-        format=I2S.STEREO,
-        rate=16000,
-        ibuf=4000,
-    )
-    WAV_FILE = "test.wav"
-    wav = open("/sd/{}".format(WAV_FILE), "rb")
-    asyncio.create_task(continuous_play(audio_out, wav))
+    if mounted:
+        print("Initing I2S audio out")  
+        audio_out = I2S(
+            0,
+            sck=Pin(fern.I2S_BCK),
+            ws=Pin(fern.I2S_WS),
+            sd=Pin(fern.I2S_SDOUT),
+            mck=Pin(fern.I2S_MCK),
+            mode=I2S.TX,
+            bits=16,
+            format=I2S.STEREO,
+            rate=16000,
+            ibuf=4000,
+        )
+        WAV_FILE = "test.wav"
+        wav = open("/sd/{}".format(WAV_FILE), "rb")
+        asyncio.create_task(continuous_play(audio_out, wav))
 
     print("Starting canopy")
     canopy.init([fern.LED1_DATA, fern.LED2_DATA], 100)
-    asyncio.create_task(render_loop(encoder))
+    asyncio.create_task(render_loop())
 
     asyncio.get_event_loop().run_forever()
 

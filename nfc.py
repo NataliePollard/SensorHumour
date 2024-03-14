@@ -61,9 +61,12 @@ class NfcReader:
         self.event_lost = asyncio.Event()
         self.lock = asyncio.Lock()
 
-    async def start(self):
+    async def start(self, verbose=False):
         await self.reset()
-        await self.reader.start()
+        fw_version = await self.reader.pn5180.getFirmwareVersion()
+        if 0 == fw_version:
+            raise Exception("Failed to communicate with PN5180")
+        await self.reader.start(verbose=verbose)
 
     async def reset(self):
         self.rst.value(0)

@@ -406,10 +406,10 @@ class Seesaw:
         cmd = bytearray([offset, (freq >> 8), freq & 0xFF])
         self.write(_TIMER_BASE, _TIMER_FREQ, cmd)
 
-    def encoder_position(self, encoder=0):
+    async def encoder_position(self, encoder=0):
         """The current position of the encoder"""
         buf = bytearray(4)
-        self.read(_ENCODER_BASE, _ENCODER_POSITION + encoder, buf)
+        await self.read(_ENCODER_BASE, _ENCODER_POSITION + encoder, buf)
         return struct.unpack(">i", buf)[0]
 
     def set_encoder_position(self, pos, encoder=0):
