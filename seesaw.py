@@ -9,6 +9,7 @@
 An I2C to whatever helper chip.
 
 * Author(s): Dean Miller
+* Modified by Shlomo Zippel to be asyncio, and micropython compatible
 
 Implementation Notes
 --------------------

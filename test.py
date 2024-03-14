@@ -5,6 +5,7 @@ import fern
 import nfc
 import seesaw
 import canopy
+import codec
 from fps import FPS
 
 # PatternRainbow = "CTP-eyJpZCI6IjAzNWVlN2NjLWZiM2MtNDI0Ni1hOTM1LTdjNGQ3ZDYyMzEyMyIsInZlcnNpb24iOjEsIm5hbWUiOiJOZXcgUGF0dGVybiIsInBhbGV0dGVzIjp7IlBhbGV0dGUxIjpbWzAsWzEsMCwwXV0sWzAuMTksWzAuOTY0NzA1ODgyMzUyOTQxMiwxLDBdXSxbMC4zNixbMC4wNjI3NDUwOTgwMzkyMTU2OSwxLDAuMDUwOTgwMzkyMTU2ODYyNzQ0XV0sWzAuNTEsWzAsMSwwLjg3MDU4ODIzNTI5NDExNzddXSxbMC42NyxbMCwwLjA5MDE5NjA3ODQzMTM3MjU1LDFdXSxbMC44MixbMC40OCwwLjAxLDAuNDJdXSxbMC45OSxbMSwwLDBdXV19LCJwYXJhbXMiOnt9LCJsYXllcnMiOlt7ImVmZmVjdCI6ImdyYWRpZW50Iiwib3BhY2l0eSI6MSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiUGFsZXR0ZTEiLCJpbnB1dHMiOnsib2Zmc2V0Ijp7InR5cGUiOiJyc2F3IiwiaW5wdXRzIjp7InZhbHVlIjowLjQxLCJtaW4iOjAsIm1heCI6MX19LCJzaXplIjowLjUsInJvdGF0aW9uIjowfX1dfQ"
@@ -63,9 +64,15 @@ async def main():
 
     print("Opening I2C / Seesaw sensors")
     i2c = I2C(0, scl=fern.I2C_SCL, sda=fern.I2C_SDA)
-    encoder = seesaw.Seesaw(i2c, 0x36)
-    await encoder.start()
-    asyncio.create_task(encoder_loop(encoder))
+    try:
+        encoder = seesaw.Seesaw(i2c, 0x36)
+        await encoder.start()
+        asyncio.create_task(encoder_loop(encoder))
+    except:
+        print("No encoder found")
+
+    print("Initing audio codec")
+    codec.init(i2c)
 
     print("Starting canopy")
     canopy.init([fern.LED1_DATA, fern.LED2_DATA], 50)

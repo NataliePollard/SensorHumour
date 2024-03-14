@@ -3,24 +3,27 @@ import time
 
 class FPS:
     def __init__(self, verbose=False):
-        self.last = 0
-        self.accum = 0
-        self.count = 0
-        self.last_calc = 0
-        self.fps = 0
+        self._accum = 0
+        self._count = 0
+        self._last_calc = 0
+        self._fps = 0
         self.verbose = verbose
 
     def tick(self):
         now = time.ticks_ms()
-        delta = time.ticks_diff(now, self.last)
-        self.last = now
-        self.accum += delta
-        self.count += 1
+        delta = time.ticks_diff(now, self._last_calc)
+        self._accum += delta
+        self._count += 1
 
-        if time.ticks_diff(now, self.last_calc) > 1000:
-            self.fps = 1000 / (self.accum / self.count)
+        if time.ticks_diff(now, self._last_calc) > 1000:
+            self._fps = 1000 / (self._accum / self._count)
+            self._accum = 0
+            self._count = 0
+            self._last_calc = now
+
             if self.verbose:
-                print("FPS: ", self.fps)
-            self.accum = 0
-            self.count = 0
-            self.last_calc = now
+                print("FPS: ", self._fps)
+
+    @property
+    def fps(self):
+        return self._fps

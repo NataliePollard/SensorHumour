@@ -2,7 +2,7 @@ import time
 
 
 class param:
-    def __init__(self, value=0, target=0, dt=0):
+    def __init__(self, value=0, target=0, dt=0, min=0.0, max=1.0):
         self.value = float(value)
         self.tween(target, dt)
 
