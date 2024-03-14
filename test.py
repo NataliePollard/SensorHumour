@@ -1,5 +1,5 @@
-import time
-from machine import Pin, SPI, I2C
+import os
+from machine import Pin, SPI, I2C, I2S
 import asyncio
 import fern
 import nfc
@@ -36,7 +36,7 @@ async def render_loop(encoder):
     pattern = canopy.Pattern(PatternRainbow)
     pattern.params["progress"] = 0.7
     last = 0
-    f = FPS()
+    f = FPS(verbose=True)
     while True:
         # value = encoder.encoder_position()
         # if value != last:
@@ -52,30 +52,80 @@ async def render_loop(encoder):
         await asyncio.sleep(0)
 
 
+async def continuous_play(audio_out, wav):
+    swriter = asyncio.StreamWriter(audio_out)
+
+    _ = wav.seek(44)  # advance to first byte of Data section in WAV file
+
+    # allocate sample array
+    # memoryview used to reduce heap allocation
+    wav_samples = bytearray(10000)
+    wav_samples_mv = memoryview(wav_samples)
+
+    # continuously read audio samples from the WAV file
+    # and write them to an I2S DAC
+    print("==========  START PLAYBACK ==========")
+
+    while True:
+        num_read = wav.readinto(wav_samples_mv)
+        # end of WAV file?
+        if num_read == 0:
+            # end-of-file, advance to first byte of Data section
+            _ = wav.seek(44)
+        else:
+            # apply temporary workaround to eliminate heap allocation in uasyncio Stream class.
+            # workaround can be removed after acceptance of PR:
+            #    https://github.com/micropython/micropython/pull/7868
+            # swriter.write(wav_samples_mv[:num_read])
+            swriter.out_buf = wav_samples_mv[:num_read]
+            await swriter.drain()
+
 async def main():
-    print("Opening NFC reader")
-    spi = SPI(
-        1, baudrate=7000000, sck=fern.NFC_SCK, mosi=fern.NFC_MOSI, miso=fern.NFC_MISO
-    )
-    reader = nfc.NfcReader(spi, fern.NFC_NSS, fern.NFC_BUSY, fern.NFC_RST)
-    reader.onTagFound(tag_found)
-    await reader.start()
-    asyncio.create_task(reader.loop())
+    # print("Opening NFC reader")
+    # spi = SPI(
+    #     1, baudrate=7000000, sck=fern.NFC_SCK, mosi=fern.NFC_MOSI, miso=fern.NFC_MISO
+    # )
+    # reader = nfc.NfcReader(spi, fern.NFC_NSS, fern.NFC_BUSY, fern.NFC_RST)
+    # reader.onTagFound(tag_found)
+    # await reader.start()
+    # asyncio.create_task(reader.loop())
 
     print("Opening I2C / Seesaw sensors")
     i2c = I2C(0, scl=fern.I2C_SCL, sda=fern.I2C_SDA)
+    encoder = seesaw.Seesaw(i2c, 0x36)
     try:
-        encoder = seesaw.Seesaw(i2c, 0x36)
         await encoder.start()
         asyncio.create_task(encoder_loop(encoder))
     except:
         print("No encoder found")
 
-    print("Initing audio codec")
+    print("Mount SD card")
+    try:
+        sd = fern.sdcard()
+        os.mount(sd, "/sd")
+    except:
+        print("No SD card found")
+
+    print("Initing audio")
     codec.init(i2c)
+    audio_out = I2S(
+        0,
+        sck=Pin(fern.I2S_BCK),
+        ws=Pin(fern.I2S_WS),
+        sd=Pin(fern.I2S_SDOUT),
+        mck=Pin(fern.I2S_MCK),
+        mode=I2S.TX,
+        bits=16,
+        format=I2S.STEREO,
+        rate=16000,
+        ibuf=4000,
+    )
+    WAV_FILE = "test.wav"
+    wav = open("/sd/{}".format(WAV_FILE), "rb")
+    asyncio.create_task(continuous_play(audio_out, wav))
 
     print("Starting canopy")
-    canopy.init([fern.LED1_DATA, fern.LED2_DATA], 50)
+    canopy.init([fern.LED1_DATA, fern.LED2_DATA], 100)
     asyncio.create_task(render_loop(encoder))
 
     asyncio.get_event_loop().run_forever()
