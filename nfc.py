@@ -81,7 +81,7 @@ class NfcReader:
         offset -= skip
         start_block = offset // self.tag.block_size
         total_bytes = bytes + skip
-        total_bytes += total_bytes % self.tag.block_size
+        total_bytes += self.tag.block_size - 1
         num_blocks = total_bytes // self.tag.block_size
         num_blocks -= 1
 
