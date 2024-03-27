@@ -46,8 +46,8 @@ async def encoder_loop(ss):
 
 
 async def render_loop():
-    segment = (0, 0, 50)
-    turtle_base = (2, 0, 15)
+    segment = canopy.Segment(0, 0, 50)
+    turtle_base = canopy.Segment(2, 0, 15)
     pattern = canopy.Pattern(SparklyRainbow)
     pattern.params["sparkle"] = 0.2
     pattern.params["sparkle2"] = 0.25
@@ -72,7 +72,7 @@ async def render_loop():
         #         pattern.params["progress"] = 0
         f.tick()
         # if TagFound:
-        #     canopy.draw(turtle_base, pattern)
+        # canopy.draw(turtle_base, pattern)
         canopy.draw(segment, pattern)
         canopy.render()
         await asyncio.sleep(0)
@@ -123,13 +123,13 @@ async def main():
 
     i2c = I2C(0, scl=fern.I2C_SCL, sda=fern.I2C_SDA)
 
-    # print("Initing encoder")
-    # encoder = seesaw.Seesaw(i2c, 0x36)
-    # try:
-    #     await encoder.start()
-    #     asyncio.create_task(encoder_loop(encoder))
-    # except:
-    #     print("No encoder found")
+    print("Initing encoder")
+    encoder = seesaw.Seesaw(i2c, 0x36)
+    try:
+        await encoder.start()
+        asyncio.create_task(encoder_loop(encoder))
+    except:
+        print("No encoder found")
 
     print("Initing codec")
     codec.init(i2c)
@@ -167,7 +167,7 @@ async def main():
     print("Starting canopy")
     D1 = 1
     canopy.init([fern.LED1_DATA, fern.LED2_DATA, D1], 100)
-    # asyncio.create_task(render_loop())
+    asyncio.create_task(render_loop())
 
     asyncio.get_event_loop().run_forever()
 
