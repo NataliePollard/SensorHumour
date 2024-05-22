@@ -1,7 +1,9 @@
 import time
 import struct
-from machine import Pin
+from machine import Pin, SPI
 import asyncio
+import binascii
+import fern
 
 import pypn5180
 import ndef
@@ -133,27 +135,30 @@ class NfcReader:
         self.tag.mem_size = mem_size * 8
 
     async def _readHeader(self, format=True):
-        if self.tag is None:
-            raise NfcTagLost()
+        try:
+            if self.tag is None:
+                raise NfcTagLost()
 
-        # read CC, which is either 4 or 8 bytes. Lets assume 4 for now to keep it simple
-        header = await self.read(0, 8)
-        if header[0] not in [0xE1, 0xE2] or header[1] & 0xFC != 0x40:
-            if format:
-                await self.format()
-            else:
-                raise NfcTagNotFormatted()
+            # read CC, which is either 4 or 8 bytes. Lets assume 4 for now to keep it simple
+            header = await self.read(0, 8)
+            if header[0] not in [0xE1, 0xE2] or header[1] & 0xFC != 0x40:
+                if format:
+                    await self.format()
+                else:
+                    raise NfcTagNotFormatted()
 
-        # read TLV chunks until we find one with an Ndef message
-        header_size = 4
-        mem_size = header[2]
-        if mem_size == 0:
-            mem_size = (header[6] << 8) | header[7]
-            header_size = 8
-        mem_size *= 8
+            # read TLV chunks until we find one with an Ndef message
+            header_size = 4
+            mem_size = header[2]
+            if mem_size == 0:
+                mem_size = (header[6] << 8) | header[7]
+                header_size = 8
+            mem_size *= 8
 
-        self.tag.header_size = header_size
-        self.tag.mem_size = mem_size
+            self.tag.header_size = header_size
+            self.tag.mem_size = mem_size
+        except Exception as e:
+            print("Error reading header", e)
 
     async def readNdef(self):
         if self.tag is None:
@@ -241,7 +246,7 @@ class NfcReader:
             try:
                 while True:
                     await self.event_found.wait()
-                    task = asyncio.create_task(callback(self))
+                    task = asyncio.create_task(callback())
                     await self.event_lost.wait()
                     task.cancel()
                     task = None
@@ -255,3 +260,39 @@ class NfcReader:
         while True:
             await self.tick()
             await asyncio.sleep(0.2)
+
+
+class NfcWrapper(object):
+    def __init__(self, on_tag_found_cb, on_tag_lost_cb):
+        print("Initing NFC")
+        self.on_tag_found_cb = on_tag_found_cb
+        self.on_tag_lost_cb = on_tag_lost_cb
+        self.spi = SPI(
+            1,
+            baudrate=7000000,
+            sck=fern.NFC_SCK,
+            mosi=fern.NFC_MOSI,
+            miso=fern.NFC_MISO,
+        )
+        self.reader = NfcReader(self.spi, fern.NFC_NSS, fern.NFC_BUSY, fern.NFC_RST)
+        self.reader.onTagFound(self._on_tag_found)
+
+    async def start(self):
+        try:
+            await self.reader.start(verbose=True)
+            asyncio.create_task(self.reader.loop())
+            print("NFC reader started")
+        except Exception as e:
+            print("No NFC reader found: ", e)
+            raise
+
+    async def _on_tag_found(self):
+        uid = binascii.hexlify(self.reader.tag.uid).decode("utf-8")
+        print("Tag found ", uid)
+        try:
+            self.on_tag_found_cb(uid)
+            while True:
+                await asyncio.sleep(0.5)
+        except asyncio.CancelledError:
+            print("Tag lost")
+            self.on_tag_lost_cb()
