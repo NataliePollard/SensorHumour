@@ -5,48 +5,56 @@ from rat_artifact_city import CityArtifact
 
 # from rat_energytank import EnergyTank
 
-ARTIFACT_ONE = "noodle/1"
-ARTIFACT_TWO = "noodle/2"
-ARTIFACT_THREE = "noodle/3"
-ARTIFACT_FOUR = "noodle/4"
-ARTIFACT_FIVE = "noodle/5"
-ARTIFACT_SIX = "noodle/6"
-ARTIFACT_SEVEN = "noodle/7"
-ARTIFACT_CITY = "noodle/city"
-ARTIFACT_NINE = "noodle/9"
+# ARTIFACT_ONE = "noodle/1"
+# ARTIFACT_TWO = "noodle/2"
+# ARTIFACT_THREE = "noodle/3"
+# ARTIFACT_FOUR = "noodle/4"
+# ARTIFACT_FIVE = "noodle/5"
+# ARTIFACT_SIX = "noodle/6"
+# ARTIFACT_SEVEN = "noodle/7"
+# ARTIFACT_CITY = "noodle/city"
+# ARTIFACT_NINE = "noodle/9"
+
+ARTIFACT_CITY = "artifact/city"
+ARTIFACT_TANK = "artifact/tank"
+ARTIFACT_MICROWAVE = "artifact/microwave"
+ARTIFACT_BUGS = "artifact/bugs"
+ARTIFACT_FISH = "artifact/fish"
+ARTIFACT_MUSHROOMS = "artifact/mushrooms"
+ARTIFACT_VOLCANO = "artifact/volcano"
+ARTIFACT_MOBILE = "artifact/mobile"
 
 
-ARTIFACT = ARTIFACT_ONE
-# ARTIFACT = ARTIFACT_TWO
-# ARTIFACT = ARTIFACT_THREE
-# ARTIFACT = ARTIFACT_FOUR
-# ARTIFACT = ARTIFACT_FIVE
-# ARTIFACT = ARTIFACT_SIX
-# ARTIFACT = ARTIFACT_SEVEN
-# ARTIFACT = ARTIFACT_CITY
-# ARTIFACT = ARTIFACT_NINE
+ARTIFACT = ARTIFACT_CITY
+# ARTIFACT = ARTIFACT_TANK
+# ARTIFACT = ARTIFACT_MUSHROOMS
+# ARTIFACT = ARTIFACT_MOBILE
+# ARTIFACT = ARTIFACT_MICROWAVE
+# ARTIFACT = ARTIFACT_BUGS
+# ARTIFACT = ARTIFACT_FISH
+# ARTIFACT = ARTIFACT_VOLCANO
 
 
 async def main():
     # artifact = EnergyTank(ARTIFACT_NAME)
-    if ARTIFACT == ARTIFACT_ONE:
-        artifact = Artifact(ARTIFACT_ONE, magnet_pin=2, relay_pin=3)
-    elif ARTIFACT == ARTIFACT_TWO:
-        artifact = Artifact(ARTIFACT_TWO)
-    elif ARTIFACT == ARTIFACT_THREE:
-        artifact = Artifact(ARTIFACT_THREE)
-    elif ARTIFACT == ARTIFACT_FOUR:
-        artifact = Artifact(ARTIFACT_FOUR)
-    elif ARTIFACT == ARTIFACT_FIVE:
-        artifact = Artifact(ARTIFACT_FIVE)
-    elif ARTIFACT == ARTIFACT_SIX:
-        artifact = Artifact(ARTIFACT_SIX)
-    elif ARTIFACT == ARTIFACT_SEVEN:
-        artifact = Artifact(ARTIFACT_SEVEN)
+    if ARTIFACT == ARTIFACT_TANK:
+        artifact = Artifact(ARTIFACT_TANK)
+    elif ARTIFACT == ARTIFACT_MICROWAVE:
+        artifact = Artifact(ARTIFACT_MICROWAVE)
+    elif ARTIFACT == ARTIFACT_BUGS:
+        artifact = Artifact(ARTIFACT_BUGS)
+    elif ARTIFACT == ARTIFACT_FISH:
+        artifact = Artifact(ARTIFACT_FISH)
+    elif ARTIFACT == ARTIFACT_MUSHROOMS:
+        artifact = Artifact(ARTIFACT_MUSHROOMS)
+    elif ARTIFACT == ARTIFACT_VOLCANO:
+        artifact = Artifact(ARTIFACT_VOLCANO)
+    elif ARTIFACT == ARTIFACT_MOBILE:
+        artifact = Artifact(ARTIFACT_MOBILE)
     elif ARTIFACT == ARTIFACT_CITY:
         artifact = CityArtifact(ARTIFACT_CITY)
-    elif ARTIFACT == ARTIFACT_NINE:
-        artifact = Artifact(ARTIFACT_NINE)
+    # elif ARTIFACT == ARTIFACT_NINE:
+    #     artifact = Artifact(ARTIFACT_NINE)
     else:
         print("Invalid artifact")
         return

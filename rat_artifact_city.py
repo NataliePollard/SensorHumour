@@ -14,12 +14,12 @@ DRAIN_TIME = 60
 
 class CityArtifact(Artifact):
     city_mode = CITY_MODE_FULL
-    drain_relay = Relay(2)
-    fill_relay = Relay(3)
+    drain_relay = Relay(3)
+    fill_relay = Relay(1)
     last_event_time = 0
 
     def __init__(self, name):
-        super().__init__(name, relay_pin=4)
+        super().__init__(name, relay_pin=5, magnet_pin=2)
         self.start_draining()
 
     def _after_update_state(self):
@@ -39,14 +39,21 @@ class CityArtifact(Artifact):
             self.start_draining()
 
     def start_draining(self):
+        print("Draining")
         self.city_mode = CITY_MODE_DRAINING
+        self.drain_relay.on()
+        self.fill_relay.off()
         self.last_event_time = time.time()
 
     def start_filling(self):
+        print("Filling")
         self.city_mode = CITY_MODE_FILLING
+        self.drain_relay.off()
+        self.fill_relay.on()
         self.last_event_time = time.time()
 
     def stop(self):
+        print("Stopping")
         self.drain_relay.off()
         self.fill_relay.off()
         self.last_event_time = time.time()
@@ -57,10 +64,12 @@ class CityArtifact(Artifact):
         super()._update()
         now = time.time()
         if self.city_mode == CITY_MODE_DRAINING:
-            if self.last_event_time + DRAIN_TIME > now:
+            if self.last_event_time + DRAIN_TIME < now:
                 self.city_mode = CITY_MODE_EMPTY
                 self.drain_relay.off()
+                print("Done Draining")
         if self.city_mode == CITY_MODE_FILLING:
-            if self.last_event_time + FILL_TIME > now:
+            if self.last_event_time + FILL_TIME < now:
                 self.city_mode = CITY_MODE_FULL
                 self.fill_relay.off()
+                print("Done Filling")

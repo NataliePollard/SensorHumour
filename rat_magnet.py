@@ -8,7 +8,7 @@ MAGNET_COOLDOWN_TIME = 5
 
 
 class Magnet(object):
-    def __init__(self, pin=1):
+    def __init__(self, pin=2):
         self.pin = pin
         self.is_connected = False
         self.is_invalid = False
