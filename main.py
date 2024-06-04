@@ -1,7 +1,8 @@
 import asyncio
 
-from rat_artifact import Artifact
+from rat_artifact import Artifact, connected_pattern, mushroom_pattern, city_pattern
 from rat_artifact_city import CityArtifact
+from rat_bluecheese import BlueCheese
 
 # from rat_energytank import EnergyTank
 
@@ -23,9 +24,10 @@ ARTIFACT_FISH = "artifact/fish"
 ARTIFACT_MUSHROOMS = "artifact/mushrooms"
 ARTIFACT_VOLCANO = "artifact/volcano"
 ARTIFACT_MOBILE = "artifact/mobile"
+ARTIFACT_BLUE_CHEESE = "artifact/blue_cheese"
 
 
-ARTIFACT = ARTIFACT_CITY
+# ARTIFACT = ARTIFACT_CITY
 # ARTIFACT = ARTIFACT_TANK
 # ARTIFACT = ARTIFACT_MUSHROOMS
 # ARTIFACT = ARTIFACT_MOBILE
@@ -33,6 +35,7 @@ ARTIFACT = ARTIFACT_CITY
 # ARTIFACT = ARTIFACT_BUGS
 # ARTIFACT = ARTIFACT_FISH
 # ARTIFACT = ARTIFACT_VOLCANO
+ARTIFACT = ARTIFACT_BLUE_CHEESE
 
 
 async def main():
@@ -42,19 +45,27 @@ async def main():
     elif ARTIFACT == ARTIFACT_MICROWAVE:
         artifact = Artifact(ARTIFACT_MICROWAVE)
     elif ARTIFACT == ARTIFACT_BUGS:
-        artifact = Artifact(ARTIFACT_BUGS)
+        artifact = Artifact(
+            ARTIFACT_BUGS,
+            second_light_pattern=connected_pattern,
+            second_pattern_num_pixels=7,
+        )
     elif ARTIFACT == ARTIFACT_FISH:
         artifact = Artifact(ARTIFACT_FISH)
     elif ARTIFACT == ARTIFACT_MUSHROOMS:
-        artifact = Artifact(ARTIFACT_MUSHROOMS)
+        artifact = Artifact(
+            ARTIFACT_MUSHROOMS,
+            second_light_pattern=mushroom_pattern,
+            second_pattern_num_pixels=50,
+        )
     elif ARTIFACT == ARTIFACT_VOLCANO:
         artifact = Artifact(ARTIFACT_VOLCANO)
     elif ARTIFACT == ARTIFACT_MOBILE:
         artifact = Artifact(ARTIFACT_MOBILE)
     elif ARTIFACT == ARTIFACT_CITY:
-        artifact = CityArtifact(ARTIFACT_CITY)
-    # elif ARTIFACT == ARTIFACT_NINE:
-    #     artifact = Artifact(ARTIFACT_NINE)
+        artifact = CityArtifact(ARTIFACT_CITY, second_light_pattern=mushroom_pattern)
+    elif ARTIFACT == ARTIFACT_BLUE_CHEESE:
+        artifact = BlueCheese(ARTIFACT_BLUE_CHEESE)
     else:
         print("Invalid artifact")
         return

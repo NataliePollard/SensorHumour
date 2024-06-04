@@ -21,6 +21,8 @@ ArtifactWaitingPattern = "CTP-eyJpZCI6IjY1YmNiOTNmLTE5MTktNGFiNi1iZWQ4LWVmOGQyZm
 ArtifactConnectedPattern = "CTP-eyJpZCI6IjFhMjQ5MmUwLTY2ZGMtNGJmMi04ODY1LTYxNTIwMzNlZTk2ZSIsInZlcnNpb24iOjIsIm5hbWUiOiJBcnRpZmFjdCAtIENvbm5lY3RlZCBDb2xvcnMiLCJwYWxldHRlcyI6eyJDb2xvcnMiOltbMCxbMSwwLDBdXSxbMC4xNSxbMSwwLjcyLDBdXSxbMC4yNyxbMC45LDEsMF1dLFswLjQ0LFswLjI4LDEsMF1dLFswLjU5LFswLDAuODcsMV1dLFswLjczLFswLjA3LDAsMV1dLFswLjg2LFswLjUyLDAsMV1dLFsxLFsxLDAsMC43NV1dXSwiQnJpZ2h0bmVzcyI6W1swLjE0LFswLDAsMF1dLFswLjI1LFsxLDEsMV1dLFswLjM5LFswLDAsMF1dLFswLjU1LFswLDAsMF1dLFswLjY1LFsxLDEsMV1dLFswLjc1LFswLDAsMF1dXX0sInBhcmFtcyI6eyJDb2xvciI6MH0sImxheWVycyI6W3siZWZmZWN0Ijoic29saWQiLCJvcGFjaXR5IjoxLCJibGVuZCI6Im5vcm1hbCIsInBhbGV0dGUiOiJDb2xvcnMiLCJpbnB1dHMiOnsib2Zmc2V0IjoiQ29sb3IifX0seyJlZmZlY3QiOiJjaGFzZXIiLCJvcGFjaXR5IjowLjYsImJsZW5kIjoibXVsdGlwbHkiLCJwYWxldHRlIjoiQnJpZ2h0bmVzcyIsImlucHV0cyI6eyJvZmZzZXQiOnsidHlwZSI6InNpbiIsImlucHV0cyI6eyJ2YWx1ZSI6MC41LCJtaW4iOjAuMTMsIm1heCI6MX19LCJzaXplIjowLjQ1fX0seyJlZmZlY3QiOiJzcGFya2xlcyIsIm9wYWNpdHkiOjAuNywiYmxlbmQiOiJvdmVybGF5IiwicGFsZXR0ZSI6IkJyaWdodG5lc3MiLCJpbnB1dHMiOnsiZGVuc2l0eSI6MC42MSwib2Zmc2V0Ijp7InR5cGUiOiJ0cmlhbmdsZSIsImlucHV0cyI6eyJ2YWx1ZSI6MC4yOCwibWluIjowLCJtYXgiOjF9fX19XX0"
 ArtifactIncorrectPattern = "CTP-eyJpZCI6IjdkYjZiOGM3LTJkZjYtNDAzNC1iZjA1LTk3MTAxZDI3N2FhZiIsInZlcnNpb24iOjEzLCJuYW1lIjoiQXJ0aWZhY3QgSW5jb3JyZWN0IiwicGFsZXR0ZXMiOnsiUGFsZXR0ZTEiOltbMC40MSxbMSwwLDBdXV19LCJwYXJhbXMiOnsiQ29sb3IiOjF9LCJsYXllcnMiOlt7ImVmZmVjdCI6ImNoYXNlciIsIm9wYWNpdHkiOnsidHlwZSI6InNxdWFyZSIsImlucHV0cyI6eyJ2YWx1ZSI6MC42OSwibWluIjowLCJtYXgiOjF9fSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiUGFsZXR0ZTEiLCJpbnB1dHMiOnsib2Zmc2V0IjoxLCJzaXplIjoxfX1dfQ"
 ArtifactOffPattern = "CTP-eyJpZCI6Ijk2NTRmMDA4LWNlMjUtNDAwNS04MWE0LTc0NzY5MjJlOWNmZSIsInZlcnNpb24iOjYsIm5hbWUiOiJBcnRpZmFjdCAtIE9mZiIsInBhbGV0dGVzIjp7IkNvbG9ycyI6W1swLjAyLFswLjYxOTYwNzg0MzEzNzI1NDksMC4zODgyMzUyOTQxMTc2NDcwNywwLjA4NjI3NDUwOTgwMzkyMTU3XV0sWzAuMTQsWzAuNzQxMTc2NDcwNTg4MjM1MywwLjc0OTAxOTYwNzg0MzEzNzMsMC4zMDU4ODIzNTI5NDExNzY1XV0sWzAuMjksWzAuNTA1ODgyMzUyOTQxMTc2NCwwLjgxOTYwNzg0MzEzNzI1NDksMC4yMTE3NjQ3MDU4ODIzNTI5NF1dLFswLjQzLFswLjMyOTQxMTc2NDcwNTg4MjM1LDAuODcwNTg4MjM1Mjk0MTE3NywwLjEyMTU2ODYyNzQ1MDk4MDM5XV0sWzAuNTksWzAuMDYyNzQ1MDk4MDM5MjE1NjksMC44NzA1ODgyMzUyOTQxMTc3LDAuNjU0OTAxOTYwNzg0MzEzN11dLFswLjc0LFswLjIxNTY4NjI3NDUwOTgwMzkzLDAuNTI5NDExNzY0NzA1ODgyNCwwLjcwMTk2MDc4NDMxMzcyNTRdXSxbMC44NyxbMC4wMTk2MDc4NDMxMzcyNTQ5LDAuNTI5NDExNzY0NzA1ODgyNCwwLjI0MzEzNzI1NDkwMTk2MDc4XV0sWzAuOTksWzAuNTEzNzI1NDkwMTk2MDc4NCwwLjY1ODgyMzUyOTQxMTc2NDcsMC4xNDUwOTgwMzkyMTU2ODYzXV1dLCJCcmlnaHRuZXNzIjpbWzAuMTQsWzAsMCwwXV0sWzAuMjUsWzEsMSwxXV0sWzAuMzksWzAsMCwwXV0sWzAuNTUsWzAsMCwwXV0sWzAuNjUsWzEsMSwxXV0sWzAuNzUsWzAsMCwwXV1dfSwicGFyYW1zIjp7IkNvbG9yIjp7InR5cGUiOiJzaW4iLCJpbnB1dHMiOnsidmFsdWUiOjAuNDEsIm1pbiI6MCwibWF4IjoxfX19LCJsYXllcnMiOlt7ImVmZmVjdCI6InNvbGlkIiwib3BhY2l0eSI6MSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiQ29sb3JzIiwiaW5wdXRzIjp7Im9mZnNldCI6IkNvbG9yIn19LHsiZWZmZWN0Ijoic3BhcmtsZXMiLCJvcGFjaXR5IjoxLCJibGVuZCI6Im11bHRpcGx5IiwicGFsZXR0ZSI6IkJyaWdodG5lc3MiLCJpbnB1dHMiOnsiZGVuc2l0eSI6MC4yNCwib2Zmc2V0Ijp7InR5cGUiOiJzaW4iLCJpbnB1dHMiOnsidmFsdWUiOjAuMTQsIm1pbiI6MCwibWF4IjoxfX19fV19"
+ArtifactMushroomPattern = "CTP-eyJpZCI6ImYxMjZhNTgwLTc3ZDQtNDM1ZC04YTNjLWNlNWM0Yjc3ZjFiNyIsInZlcnNpb24iOjUsIm5hbWUiOiJBcnRpZmFjdCAtIE11c2hyb29tcyIsInBhbGV0dGVzIjp7IkNvbG9ycyI6W1swLFsxLDAsMF1dLFswLjE1LFsxLDAuNzIxNTY4NjI3NDUwOTgwNCwwXV0sWzAuMyxbMC45MDU4ODIzNTI5NDExNzY1LDEsMF1dLFswLjQ0LFswLjI3ODQzMTM3MjU0OTAxOTYsMSwwXV0sWzAuNixbMCwwLjg3MDU4ODIzNTI5NDExNzcsMV1dLFswLjc0LFswLjA3MDU4ODIzNTI5NDExNzY1LDAsMV1dLFswLjg4LFswLjUyMTU2ODYyNzQ1MDk4MDQsMCwxXV0sWzEsWzEsMCwwLjc0OTAxOTYwNzg0MzEzNzNdXV0sIkJyaWdodG5lc3MiOltbMC4xNCxbMCwwLDBdXSxbMC4yNSxbMSwxLDFdXSxbMC4zOSxbMCwwLDBdXSxbMC41NSxbMCwwLDBdXSxbMC42NSxbMSwxLDFdXSxbMC43NSxbMCwwLDBdXV0sIlBhbGV0dGUzIjpbWzAsWzAuMDExNzY0NzA1ODgyMzUyOTQxLDAuNzUyOTQxMTc2NDcwNTg4MiwxXV0sWzAuMzMsWzAuMDE1Njg2Mjc0NTA5ODAzOTIsMC44MzEzNzI1NDkwMTk2MDc5LDAuMzg0MzEzNzI1NDkwMTk2MV1dLFswLjY2LFswLjc4ODIzNTI5NDExNzY0NywwLjQxOTYwNzg0MzEzNzI1NDksMC44MTE3NjQ3MDU4ODIzNTI5XV0sWzAuOTcsWzAsMSwwLjg5ODAzOTIxNTY4NjI3NDVdXV19LCJwYXJhbXMiOnsiQ29sb3IiOjB9LCJsYXllcnMiOlt7ImVmZmVjdCI6InNvbGlkIiwib3BhY2l0eSI6MSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiQ29sb3JzIiwiaW5wdXRzIjp7Im9mZnNldCI6IkNvbG9yIn19LHsiZWZmZWN0Ijoic3BhcmtsZXMiLCJvcGFjaXR5IjoxLCJibGVuZCI6Im11bHRpcGx5IiwicGFsZXR0ZSI6IkJyaWdodG5lc3MiLCJpbnB1dHMiOnsiZGVuc2l0eSI6MC43Niwib2Zmc2V0Ijp7InR5cGUiOiJ0cmlhbmdsZSIsImlucHV0cyI6eyJ2YWx1ZSI6MC4xMiwibWluIjowLCJtYXgiOjF9fX19LHsiZWZmZWN0Ijoic3BhcmtsZXMiLCJvcGFjaXR5IjowLjE3LCJibGVuZCI6Im5vcm1hbC1ub25ibGFjayIsInBhbGV0dGUiOiJQYWxldHRlMyIsImlucHV0cyI6eyJkZW5zaXR5Ijp7InR5cGUiOiJzaW4iLCJpbnB1dHMiOnsidmFsdWUiOjAuMDksIm1pbiI6MC4yNiwibWF4IjowLjY3fX0sIm9mZnNldCI6eyJ0eXBlIjoidHJpYW5nbGUiLCJpbnB1dHMiOnsidmFsdWUiOjAuMTYsIm1pbiI6MCwibWF4IjoxfX19fV19"
+ArtifactCity = "CTP-eyJpZCI6IjMwZGE2ZjVmLTBkODYtNDFiMi05YzJmLWFmYjA4ZWRmNjdmMyIsInZlcnNpb24iOjIsIm5hbWUiOiJBcnRpZmFjdCAtIENpdHkiLCJwYWxldHRlcyI6eyJDb2xvcnMiOltbMCxbMSwwLDBdXSxbMC4xNSxbMSwwLjcyLDBdXSxbMC4yNyxbMC45LDEsMF1dLFswLjQ0LFswLjI4LDEsMF1dLFswLjU5LFswLDAuODcsMV1dLFswLjczLFswLjA3LDAsMV1dLFswLjg2LFswLjUyLDAsMV1dLFsxLFsxLDAsMC43NV1dXSwiQnJpZ2h0bmVzcyI6W1swLjE0LFswLDAsMF1dLFswLjI1LFsxLDEsMV1dLFswLjM5LFswLDAsMF1dLFswLjU1LFswLDAsMF1dLFswLjY1LFsxLDEsMV1dLFswLjc1LFswLDAsMF1dXX0sInBhcmFtcyI6eyJDb2xvciI6MC4zNH0sImxheWVycyI6W3siZWZmZWN0Ijoic29saWQiLCJvcGFjaXR5IjoxLCJibGVuZCI6Im5vcm1hbCIsInBhbGV0dGUiOiJDb2xvcnMiLCJpbnB1dHMiOnsib2Zmc2V0IjoiQ29sb3IifX0seyJlZmZlY3QiOiJjaGFzZXIiLCJvcGFjaXR5IjowLjYsImJsZW5kIjoibXVsdGlwbHkiLCJwYWxldHRlIjoiQnJpZ2h0bmVzcyIsImlucHV0cyI6eyJvZmZzZXQiOnsidHlwZSI6InNpbiIsImlucHV0cyI6eyJ2YWx1ZSI6MC4yNiwibWluIjowLjEzLCJtYXgiOjF9fSwic2l6ZSI6MC40NX19LHsiZWZmZWN0Ijoic3BhcmtsZXMiLCJvcGFjaXR5IjowLjcsImJsZW5kIjoib3ZlcmxheSIsInBhbGV0dGUiOiJCcmlnaHRuZXNzIiwiaW5wdXRzIjp7ImRlbnNpdHkiOjAuNjEsIm9mZnNldCI6eyJ0eXBlIjoidHJpYW5nbGUiLCJpbnB1dHMiOnsidmFsdWUiOjAuMzIsIm1pbiI6MCwibWF4IjoxfX19fV19"
 
 MODE_INITIALIZING = 0
 MODE_OFF = 1
@@ -40,6 +42,8 @@ connected_pattern = canopy.Pattern(ArtifactConnectedPattern)
 off_pattern = canopy.Pattern(ArtifactOffPattern)
 waiting_pattern = canopy.Pattern(ArtifactWaitingPattern)
 incorrect_pattern = canopy.Pattern(ArtifactIncorrectPattern)
+mushroom_pattern = canopy.Pattern(ArtifactMushroomPattern)
+city_pattern = canopy.Pattern(ArtifactCity)
 
 
 class Artifact(object):
@@ -56,12 +60,26 @@ class Artifact(object):
     is_wifi_connected = False
     disable_magnet = False
     light_pattern = initializing_pattern
+    second_light_pattern = None
+    second_light_pattern_to_use = None
+    second_pattern_start_address = 0
 
-    def __init__(self, name, magnet_pin=1, relay_pin=2):
-        self.audio = Audio()
+    def __init__(
+        self,
+        name,
+        magnet_pin=1,
+        relay_pin=2,
+        second_light_pattern=None,
+        second_pattern_start_address=0,
+        second_pattern_num_pixels=16,
+    ):
+        self.audio = Audio(name)
         self.name = name
         self.magnet_pin = magnet_pin
         self.relay_pin = relay_pin
+        self.second_pattern_start_address = second_pattern_start_address
+        self.second_light_pattern_to_use = second_light_pattern
+        self.second_pattern_num_pixels = second_pattern_num_pixels
         self.mqtt = Mqtt(name, self._onMqttMessage)
         self.wifi = Wifi(hostname=self.name)
         self.nfc = NfcWrapper(self._tag_found, self._tag_lost)
@@ -114,6 +132,8 @@ class Artifact(object):
                         and self.current_tag != self.desired_tag
                     ):
                         self.is_invalid_connection = True
+                    if data.get("fillTheCity") == True:
+                        self._on_city_drain()
                     print("Updating Color: ", self.color)
                     self._update_state(EVENT_ARTIFACT_UPDATE)
         except:
@@ -175,6 +195,10 @@ class Artifact(object):
         # abstract method to be overridden
         pass
 
+    def _on_city_drain(self):
+        # abstract method to be overridden
+        pass
+
     def _update_state(self, event):
         self._update_mode()
         self._update_light_pattern()
@@ -203,18 +227,28 @@ class Artifact(object):
                 )
             )
 
+    def _after_update_light_pattern(self):
+        # abstract method to be overridden
+        pass
+
     def _update_light_pattern(self):
         if self.current_mode == MODE_INITIALIZING:
             self.light_pattern = initializing_pattern
+            self.second_light_pattern = None
         elif self.current_mode == MODE_INVALID:
             self.light_pattern = incorrect_pattern
+            self.second_light_pattern = None
         elif self.current_mode == MODE_CONNECTED:
             self.light_pattern = connected_pattern
+            self.second_light_pattern = self.second_light_pattern_to_use
         elif self.current_mode == MODE_WAITING:
             self.light_pattern = waiting_pattern
+            self.second_light_pattern = None
         elif self.current_mode == MODE_OFF:
             self.light_pattern = off_pattern
-        print("Updated light patternt to: ", self.light_pattern)
+            self.second_light_pattern = None
+        print("Updated light pattern to: ", self.light_pattern)
+        self._after_update_light_pattern()
 
     async def _update(self):
         # abstract method to be overridden
@@ -222,8 +256,13 @@ class Artifact(object):
 
     async def _render_loop(self):
         segment = canopy.Segment(0, 0, 16)
+        second_segment = canopy.Segment(
+            1,
+            self.second_pattern_start_address,
+            self.second_pattern_num_pixels,
+        )
         f = FPS(verbose=True)
-        G
+        params = canopy.Params()
         while True:
             try:
                 now = time.time()
@@ -245,6 +284,13 @@ class Artifact(object):
                 canopy.draw(
                     segment, self.light_pattern, alpha=float(0.8), params=params
                 )
+                if self.second_light_pattern:
+                    canopy.draw(
+                        second_segment,
+                        self.second_light_pattern,
+                        alpha=float(0.8),
+                        params=params,
+                    )
                 canopy.render()
             except Exception as e:
                 print("Error in render loop", e)

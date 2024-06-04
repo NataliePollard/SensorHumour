@@ -1,11 +1,13 @@
 from umqtt.simple import MQTTClient
 import asyncio
 import time
+import machine
 
 
 class Mqtt(object):
     is_connected = False
     next_ping = 0
+    lost_connection_count = 0
 
     def __init__(
         self, name, on_message_callback, topic="mqtt/timemachine", server="10.0.1.1"
@@ -21,7 +23,7 @@ class Mqtt(object):
             try:
                 self.client.connect()
                 self.is_connected = True
-                self.next_ping = time.time() + 60
+                self.next_ping = time.time() + 45
             except:
                 print("MQTT - Failed to connect, retrying")
                 await asyncio.sleep(1)
@@ -40,6 +42,9 @@ class Mqtt(object):
                     self.next_ping = time.time() + 60
             except:
                 print("Lost connection to MQTT ")
+                self.lost_connection_count += 1
+                if self.lost_connection_count > 10:
+                    machine.reset()
                 await self._connect()
             await asyncio.sleep(0.3)
 
