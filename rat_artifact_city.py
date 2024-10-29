@@ -53,11 +53,13 @@ class CityArtifact(Artifact):
         if (
             self.city_mode == CITY_MODE_FILLING
             or self.city_mode == CITY_MODE_FULL
-            or self.city_mode == CITY_MODE_DRAINING
+            # or self.city_mode == CITY_MODE_DRAINING
+            # or self.current_mode == MODE_CONNECTED
         ):
+            print("overriding light pattern")
             self.second_light_pattern = self.second_light_pattern_to_use
-        else:
-            self.second_light_pattern = None
+        # else:
+        #     self.second_light_pattern = None
 
     def start_draining(self):
         print("Draining")

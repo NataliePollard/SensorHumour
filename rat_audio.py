@@ -19,6 +19,7 @@ AMBIENT_FILES_BY_NAME = {
     "artifact/mushrooms": "Artifact-Ambient-6.wav",
     "artifact/volcano": "Artifact-Ambient-7.wav",
     "artifact/mobile": "Artifact-Ambient-8.wav",
+    "dollhouse": "Artifact-Ambient-1.wav",
 }
 
 MICROWAVE_WAV = "Artifact-Microwave.wav"
