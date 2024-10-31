@@ -1,5 +1,8 @@
 import canopy
 
+from audio import Audio
+from ghost_rfid_audio import RFIDAudio
+
 PatternInitializing = "CTP-eyJpZCI6ImRkMWVjY2MwLTE3ODYtNDhhYS05ZWE3LWNmMzAwODIwMTFhNCIsInZlcnNpb24iOjMsIm5hbWUiOiJXSWZpIERpc2Nvbm5lY3RlZCIsInBhbGV0dGVzIjp7IlBhbGV0dGUxIjpbWzAsWzEsMCwwXV0sWzAuOTksWzAsMCwwXV1dfSwicGFyYW1zIjp7IkNvbG9yIjoxfSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJjaGFzZXIiLCJvcGFjaXR5IjoxLCJibGVuZCI6Im5vcm1hbCIsInBhbGV0dGUiOiJQYWxldHRlMSIsImlucHV0cyI6eyJvZmZzZXQiOnsidHlwZSI6InNpbiIsImlucHV0cyI6eyJ2YWx1ZSI6MC40OCwibWluIjowLCJtYXgiOjF9fSwic2l6ZSI6MC4zMX19XX0"
 PatternRainbow = "CTP-eyJpZCI6IjAzNWVlN2NjLWZiM2MtNDI0Ni1hOTM1LTdjNGQ3ZDYyMzEyMyIsInZlcnNpb24iOjEsIm5hbWUiOiJOZXcgUGF0dGVybiIsInBhbGV0dGVzIjp7IlBhbGV0dGUxIjpbWzAsWzEsMCwwXV0sWzAuMTksWzAuOTY0NzA1ODgyMzUyOTQxMiwxLDBdXSxbMC4zNixbMC4wNjI3NDUwOTgwMzkyMTU2OSwxLDAuMDUwOTgwMzkyMTU2ODYyNzQ0XV0sWzAuNTEsWzAsMSwwLjg3MDU4ODIzNTI5NDExNzddXSxbMC42NyxbMCwwLjA5MDE5NjA3ODQzMTM3MjU1LDFdXSxbMC44MixbMC40OCwwLjAxLDAuNDJdXSxbMC45OSxbMSwwLDBdXV19LCJwYXJhbXMiOnsicHJvZ3Jlc3MiOjB9LCJsYXllcnMiOlt7ImVmZmVjdCI6ImdyYWRpZW50Iiwib3BhY2l0eSI6InByb2dyZXNzIiwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiUGFsZXR0ZTEiLCJpbnB1dHMiOnsib2Zmc2V0Ijp7InR5cGUiOiJyc2F3IiwiaW5wdXRzIjp7InZhbHVlIjowLjQxLCJtaW4iOjAsIm1heCI6MX19LCJzaXplIjowLjUsInJvdGF0aW9uIjowfX1dfQ"
 ArtifactWaitingPattern = "CTP-eyJpZCI6IjY1YmNiOTNmLTE5MTktNGFiNi1iZWQ4LWVmOGQyZmRjN2Q1OSIsInZlcnNpb24iOjIsIm5hbWUiOiJBcnRpZmFjdCAtIFJlYWR5IiwicGFsZXR0ZXMiOnsiQ29sb3JzIjpbWzAsWzEsMCwwXV0sWzAuMTUsWzEsMC43MTc2NDcwNTg4MjM1Mjk0LDBdXSxbMC4yOSxbMC45MDE5NjA3ODQzMTM3MjU1LDEsMF1dLFswLjQ0LFswLjI4MjM1Mjk0MTE3NjQ3MDYsMSwwXV0sWzAuNTksWzAsMC44NjY2NjY2NjY2NjY2NjY3LDFdXSxbMC43MyxbMC4wNjY2NjY2NjY2NjY2NjY2NywwLDFdXSxbMC44NixbMC41MTc2NDcwNTg4MjM1Mjk1LDAsMV1dLFswLjk4LFsxLDAsMC43NDkwMTk2MDc4NDMxMzczXV1dLCJPdmVybGF5IjpbWzAsWzAsMCwwXV0sWzEsWzAuNTY4NjI3NDUwOTgwMzkyMSwwLjU2ODYyNzQ1MDk4MDM5MjEsMC41Njg2Mjc0NTA5ODAzOTIxXV1dLCJDaGFzZXIgT3ZlcmxheSI6W1swLFsxLDEsMV1dLFsxLFsxLDEsMV1dXX0sInBhcmFtcyI6eyJDb2xvciI6MC41OSwiVGltZXIiOjF9LCJsYXllcnMiOlt7ImVmZmVjdCI6InNvbGlkIiwib3BhY2l0eSI6eyJ0eXBlIjoic2luIiwiaW5wdXRzIjp7InZhbHVlIjowLjU3LCJtaW4iOjAsIm1heCI6MC44Mn19LCJibGVuZCI6Im5vcm1hbCIsInBhbGV0dGUiOiJDb2xvcnMiLCJpbnB1dHMiOnsib2Zmc2V0IjoiQ29sb3IifX0seyJlZmZlY3QiOiJzcGFya2xlcyIsIm9wYWNpdHkiOjAuNDcsImJsZW5kIjoib3ZlcmxheSIsInBhbGV0dGUiOiJPdmVybGF5IiwiaW5wdXRzIjp7ImRlbnNpdHkiOnsidHlwZSI6InNpbiIsImlucHV0cyI6eyJ2YWx1ZSI6MC4zMywibWluIjowLjE1LCJtYXgiOjAuNjl9fSwib2Zmc2V0Ijp7InR5cGUiOiJzaW4iLCJpbnB1dHMiOnsidmFsdWUiOjAuMzIsIm1pbiI6MCwibWF4IjoxfX19fSx7ImVmZmVjdCI6InNwYXJrbGVzIiwib3BhY2l0eSI6eyJ0eXBlIjoic2luIiwiaW5wdXRzIjp7InZhbHVlIjowLjU1LCJtaW4iOjAsIm1heCI6MC42N319LCJibGVuZCI6Im5vcm1hbC1ub25ibGFjayIsInBhbGV0dGUiOiJPdmVybGF5IiwiaW5wdXRzIjp7ImRlbnNpdHkiOjAuMTksIm9mZnNldCI6eyJ0eXBlIjoic2luIiwiaW5wdXRzIjp7InZhbHVlIjowLjI0LCJtaW4iOjAsIm1heCI6MX19fX0seyJlZmZlY3QiOiJjaGFzZXIiLCJvcGFjaXR5IjoxLCJibGVuZCI6Im11bHRpcGx5IiwicGFsZXR0ZSI6IkNoYXNlciBPdmVybGF5IiwiaW5wdXRzIjp7Im9mZnNldCI6IlRpbWVyIiwic2l6ZSI6MX19XX0"
@@ -20,12 +23,16 @@ MODE_WAITING = 2
 MODE_CONNECTED = 3
 MODE_INVALID = 4
 MODE_WRITING = 5
+MODE_WAITING_TO_WRITE = 6
+MODE_FINISHED = 7
 
 
 class RingLight(object):
     current_mode = MODE_INITIALIZING
 
-    def __init__(self):
+    def __init__(self, audio: Audio | None):
+        if audio:
+            self.rfid_audio = RFIDAudio(audio)
         self.segment = canopy.Segment(0, 0, 16)
         self.params = canopy.Params()
 
@@ -40,13 +47,32 @@ class RingLight(object):
             self.light_pattern = waiting_pattern
         elif self.current_mode == MODE_WRITING:
             self.light_pattern = writing_pattern
+        elif self.current_mode == MODE_WAITING_TO_WRITE:
+            self.light_pattern = writing_pattern
         elif self.current_mode == MODE_OFF:
             self.light_pattern = off_pattern
+        elif self.current_mode == MODE_FINISHED:
+            self.light_pattern = incorrect_pattern
         print("Updated light pattern to: ", self.light_pattern)
 
+    def _update_audio(self):
+        if not self.rfid_audio:
+            return
+        if self.current_mode == MODE_INVALID:
+            self.rfid_audio.play_incorrect()
+        elif self.current_mode == MODE_CONNECTED:
+            self.rfid_audio.play_correct()
+        elif self.current_mode == MODE_WAITING_TO_WRITE:
+            self.rfid_audio.play_ready_to_write()
+        elif self.current_mode == MODE_WRITING:
+            self.rfid_audio.play_writing()
+        elif self.current_mode == MODE_FINISHED:
+            self.rfid_audio.play_disconnect()
+        
     def set_mode(self, mode):
-        self.current_mode = mode
-        self._update_light_pattern()
+        if mode != self.current_mode:
+            self.current_mode = mode
+            self._update_light_pattern()
 
     def draw(self):
         canopy.draw(

@@ -2,8 +2,17 @@ import canopy
 PatternRainbow = "CTP-eyJpZCI6IjAzNWVlN2NjLWZiM2MtNDI0Ni1hOTM1LTdjNGQ3ZDYyMzEyMyIsInZlcnNpb24iOjEsIm5hbWUiOiJOZXcgUGF0dGVybiIsInBhbGV0dGVzIjp7IlBhbGV0dGUxIjpbWzAsWzEsMCwwXV0sWzAuMTksWzAuOTY0NzA1ODgyMzUyOTQxMiwxLDBdXSxbMC4zNixbMC4wNjI3NDUwOTgwMzkyMTU2OSwxLDAuMDUwOTgwMzkyMTU2ODYyNzQ0XV0sWzAuNTEsWzAsMSwwLjg3MDU4ODIzNTI5NDExNzddXSxbMC42NyxbMCwwLjA5MDE5NjA3ODQzMTM3MjU1LDFdXSxbMC44MixbMC40OCwwLjAxLDAuNDJdXSxbMC45OSxbMSwwLDBdXV19LCJwYXJhbXMiOnsicHJvZ3Jlc3MiOjB9LCJsYXllcnMiOlt7ImVmZmVjdCI6ImdyYWRpZW50Iiwib3BhY2l0eSI6InByb2dyZXNzIiwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiUGFsZXR0ZTEiLCJpbnB1dHMiOnsib2Zmc2V0Ijp7InR5cGUiOiJyc2F3IiwiaW5wdXRzIjp7InZhbHVlIjowLjQxLCJtaW4iOjAsIm1heCI6MX19LCJzaXplIjowLjUsInJvdGF0aW9uIjowfX1dfQ"
 GhostHousePattern = "CTP-eyJrZXkiOiJnaG9zdC1ob3VzZS10ZXN0IiwidmVyc2lvbiI6MCwibmFtZSI6Ikdob3N0SG91c2VUZXN0IiwicGFsZXR0ZXMiOnsiUGFsZXR0ZTEiOltbMCxbMC4xNDExNzY0NzA1ODgyMzUzLDAuMzY4NjI3NDUwOTgwMzkyMiwwLjc0MTE3NjQ3MDU4ODIzNTNdXSxbMSxbMC45NjA3ODQzMTM3MjU0OTAyLDAuMDg2Mjc0NTA5ODAzOTIxNTcsMC4wODYyNzQ1MDk4MDM5MjE1N11dXX0sInBhcmFtcyI6e30sImxheWVycyI6W3siZWZmZWN0Ijoic29saWQiLCJvcGFjaXR5IjoxLCJibGVuZCI6Im5vcm1hbCIsInBhbGV0dGUiOiJQYWxldHRlMSIsImlucHV0cyI6eyJvZmZzZXQiOjAuNX19LHsiZWZmZWN0Ijoic3BhcmtsZXMiLCJvcGFjaXR5IjowLjY2LCJibGVuZCI6Im5vcm1hbCIsInBhbGV0dGUiOiJQYWxldHRlMSIsImlucHV0cyI6eyJkZW5zaXR5Ijp7InR5cGUiOiJ0cmlhbmdsZSIsImlucHV0cyI6eyJ2YWx1ZSI6MC40MiwibWluIjowLCJtYXgiOjF9fSwib2Zmc2V0IjowLjV9fV19"
 
-rainbow_pattern = canopy.Pattern(PatternRainbow)
-ghost_house_pattern = canopy.Pattern(GhostHousePattern)
+house_ambient_pattern = canopy.Pattern(GhostHousePattern)
+win_pattern = canopy.Pattern(GhostHousePattern)
+
+hidden_room_pattern = canopy.Pattern(PatternRainbow)
+kitchen_pattern = canopy.Pattern(PatternRainbow)
+study_pattern = canopy.Pattern(PatternRainbow)
+living_room_pattern = canopy.Pattern(PatternRainbow)
+conservatory_pattern = canopy.Pattern(PatternRainbow)
+bathroom_pattern = canopy.Pattern(PatternRainbow)
+bedroom_pattern = canopy.Pattern(PatternRainbow)
+attic_pattern = canopy.Pattern(PatternRainbow)
 
 HIDDEN_ROOM = "hidden_room"
 KITCHEN = "kitchen"
@@ -50,7 +59,7 @@ class BaseRoomState(object):
 
     def _update_lighting(self):
         if self.state is WIN_STATE:
-            self.light_pattern = rainbow_pattern
+            self.light_pattern = win_pattern
 
     def draw(self):
         if self.light_pattern:
@@ -63,11 +72,11 @@ class HiddenRoomState(BaseRoomState):
 
     def _update_lighting(self):
         super()._update_lighting()
-        if not self.state is WIN_STATE:
+        if self.state is not WIN_STATE:
             if self.state:
-                self.light_pattern = rainbow_pattern
+                self.light_pattern = hidden_room_pattern
             else:
-                self.light_pattern = ghost_house_pattern
+                self.light_pattern = None
 
 
 class KitchenState(BaseRoomState):
@@ -76,11 +85,11 @@ class KitchenState(BaseRoomState):
 
     def _update_lighting(self):
         super()._update_lighting()
-        if not self.state is WIN_STATE:
+        if self.state is not WIN_STATE:
             if self.state:
-                self.light_pattern = rainbow_pattern
+                self.light_pattern = kitchen_pattern
             else:
-                self.light_pattern = ghost_house_pattern
+                self.light_pattern = house_ambient_pattern
 
 
 class StudyState(BaseRoomState):
@@ -89,11 +98,11 @@ class StudyState(BaseRoomState):
 
     def _update_lighting(self):
         super()._update_lighting()
-        if not self.state is WIN_STATE:
+        if self.state is not WIN_STATE:
             if self.state:
-                self.light_pattern = rainbow_pattern
+                self.light_pattern = study_pattern
             else:
-                self.light_pattern = ghost_house_pattern
+                self.light_pattern = house_ambient_pattern
 
 
 class LivingRoomState(BaseRoomState):
@@ -102,11 +111,11 @@ class LivingRoomState(BaseRoomState):
 
     def _update_lighting(self):
         super()._update_lighting()
-        if not self.state is WIN_STATE:
+        if self.state is not WIN_STATE:
             if self.state:
-                self.light_pattern = rainbow_pattern
+                self.light_pattern = living_room_pattern
             else:
-                self.light_pattern = ghost_house_pattern
+                self.light_pattern = house_ambient_pattern
 
 
 class ConservatoryState(BaseRoomState):
@@ -119,9 +128,9 @@ class ConservatoryState(BaseRoomState):
         super()._update_lighting()
         if not self.state is WIN_STATE:
             if self.state:
-                self.light_pattern = rainbow_pattern
+                self.light_pattern = conservatory_pattern
             else:
-                self.light_pattern = ghost_house_pattern
+                self.light_pattern = house_ambient_pattern
 
 
 class BathroomState(BaseRoomState):
@@ -130,11 +139,11 @@ class BathroomState(BaseRoomState):
 
     def _update_lighting(self):
         super()._update_lighting()
-        if not self.state is WIN_STATE:
+        if self.state is not WIN_STATE:
             if self.state:
-                self.light_pattern = rainbow_pattern
+                self.light_pattern = bathroom_pattern
             else:
-                self.light_pattern = ghost_house_pattern
+                self.light_pattern = house_ambient_pattern
 
 
 class BedroomState(BaseRoomState):
@@ -143,11 +152,11 @@ class BedroomState(BaseRoomState):
 
     def _update_lighting(self):
         super()._update_lighting()
-        if not self.state is WIN_STATE:
+        if self.state is not WIN_STATE:
             if self.state:
-                self.light_pattern = rainbow_pattern
+                self.light_pattern = bedroom_pattern
             else:
-                self.light_pattern = ghost_house_pattern
+                self.light_pattern = house_ambient_pattern
 
 
 class AtticState(BaseRoomState):
@@ -156,8 +165,8 @@ class AtticState(BaseRoomState):
 
     def _update_lighting(self):
         super()._update_lighting()
-        if not self.state is WIN_STATE:
+        if self.state is not WIN_STATE:
             if self.state:
-                self.light_pattern = rainbow_pattern
+                self.light_pattern = attic_pattern
             else:
-                self.light_pattern = ghost_house_pattern
+                self.light_pattern = house_ambient_pattern

@@ -11,7 +11,7 @@ from rat_wifi import Wifi
 from rat_magnet import Magnet
 from rat_relay import Relay
 
-from rat_audio import Audio
+from rat_audio import RatAudio
 
 
 PatternInitializing = "CTP-eyJpZCI6ImRkMWVjY2MwLTE3ODYtNDhhYS05ZWE3LWNmMzAwODIwMTFhNCIsInZlcnNpb24iOjMsIm5hbWUiOiJXSWZpIERpc2Nvbm5lY3RlZCIsInBhbGV0dGVzIjp7IlBhbGV0dGUxIjpbWzAsWzEsMCwwXV0sWzAuOTksWzAsMCwwXV1dfSwicGFyYW1zIjp7IkNvbG9yIjoxfSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJjaGFzZXIiLCJvcGFjaXR5IjoxLCJibGVuZCI6Im5vcm1hbCIsInBhbGV0dGUiOiJQYWxldHRlMSIsImlucHV0cyI6eyJvZmZzZXQiOnsidHlwZSI6InNpbiIsImlucHV0cyI6eyJ2YWx1ZSI6MC40OCwibWluIjowLCJtYXgiOjF9fSwic2l6ZSI6MC4zMX19XX0"
@@ -73,7 +73,7 @@ class Artifact(object):
         second_pattern_start_address=0,
         second_pattern_num_pixels=16,
     ):
-        self.audio = Audio(name)
+        self.audio = RatAudio(name)
         self.name = name
         self.magnet_pin = magnet_pin
         self.relay_pin = relay_pin

@@ -1,5 +1,4 @@
 import asyncio
-import json
 import canopy
 import fern
 import time
@@ -8,17 +7,15 @@ from machine import Pin
 
 from fps import FPS
 from nfc import NfcWrapper
-from rat_mqtt import Mqtt
-from rat_wifi import Wifi
 from rat_relay import Relay
 from ghost_magnet import Magnet
-from rat_audio import Audio
+from audio import Audio
+from ghost_dollhouse_audio import DollhouseAudio
 import ring_light
 import ghost_dollhouse_room as DollhouseRooms
 from ghost_tag_data import (
     is_valid_tag_data_string,
     TagData,
-    DOLLHOUSE,
 )
 
 
@@ -63,6 +60,9 @@ MATRIX_CHANGES = [
 
 
 class GhostDollhouse(object):
+    magnet_pin = 1
+    relay_pin = 2
+
     current_tag = None
     current_mode = MODE_INITIALIZING
     magnet = None
@@ -71,16 +71,9 @@ class GhostDollhouse(object):
 
     room_states_map = {}
 
-    def __init__(
-        self,
-        name=DOLLHOUSE,
-        magnet_pin=1,
-        relay_pin=2,
-    ):
-        self.audio = Audio(name)
-        self.name = name
-        self.magnet_pin = magnet_pin
-        self.relay_pin = relay_pin
+    def __init__(self):
+        self.audio = Audio()
+        self.dollhouse_audio = DollhouseAudio(self.audio)
         self.nfc = NfcWrapper(self._tag_found, self._tag_lost)
         self.relay = Relay(pin=self.relay_pin)
         self.magnet = Magnet(pin=self.magnet_pin)
@@ -125,13 +118,12 @@ class GhostDollhouse(object):
     async def start(self):
         await self.nfc.start()
         self.audio.start()
-        self.audio.play_ambient()
 
         print("Starting canopy")
         canopy.init([fern.LED1_DATA, fern.LED2_DATA], 300)
         asyncio.create_task(self._render_loop())
 
-        self.ring_light = ring_light.RingLight()
+        self.ring_light = ring_light.RingLight(self.audio)
         self.room_states = {}
         self.room_states[DollhouseRooms.HIDDEN_ROOM] = DollhouseRooms.HiddenRoomState()
         self.room_states[DollhouseRooms.KITCHEN] = DollhouseRooms.KitchenState()
@@ -151,6 +143,16 @@ class GhostDollhouse(object):
         matrix = MATRIX_CHANGES[button]
         self.state = [old_state[i] and matrix[i] for i in range(0, 5)]
         self.state[button] = 1
+        if button == BUTTON_STUDY:
+            self.dollhouse_audio.play_study()
+        elif button == BUTTON_CONSERVATORY:
+            self.dollhouse_audio.play_conservatory()
+        elif button == BUTTON_FIREPLACE:
+            self.dollhouse_audio.play_fireplace()
+        elif button == BUTTON_BEDROOM:
+            self.dollhouse_audio.play_bedroom()
+        elif button == BUTTON_ATTIC:
+            self.dollhouse_audio.play_attic()
         print("New State: ", self.state)
         has_turned_off = False
         all_lights_on = True
@@ -164,7 +166,7 @@ class GhostDollhouse(object):
                 print(f"Turned on index {i}")
         if has_turned_off:
             print("Turned off some lights!")
-            # Play sounds?
+            self.dollhouse_audio.play_turn_off()
         if all_lights_on:
             self._update_state(EVENT_WIN_GAME)
 
@@ -197,7 +199,7 @@ class GhostDollhouse(object):
             print("Cannot write NFC without a tag")
 
     def _can_connect_tag(self):
-        return self.current_mode == MODE_GAME_WON
+        return self.current_mode == MODE_GAME_WON and self.current_tag and not self.current_tag_data.dollhouse
 
     def _update_house_lights(self):
         if self.current_mode == MODE_GAME_WON:
@@ -243,6 +245,7 @@ class GhostDollhouse(object):
             self.current_mode = MODE_GAME_PLAYING
             self.ring_light.set_mode(ring_light.MODE_OFF)
             self.magnet.close()
+            self.dollhouse_audio.play_ambient()
         elif event == EVENT_CARD_FOUND:
             if self._can_connect_tag():
                 self.audio.play_correct()
@@ -260,8 +263,7 @@ class GhostDollhouse(object):
                 self.magnet.close()
         elif event == EVENT_WRITE_NFC:
             if (
-                self.current_tag
-                and self.ring_light.current_mode is not ring_light.MODE_WRITING
+                self.current_tag and self.ring_light.current_mode is not ring_light.MODE_WRITING
             ):
                 self.previous_mode = self.current_mode
                 self.ring_light.set_mode(ring_light.MODE_WRITING)
@@ -270,14 +272,18 @@ class GhostDollhouse(object):
                 print("Cannot write NFC mode")
         elif event == EVENT_DONE_WRITING:
             if self.current_mode == MODE_GAME_WON:
-                self.ring_light.set_mode(ring_light.MODE_WAITING)
+                if self.current_tag:
+                    self.ring_light.set_mode(ring_light.MODE_FINISHED)
+                else:
+                    self.ring_light.set_mode(ring_light.MODE_WAITING_TO_WRITE)
             else:
                 self.ring_light.set_mode(ring_light.MODE_OFF)
         elif event == EVENT_WIN_GAME:
             self.current_mode = MODE_GAME_WON
-            self.ring_light.set_mode(ring_light.MODE_WAITING)
+            self.ring_light.set_mode(ring_light.MODE_WAITING_TO_WRITE)
             self.win_time = time.time()
             self.magnet.open()
+            self.dollhouse_audio.play_win_game()
         elif event == EVENT_RESET_GAME:
             self.current_mode = MODE_GAME_PLAYING
             self.ring_light.set_mode(ring_light.MODE_OFF)
