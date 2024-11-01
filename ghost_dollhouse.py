@@ -2,8 +2,7 @@ import asyncio
 import canopy
 import fern
 import time
-from debounced_input import DebouncedInput
-from machine import Pin
+from button import Button
 
 from fps import FPS
 from nfc import NfcWrapper
@@ -29,33 +28,36 @@ EVENT_WRITE_RFID_COMMAND = "writeRfid"
 
 EVENT_WIN_GAME = "winGame"
 EVENT_RESET_GAME = "resetGame"
+EVENT_BUTTON_PRESSED = "buttonPressed"
 
-BUTTON_STUDY = 0
+BUTTON_RESET = -1
+BUTTON_BEDROOM = 0
 BUTTON_CONSERVATORY = 1
-BUTTON_FIREPLACE = 2
-BUTTON_BEDROOM = 3
+BUTTON_STUDY = 2
+BUTTON_FIREPLACE = 3
 BUTTON_ATTIC = 4
 
 MODE_INITIALIZING = -1
 MODE_GAME_PLAYING = 0
 MODE_GAME_WON = 1
 
-WIN_TIME_LENGTH_S = 20
+WIN_TIME_LENGTH_S = 60
+MAGNET_RESET_TIME_S = 5
 
 WINNING_ORDER = [
-    BUTTON_FIREPLACE,
     BUTTON_BEDROOM,
-    BUTTON_ATTIC,
-    BUTTON_STUDY,
     BUTTON_CONSERVATORY,
+    BUTTON_STUDY,
+    BUTTON_FIREPLACE,
+    BUTTON_ATTIC,
 ]
 
 MATRIX_CHANGES = [
-    [1, 0, 1, 1, 1],
+    [1, 0, 0, 0, 0],
+    [1, 1, 0, 0, 0],
+    [1, 1, 1, 0, 0],
+    [1, 1, 1, 1, 0],
     [1, 1, 1, 1, 1],
-    [0, 0, 1, 0, 0],
-    [0, 0, 1, 1, 0],
-    [0, 0, 1, 1, 1],
 ]
 
 
@@ -68,6 +70,7 @@ class GhostDollhouse(object):
     magnet = None
     state = [False, False, False, False, False]
     win_time = 0
+    magnet_open_time = 0
 
     room_states_map = {}
 
@@ -78,41 +81,22 @@ class GhostDollhouse(object):
         self.relay = Relay(pin=self.relay_pin)
         self.magnet = Magnet(pin=self.magnet_pin)
 
-        def get_button_callback(button):
-            return lambda: self.button_callback(button)
+        def get_button_callback(button_num):
+            print("Button callback for ", button_num)
+            
+            def button(btn):
+                print("Button inner callback for ", button_num)
+                if btn.pressed():
+                    self.button_callback(button_num)
+            return button
 
         self.buttons = [
-            DebouncedInput(
-                fern.D8, get_button_callback(BUTTON_STUDY), Pin.PULL_UP, False, 50
-            ),
-            DebouncedInput(
-                fern.D7,
-                get_button_callback(BUTTON_CONSERVATORY),
-                Pin.PULL_UP,
-                False,
-                50,
-            ),
-            DebouncedInput(
-                fern.D6,
-                get_button_callback(BUTTON_FIREPLACE),
-                Pin.PULL_UP,
-                False,
-                50,
-            ),
-            DebouncedInput(
-                fern.D5,
-                get_button_callback(BUTTON_BEDROOM),
-                Pin.PULL_UP,
-                False,
-                50,
-            ),
-            DebouncedInput(
-                fern.D4,
-                get_button_callback(BUTTON_ATTIC),
-                Pin.PULL_UP,
-                False,
-                50,
-            ),
+            Button(fern.D3, get_button_callback(BUTTON_RESET)),
+            Button(fern.D4, get_button_callback(BUTTON_STUDY)),
+            Button(fern.D5, get_button_callback(BUTTON_CONSERVATORY)),
+            Button(fern.D6, get_button_callback(BUTTON_FIREPLACE)),
+            Button(fern.D7, get_button_callback(BUTTON_BEDROOM)),
+            Button(fern.D8, get_button_callback(BUTTON_ATTIC)),
         ]
 
     async def start(self):
@@ -139,6 +123,13 @@ class GhostDollhouse(object):
     def button_callback(self, button):
         print("Button Pressed: ", button)
 
+        if button == BUTTON_RESET:
+            self.magnet.open()
+            self.magnet_open_time = time.time() + MAGNET_RESET_TIME_S
+            self._update_state(EVENT_BUTTON_PRESSED)
+            print("Temp Opening Door", self.magnet_open_time)
+            return
+
         old_state = self.state
         matrix = MATRIX_CHANGES[button]
         self.state = [old_state[i] and matrix[i] for i in range(0, 5)]
@@ -153,6 +144,7 @@ class GhostDollhouse(object):
             self.dollhouse_audio.play_bedroom()
         elif button == BUTTON_ATTIC:
             self.dollhouse_audio.play_attic()
+
         print("New State: ", self.state)
         has_turned_off = False
         all_lights_on = True
@@ -169,6 +161,8 @@ class GhostDollhouse(object):
             self.dollhouse_audio.play_turn_off()
         if all_lights_on:
             self._update_state(EVENT_WIN_GAME)
+        else:
+            self._update_state(EVENT_BUTTON_PRESSED)
 
     async def _tag_found(self, uid):
         self.current_tag = uid
@@ -199,7 +193,7 @@ class GhostDollhouse(object):
             print("Cannot write NFC without a tag")
 
     def _can_connect_tag(self):
-        return self.current_mode == MODE_GAME_WON and self.current_tag and not self.current_tag_data.dollhouse
+        return self.current_mode == MODE_GAME_WON  # and self.current_tag and not self.current_tag_data.dollhouse
 
     def _update_house_lights(self):
         if self.current_mode == MODE_GAME_WON:
@@ -246,31 +240,30 @@ class GhostDollhouse(object):
             self.ring_light.set_mode(ring_light.MODE_OFF)
             self.magnet.close()
             self.dollhouse_audio.play_ambient()
-        elif event == EVENT_CARD_FOUND:
+        if event == EVENT_CARD_FOUND:
             if self._can_connect_tag():
-                self.audio.play_correct()
+                print("Tag connected and game won")
                 self.ring_light.set_mode(ring_light.MODE_CONNECTED)
+                event = EVENT_WRITE_NFC
             else:
-                self.audio.play_incorrect()
+                print("Tag connected but game not won")
                 self.magnet.open()
                 self.ring_light.set_mode(ring_light.MODE_INVALID)
-        elif event == EVENT_CARD_REMOVED:
-            self.audio.play_disconnect()
+        if event == EVENT_CARD_REMOVED:
             if self.current_mode is MODE_GAME_WON:
                 self.ring_light.set_mode(ring_light.MODE_WAITING)
             else:
                 self.ring_light.set_mode(ring_light.MODE_OFF)
                 self.magnet.close()
-        elif event == EVENT_WRITE_NFC:
+        if event == EVENT_WRITE_NFC:
             if (
                 self.current_tag and self.ring_light.current_mode is not ring_light.MODE_WRITING
             ):
-                self.previous_mode = self.current_mode
                 self.ring_light.set_mode(ring_light.MODE_WRITING)
                 asyncio.create_task(self._write_nfc())
             else:
                 print("Cannot write NFC mode")
-        elif event == EVENT_DONE_WRITING:
+        if event == EVENT_DONE_WRITING:
             if self.current_mode == MODE_GAME_WON:
                 if self.current_tag:
                     self.ring_light.set_mode(ring_light.MODE_FINISHED)
@@ -278,15 +271,16 @@ class GhostDollhouse(object):
                     self.ring_light.set_mode(ring_light.MODE_WAITING_TO_WRITE)
             else:
                 self.ring_light.set_mode(ring_light.MODE_OFF)
-        elif event == EVENT_WIN_GAME:
+        if event == EVENT_WIN_GAME:
             self.current_mode = MODE_GAME_WON
             self.ring_light.set_mode(ring_light.MODE_WAITING_TO_WRITE)
             self.win_time = time.time()
             self.magnet.open()
             self.dollhouse_audio.play_win_game()
-        elif event == EVENT_RESET_GAME:
+        if event == EVENT_RESET_GAME:
             self.current_mode = MODE_GAME_PLAYING
             self.ring_light.set_mode(ring_light.MODE_OFF)
+            self.state = [False, False, False, False, False]
             self.magnet.close()
 
         print("updated mode: ", self.current_mode)
@@ -294,19 +288,24 @@ class GhostDollhouse(object):
 
         self._update_house_lights()
 
-        if self.current_mode == MODE_GAME_WON:
-            self.relay.on()
-        else:
-            self.relay.off()
+        # if self.current_mode == MODE_GAME_WON :
+        #     self.relay.on()
+        # else:
+        #     self.relay.off()
 
     async def _render_loop(self):
-        if self.current_mode == MODE_GAME_WON and (
-            time.time() - self.win_time > WIN_TIME_LENGTH_S
-        ):
-            self._update_state(EVENT_RESET_GAME)
         f = FPS(verbose=True)
         while True:
             try:
+                if self.current_mode == MODE_GAME_WON and (
+                    time.time() - self.win_time > WIN_TIME_LENGTH_S
+                ):
+                    self._update_state(EVENT_RESET_GAME)
+                    self.win_time = -1
+                if self.magnet_open_time > 0 and time.time() > self.magnet_open_time:
+                    print("Resetting Magnet")
+                    self.magnet.close()
+                    self.magnet_open_time = -1
                 f.tick()
                 canopy.clear()
                 self.ring_light.draw()

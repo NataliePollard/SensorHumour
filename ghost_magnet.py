@@ -9,9 +9,11 @@ class Magnet(object):
         self.close()
 
     def open(self):
+        print("Opening magnet")
         self.is_open = True
-        self.magnet_pin.off()
+        self.magnet_pin.on()
 
     def close(self):
+        print("Closing magnet")
         self.is_open = False
-        self.magnet_pin.on()
+        self.magnet_pin.off()

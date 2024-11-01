@@ -2,7 +2,6 @@ import asyncio
 import json
 import canopy
 import fern
-import time
 
 from fps import FPS
 from nfc import NfcWrapper
@@ -14,13 +13,6 @@ import ring_light
 from ghost_tag_data import (
     is_valid_tag_data_string,
     TagData,
-    PRINTER,
-    AUDIO,
-    DOLLHOUSE,
-    OTHER1,
-    OTHER2,
-    OTHER3,
-    SCALE,
 )
 
 

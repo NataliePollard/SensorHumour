@@ -1,7 +1,6 @@
 import asyncio
 import canopy
 import fern
-import time
 
 from fps import FPS
 
@@ -36,59 +35,55 @@ COLOR_PURPLE = 0.88
 COLOR_PINK = 1
 
 
-
 class BlueCheese(object):
     light_pattern = blue_cheese_pattern
 
-    def __init__(
-        self,
-        name,
-    ):
-        self.name = name
+    # def __init__(
+    #     self
+    # ):
 
     async def start(self):
         print("Starting canopy")
-        canopy.init([fern.LED1_DATA, fern.LED2_DATA], 120)
+        canopy.init([fern.LED1_DATA, fern.LED2_DATA], 450)
         asyncio.create_task(self._render_loop())
         self.light_pattern = ghost_house_pattern
 
     async def _render_loop(self):
-        segment1 = canopy.Segment(0, 0, 49)
-        segment2 = canopy.Segment(0, 50, 51)
-        segment3 = canopy.Segment(0, 51, 52)
-        segment4 = canopy.Segment(0, 52, 53)
-        segment5 = canopy.Segment(0, 53, 54)
+        segment1 = canopy.Segment(0, 0, 50)
+        segment2 = canopy.Segment(0, 50, 100)
+        segment3 = canopy.Segment(0, 100, 150)
+        segment4 = canopy.Segment(0, 150, 200)
+        segment5 = canopy.Segment(0, 200, 250)
         f = FPS(verbose=True)
         params1 = canopy.Params()
         # params1["Color"] = float(COLOR_RED)
         params2 = canopy.Params()
-        params2["Color"] = float(COLOR_BLUE)
+        # params2["Color"] = float(COLOR_BLUE)
         params3 = canopy.Params()
-        params3["Color"] = float(COLOR_RED)
+        # params3["Color"] = float(COLOR_RED)
         params4 = canopy.Params()
-        params4["Color"] = float(COLOR_YELLOW)
+        # params4["Color"] = float(COLOR_YELLOW)
         params5 = canopy.Params()
-        params5["Color"] = float(COLOR_PINK)
+        # params5["Color"] = float(COLOR_PINK)
         while True:
             try:
-                now = time.time()
                 f.tick()
                 # params["Color"] = float(0.70)
                 canopy.clear()
                 canopy.draw(
-                    segment1, ghost_house_pattern, alpha=float(0.1), params=params1
+                    segment1, ghost_house_pattern, alpha=float(0.3), params=params1
                 )
                 canopy.draw(
-                    segment2, artifact_connected_pattern, alpha=float(1.0), params=params2
+                    segment2, ghost_house_pattern, alpha=float(0.3), params=params2
                 )
                 canopy.draw(
-                    segment3, artifact_connected_pattern, alpha=float(1.0), params=params3
+                    segment3, ghost_house_pattern, alpha=float(0.3), params=params3
                 )
                 canopy.draw(
-                    segment4, artifact_connected_pattern, alpha=float(1.0), params=params4
+                    segment4, ghost_house_pattern, alpha=float(0.3), params=params4
                 )
                 canopy.draw(
-                    segment5, artifact_connected_pattern, alpha=float(1.0), params=params5
+                    segment5, ghost_house_pattern, alpha=float(0.3), params=params5
                 )
 
                 canopy.render()

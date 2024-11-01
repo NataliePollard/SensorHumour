@@ -15,7 +15,7 @@ connected_pattern = canopy.Pattern(ArtifactConnectedPattern)
 off_pattern = canopy.Pattern(ArtifactOffPattern)
 incorrect_pattern = canopy.Pattern(ArtifactIncorrectPattern)
 waiting_pattern = canopy.Pattern(ArtifactWaitingPattern)
-writing_pattern = canopy.Pattern(PatternRainbow)
+writing_pattern = canopy.Pattern(PatternInitializing)
 
 MODE_INITIALIZING = 0
 MODE_OFF = 1
@@ -48,7 +48,7 @@ class RingLight(object):
         elif self.current_mode == MODE_WRITING:
             self.light_pattern = writing_pattern
         elif self.current_mode == MODE_WAITING_TO_WRITE:
-            self.light_pattern = writing_pattern
+            self.light_pattern = waiting_pattern
         elif self.current_mode == MODE_OFF:
             self.light_pattern = off_pattern
         elif self.current_mode == MODE_FINISHED:
@@ -57,22 +57,26 @@ class RingLight(object):
 
     def _update_audio(self):
         if not self.rfid_audio:
+            print("No audio to update")
             return
         if self.current_mode == MODE_INVALID:
             self.rfid_audio.play_incorrect()
         elif self.current_mode == MODE_CONNECTED:
             self.rfid_audio.play_correct()
-        elif self.current_mode == MODE_WAITING_TO_WRITE:
+        elif self.current_mode == MODE_WAITING_TO_WRITE or self.current_mode == MODE_WAITING:
             self.rfid_audio.play_ready_to_write()
         elif self.current_mode == MODE_WRITING:
             self.rfid_audio.play_writing()
         elif self.current_mode == MODE_FINISHED:
+            self.rfid_audio.play_disconnect()
+        elif self.current_mode == MODE_OFF:
             self.rfid_audio.play_disconnect()
         
     def set_mode(self, mode):
         if mode != self.current_mode:
             self.current_mode = mode
             self._update_light_pattern()
+            self._update_audio()
 
     def draw(self):
         canopy.draw(

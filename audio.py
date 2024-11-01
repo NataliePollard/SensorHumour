@@ -1,4 +1,4 @@
-from machine import Pin, SPI, I2C, I2S
+from machine import Pin, I2C, I2S
 import asyncio
 import fern
 import codec
@@ -9,7 +9,7 @@ import mixer
 class Audio(object):
     mixer = None
 
-    def __init__(self, artifact_name):
+    def __init__(self):
         print("Initing codec")
         i2c = I2C(0, scl=fern.I2C_SCL, sda=fern.I2C_SDA, freq=100000)
         codec.init(i2c)

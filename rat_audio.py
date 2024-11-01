@@ -1,12 +1,3 @@
-import os
-from machine import Pin, SPI, I2C, I2S
-import asyncio
-import fern
-import codec
-import time
-import mixer
-import random
-
 from audio import Audio
 
 TEST_WAV = "yoshiisland16khz.wav"
@@ -30,6 +21,7 @@ CORRECT_WAV = "Artifact-Connected.wav"
 INCORRECT_WAV = "Artifact-Incorrect.wav"
 PENDING_WAV = "Artifact-Pending.wav"
 DISCONNECT_WAV = "Artifact-Disconnect.wav"
+
 
 class RatAudio(Audio):
     current_file = None

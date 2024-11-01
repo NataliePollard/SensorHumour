@@ -1,15 +1,15 @@
 from audio import Audio
 
-FIREPLACE_WAV = "Artifact-Ambient-1.wav"
-BEDROOM_WAV = "Artifact-Ambient-1.wav"
-ATTIC_WAV = "Artifact-Ambient-1.wav"
-STUDY_WAV = "Artifact-Ambient-1.wav"
-CONSERVATORY_WAV = "Artifact-Ambient-1.wav"
+FIREPLACE_WAV = "Artifact-Pending.wav"
+BEDROOM_WAV = "Artifact-Pending.wav"
+ATTIC_WAV = "Artifact-Pending.wav"
+STUDY_WAV = "Artifact-Pending.wav"
+CONSERVATORY_WAV = "Artifact-Pending.wav"
 
 AMBIENT_WAV = "Artifact-Ambient-1.wav"
 TURN_OFF_WAV = "Artifact-Disconnect.wav"
 
-WIN_GAME_WAV = "Artifact-Correct.wav"
+WIN_GAME_WAV = "Artifact-Connected.wav"
 
 
 class DollhouseAudio(object):
@@ -27,7 +27,7 @@ class DollhouseAudio(object):
         self.attic_voice = self.audio.import_wav(ATTIC_WAV)
         self.study_voice = self.audio.import_wav(STUDY_WAV)
         self.conservatory_voice = self.audio.import_wav(CONSERVATORY_WAV)
-        
+
         self.turn_off_voice = self.audio.import_wav(TURN_OFF_WAV)
         self.win_game_voice = self.audio.import_wav(WIN_GAME_WAV)
 

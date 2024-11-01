@@ -23,7 +23,7 @@ class RFIDAudio(object):
     incorrect_voice = None
     ready_to_write_voice = None
 
-    def init(self, audio: Audio):
+    def __init__(self, audio: Audio):
         self.audio = audio
 
         self.correct_voice = self.audio.import_wav(CORRECT_WAV)

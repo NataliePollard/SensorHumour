@@ -14,9 +14,7 @@ class Button(object):
         self.callback = callback
 
         self.pin = Pin(self.button_pin, Pin.IN, Pin.PULL_UP)
-        add_event_detection(self.button_pin, callback=self.__on_press)
-        if button_light_pin > 0:
-            GPIO.setup(self.button_light_pin, GPIO.OUT)
+        self.pin.irq(trigger=Pin.IRQ_FALLING, handler=self.__on_press, hard=True)
 
     def __on_press(self, value):
         now = time.time()
