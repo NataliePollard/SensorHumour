@@ -2,6 +2,8 @@ import asyncio
 
 # from ghost_writer import GhostMachine
 # from ghost_dollhouse import GhostDollhouse
+from ghost_listening import GhostListeningMachine
+from ghost_printer import GhostPrinter
 # from ghost_tag_data import PRINTER, AUDIO, DOLLHOUSE, OTHER1, OTHER2, OTHER3, SCALE
 from rat_bluecheese import BlueCheese
 
@@ -18,7 +20,9 @@ async def main():
     # if MACHINE == DOLLHOUSE:
         # artifact = GhostDollhouse()
     # artifact = GhostMachine(name=MACHINE)
-    artifact = BlueCheese()
+    # artifact = GhostListeningMachine()
+    artifact = GhostPrinter()
+    # artifact = BlueCheese()
     await artifact.start()
     asyncio.get_event_loop().run_forever()
 

@@ -16,12 +16,12 @@ class GhostPrinter(ghost_machine_base.GhostMachine):
 
     async def start(self):
         await super().start()
-        self.light_patterns = [ 
-            ghost_light_fixtures.ScannerFiberOpticFixture(start=0, end=16),
-            ghost_light_fixtures.ScannerCanopyFixture(start=0, end=16),
-            ghost_light_fixtures.PrinterBackWallFixture(start=0, end=16),
-            ghost_light_fixtures.InnerTubeLightFixture(start=0, end=16),
-            ghost_light_fixtures.OuterTubeLightFixture(start=0, end=16),
+        self.light_patterns = [
+            ghost_light_fixtures.ScannerFiberOpticFixture(start=38, count=4, port=1),
+            ghost_light_fixtures.ScannerCanopyFixture(start=43, count=7, port=1),
+            ghost_light_fixtures.PrinterBackWallFixture(start=9, count=25, port=1),
+            # ghost_light_fixtures.InnerTubeLightFixture(start=50, count=100, port=1),
+            # ghost_light_fixtures.OuterTubeLightFixture(start=152, count=200, port=1),
         ]
 
     def _on_state_change(self, event):
@@ -43,7 +43,7 @@ class GhostPrinter(ghost_machine_base.GhostMachine):
                 light_pattern.scanning()
 
     def _draw_light_patterns(self):
-        super._draw_light_patterns()
+        super()._draw_light_patterns()
 
         if self.next_event_time > 0 and self.time < self.next_event_time:
             self.next_event_time = -1

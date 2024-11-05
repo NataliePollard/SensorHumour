@@ -35,6 +35,7 @@ class RingLight(object):
             self.rfid_audio = RFIDAudio(audio)
         self.segment = canopy.Segment(0, 0, 16)
         self.params = canopy.Params()
+        self._update_light_pattern()
 
     def _update_light_pattern(self):
         if self.current_mode == MODE_INITIALIZING:
@@ -79,9 +80,10 @@ class RingLight(object):
             self._update_audio()
 
     def draw(self):
-        canopy.draw(
-            self.segment,
-            self.light_pattern,
-            alpha=float(0.8),
-            params=self.params,
-        )
+        if self.light_pattern:
+            canopy.draw(
+                self.segment,
+                self.light_pattern,
+                alpha=float(0.8),
+                params=self.params,
+            )
