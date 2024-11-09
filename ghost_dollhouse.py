@@ -268,12 +268,12 @@ class GhostDollhouse(object):
                 if self.current_tag:
                     self.ring_light.set_mode(ring_light.MODE_FINISHED)
                 else:
-                    self.ring_light.set_mode(ring_light.MODE_WAITING_TO_WRITE)
+                    self.ring_light.set_mode(ring_light.MODE_RUNNING)
             else:
                 self.ring_light.set_mode(ring_light.MODE_OFF)
         if event == EVENT_WIN_GAME:
             self.current_mode = MODE_GAME_WON
-            self.ring_light.set_mode(ring_light.MODE_WAITING_TO_WRITE)
+            self.ring_light.set_mode(ring_light.MODE_RUNNING)
             self.win_time = time.time()
             self.magnet.open()
             self.dollhouse_audio.play_win_game()

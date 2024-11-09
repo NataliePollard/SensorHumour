@@ -12,10 +12,10 @@ ArtifactOffPattern = "CTP-eyJpZCI6Ijk2NTRmMDA4LWNlMjUtNDAwNS04MWE0LTc0NzY5MjJlOW
 
 initializing_pattern = canopy.Pattern(PatternInitializing)
 connected_pattern = canopy.Pattern(ArtifactConnectedPattern)
-off_pattern = canopy.Pattern(ArtifactOffPattern)
+off_pattern = canopy.Pattern(ArtifactWaitingPattern)
 incorrect_pattern = canopy.Pattern(ArtifactIncorrectPattern)
 waiting_pattern = canopy.Pattern(ArtifactWaitingPattern)
-writing_pattern = canopy.Pattern(PatternInitializing)
+writing_pattern = canopy.Pattern(ArtifactConnectedPattern)
 
 MODE_INITIALIZING = 0
 MODE_OFF = 1
@@ -23,7 +23,7 @@ MODE_WAITING = 2
 MODE_CONNECTED = 3
 MODE_INVALID = 4
 MODE_WRITING = 5
-MODE_WAITING_TO_WRITE = 6
+MODE_RUNNING = 6
 MODE_FINISHED = 7
 
 
@@ -44,14 +44,19 @@ class RingLight(object):
             self.light_pattern = incorrect_pattern
         elif self.current_mode == MODE_CONNECTED:
             self.light_pattern = connected_pattern
+            self.params["Color"] = float(0.3)
         elif self.current_mode == MODE_WAITING:
             self.light_pattern = waiting_pattern
+            self.params["Color"] = float(0.1)
         elif self.current_mode == MODE_WRITING:
             self.light_pattern = writing_pattern
-        elif self.current_mode == MODE_WAITING_TO_WRITE:
+            self.params["Color"] = float(0.5)
+        elif self.current_mode == MODE_RUNNING:
             self.light_pattern = waiting_pattern
+            self.params["Color"] = float(0.7)
         elif self.current_mode == MODE_OFF:
             self.light_pattern = off_pattern
+            self.params["Color"] = float(0.1)
         elif self.current_mode == MODE_FINISHED:
             self.light_pattern = incorrect_pattern
         print("Updated light pattern to: ", self.light_pattern)
@@ -64,7 +69,7 @@ class RingLight(object):
             self.rfid_audio.play_incorrect()
         elif self.current_mode == MODE_CONNECTED:
             self.rfid_audio.play_correct()
-        elif self.current_mode == MODE_WAITING_TO_WRITE or self.current_mode == MODE_WAITING:
+        elif self.current_mode == MODE_RUNNING or self.current_mode == MODE_WAITING:
             self.rfid_audio.play_ready_to_write()
         elif self.current_mode == MODE_WRITING:
             self.rfid_audio.play_writing()
@@ -72,7 +77,7 @@ class RingLight(object):
             self.rfid_audio.play_disconnect()
         elif self.current_mode == MODE_OFF:
             self.rfid_audio.play_disconnect()
-        
+
     def set_mode(self, mode):
         if mode != self.current_mode:
             self.current_mode = mode

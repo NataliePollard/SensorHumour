@@ -2,8 +2,9 @@ import asyncio
 import json
 import canopy
 import fern
+import time
 
-from fps import FPS
+# from fps import FPS
 from nfc import NfcWrapper
 from rat_mqtt import Mqtt
 from rat_wifi import Wifi
@@ -19,7 +20,8 @@ from ghost_tag_data import (
 MODE_INITIALIZING = -1
 MODE_WAITING_FOR_TRASH = 0
 MODE_HAS_TRASH = 1
-MODE_READY_TO_WRITE = 2
+MODE_RUNNING = 2
+MODE_READY_TO_PRINT = 4
 MODE_FINISHED = 3
 
 # Local Events
@@ -32,14 +34,22 @@ EVENT_DONE_WRITING = "doneWriting"
 # Remote Events
 EVENT_GHOST_UPDATE = "ghostUpdate"
 EVENT_RESET_COMMAND = "reset"
-EVENT_WRITE_RFID_COMMAND = "writeRfid"
+
+EVENT_SET_RUNNING = "setRunning"
+EVENT_SET_FINISHED = "setFinished"
+EVENT_READY_TO_PRINT = "ready_to_print"
+
+PREVIOUS_TAG_TIMEOUT = 3
 
 
 class GhostMachine(object):
     is_wifi_connected = False
     is_connected = False
 
+    previous_tag = None
     tag_from_start = None
+    previous_tag_timeout = 0
+
     current_tag = None
     current_tag_data = None
 
@@ -69,10 +79,15 @@ class GhostMachine(object):
         asyncio.create_task(self._render_loop())
 
     def _handle_mqtt_event(self, event, data):
+        print("Handling mqtt event: ", event)
         if event == EVENT_RESET_COMMAND:
             self._update_state(EVENT_RESET_COMMAND, should_broadcast=False)
-        elif event == EVENT_WRITE_RFID_COMMAND:
-            self._update_state(EVENT_WRITE_NFC, should_broadcast=False)
+        elif event == EVENT_SET_RUNNING:
+            self._update_state(EVENT_SET_RUNNING, should_broadcast=False)
+        elif event == EVENT_SET_FINISHED:
+            self._update_state(EVENT_SET_FINISHED, should_broadcast=False)
+        elif event == EVENT_READY_TO_PRINT:
+            self._update_state(EVENT_READY_TO_PRINT, should_broadcast=False)
 
     def _onMqttMessage(self, topic, msg):
         print((topic, msg))
@@ -101,12 +116,15 @@ class GhostMachine(object):
     async def _tag_found(self, uid):
         self.current_tag = uid
         self.is_connected = True
+        self._update_state(EVENT_CARD_FOUND)
         print("Reading NFC")
-        nfcData = await self.nfc.read()
+        try:
+            nfcData = await self.nfc.read()
+        except:
+            nfcData = None
         print("NFC Data: ", nfcData)
         self.current_tag_data = TagData(nfcData)
-        self._update_state(EVENT_CARD_FOUND)
-        if not is_valid_tag_data_string(nfcData):
+        if not is_valid_tag_data_string(nfcData) or self.current_mode == MODE_HAS_TRASH:
             self._update_state(EVENT_WRITE_NFC)
 
     def _tag_lost(self):
@@ -119,11 +137,30 @@ class GhostMachine(object):
     async def _write_nfc(self):
         if self.current_tag:
             print("Writing NFC")
-            self.is_writing_rfid = True
             await self.nfc.write(self.current_tag_data.serialize())
             print("Done writing NFC")
-            self.is_writing_rfid = False
             self._update_state(EVENT_DONE_WRITING)
+
+    def _get_power_level(self):
+        if self.current_tag and self.current_tag_data:
+            power = 0
+            if self.current_tag_data.printer:
+                power += 1
+            if self.current_tag_data.audio:
+                power += 1
+            if self.current_tag_data.dollhouse:
+                power += 1
+            if self.current_tag_data.other1:
+                power += 1
+            if self.current_tag_data.other2:
+                power += 1
+            if self.current_tag_data.other3:
+                power += 1
+            if self.current_tag_data.scale:
+                power -= 3
+            return power
+        else:
+            return 0
 
     def _can_connect_tag(self):
         if self.tag_from_start:
@@ -134,11 +171,20 @@ class GhostMachine(object):
         # Abstract method to handle state changes
         pass
 
+    def _update_rfid_data(self):
+        # Abstract method to handle updating the rfid data
+        pass
+
     def _update_state(self, event, should_broadcast=True):
         print("is wifi connected: ", self.is_wifi_connected)
         print("is connected: ", self.is_connected)
         print("is invalid: ", self.has_invalid_tag)
         print("current tag: ", self.current_tag)
+
+        if self.previous_tag_timeout and time.time() > self.previous_tag_timeout:
+            self.previous_tag = None
+            self.previous_tag_timeout = 0
+            print("Resetting previous tag")
 
         if event == EVENT_FINISHED_BOOT:
             self.current_mode = MODE_WAITING_FOR_TRASH
@@ -146,34 +192,70 @@ class GhostMachine(object):
         elif event == EVENT_CARD_FOUND:
             if self._can_connect_tag():
                 self.has_invalid_tag = False
-                if self.current_mode == MODE_WAITING_FOR_TRASH:
+                if self.current_mode == MODE_WAITING_FOR_TRASH and self.current_tag != self.previous_tag:
                     self.current_mode = MODE_HAS_TRASH
-                    self.tag_from_start = self.current_tag
+                    self.previous_tag = self.current_tag
+                    # self.tag_from_start = self.current_tag
+                else:
+                    print("Refusing tag scan because previous tag")
+                    should_broadcast = False
+                    self.previous_tag_timeout = 0
             else:
+                print("refusing tag scan because it is invalid")
                 self.has_invalid_tag = True
+                should_broadcast = False
         elif event == EVENT_CARD_REMOVED:
             self.has_invalid_tag = False
-            if self.tag_from_start:
-                # self.audio.play_please_reconnect()
-                pass
-            else:
+            if not self.tag_from_start and self.current_mode not in [MODE_RUNNING, MODE_READY_TO_PRINT]:
                 self.current_mode = MODE_WAITING_FOR_TRASH
+                self.previous_tag_timeout = time.time() + PREVIOUS_TAG_TIMEOUT
+            else:
+                print("Ignoring tag removing because game is running")
+                should_broadcast = False
         elif event == EVENT_WRITE_NFC:
-            self.current_mode = MODE_READY_TO_WRITE
+            if not self.has_invalid_tag:
+                # if self.current_mode in [MODE_HAS_TRASH, MODE_WAITING_FOR_TRASH]:
+                #     self.current_mode = MODE_HAS_TRASH
+                self._update_rfid_data()
+                self.is_writing_rfid = True
+                self._write_nfc()
         elif event == EVENT_DONE_WRITING:
-            self.tag_from_start = None
-            if self.current_tag:
-                self.current_mode = MODE_FINISHED
-            else:
-                self.current_mode = MODE_WAITING_FOR_TRASH
+            self.is_writing_rfid = False
+            # if 
+            # # self.tag_from_start = None
+            # if self.current_tag:
+            #     self.current_mode = MODE_FINISHED
+            # else:
+            #     self.current_mode = MODE_WAITING_FOR_TRASH
         elif event == EVENT_RESET_COMMAND:
+            if self.current_tag is None:
+                self.previous_tag = None
+            # else:
+            #     self.previous_tag_timeout = time.time() + PREVIOUS_TAG_TIMEOUT
+            self.tag_from_start = None
+            self.current_mode = MODE_WAITING_FOR_TRASH
+            self.current_tag = None
+            self.current_tag_data = None
+        elif event == EVENT_SET_RUNNING:
+            self.current_mode = MODE_RUNNING
+            if self.current_tag:
+                self.tag_from_start = self.current_tag
+            else:
+                self.tag_from_start = self.previous_tag
+        elif event == EVENT_READY_TO_PRINT:
+            self.current_mode = MODE_READY_TO_PRINT
+            if self.current_tag:
+                self.tag_from_start = self.current_tag
+            else:
+                self.tag_from_start = self.previous_tag
+        elif event == EVENT_SET_FINISHED:
+            if self.current_tag is None:
+                self.previous_tag = None
+            # else:
+            #     self.previous_tag_timeout = time.time() + PREVIOUS_TAG_TIMEOUT
+            # self.previous_tag = None
             self.tag_from_start = None
             self.current_mode = MODE_FINISHED
-            self.has_invalid_tag = True
-
-        # Write the RFID if we're ready
-        if self.current_mode == MODE_READY_TO_WRITE and self.current_tag and not self.has_invalid_tag and not self.is_writing_rfid:
-            self._write_nfc()
 
         print("updated mode: ", self.current_mode)
         self._update_ring_light_pattern()
@@ -186,7 +268,7 @@ class GhostMachine(object):
                         "event": event,
                         "reader": self.name,
                         "card": self.current_tag,
-                        # "cardData": self.current_tag_data,
+                        "power": self._get_power_level(),
                         "connected": self.is_connected,
                         "invalid": self.has_invalid_tag,
                     }
@@ -208,17 +290,17 @@ class GhostMachine(object):
             self.ring_light.set_mode(ring_light.MODE_WAITING)
         elif self.current_mode == MODE_HAS_TRASH:
             self.ring_light.set_mode(ring_light.MODE_CONNECTED)
-        elif self.current_mode == MODE_READY_TO_WRITE:
-            self.ring_light.set_mode(ring_light.MODE_WAITING_TO_WRITE)
+        elif self.current_mode == MODE_RUNNING or self.current_mode == MODE_READY_TO_PRINT:
+            self.ring_light.set_mode(ring_light.MODE_RUNNING)
         elif self.current_mode == MODE_FINISHED:
             self.ring_light.set_mode(ring_light.MODE_FINISHED)
         print("Updated light pattern to: ", self.ring_light.current_mode)
 
     async def _render_loop(self):
-        f = FPS(verbose=True)
+        # f = FPS(verbose=True)
         while True:
             try:
-                f.tick()
+                # f.tick()
                 canopy.clear()
                 self.ring_light.draw()
                 self._draw_light_patterns()
