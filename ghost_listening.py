@@ -28,6 +28,7 @@ class GhostListeningMachine(ghost_machine_base.GhostMachine):
             ghost_light_fixtures.ScannerCanopyFixture(start=SCANNER_CANOPY_LIGHTS_START, count=SCANNER_CANOPY_LIGHTS, port=1),
             # ghost_light_fixtures.PedastalLightFixture(start=PEDASTAL_LIGHTS_START, end=PEDASTAL_LIGHTS, port=1),
         ]
+        self.listening_audio.play_ambient()
 
     def _update_rfid_data(self):
         super()._update_rfid_data()

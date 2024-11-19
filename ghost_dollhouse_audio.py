@@ -1,26 +1,28 @@
 from audio import Audio
 
-FIREPLACE_WAV = "Artifact-Pending.wav"
-BEDROOM_WAV = "Artifact-Pending.wav"
-ATTIC_WAV = "Artifact-Pending.wav"
-STUDY_WAV = "Artifact-Pending.wav"
-CONSERVATORY_WAV = "Artifact-Pending.wav"
+FIREPLACE_WAV = "Dollhouse-button5.wav"
+BEDROOM_WAV = "Dollhouse-button4.wav"
+ATTIC_WAV = "Dollhouse-button3.wav"
+STUDY_WAV = "Dollhouse-button2.wav"
+CONSERVATORY_WAV = "Dollhouse-button1.wav"
 
-AMBIENT_WAV = "Artifact-Ambient-1.wav"
-TURN_OFF_WAV = "Artifact-Disconnect.wav"
+AMBIENT_WAV = "Dollhouse-ambiance.wav"
+# AMBIENT_WAV = "ESP-ambience2.wav"
+TURN_OFF_WAV = "Dollhouse-wrong.wav"
 
-WIN_GAME_WAV = "Artifact-Connected.wav"
+WIN_GAME_WAV = "Dollhouse-win.wav"
+
+CORRECT_WAV = "Artifact-Connected.wav"
 
 
 class DollhouseAudio(object):
-    audio = None
 
     def __init__(self, audio: Audio):
         self.audio = audio
 
         self.ambient_voice = self.audio.import_wav(AMBIENT_WAV)
         self.ambient_voice.loop = True
-        self.ambient_voice.volume = 0.3
+        self.ambient_voice.volume = 0.5
 
         self.fireplace_voice = self.audio.import_wav(FIREPLACE_WAV)
         self.bedroom_voice = self.audio.import_wav(BEDROOM_WAV)
@@ -29,7 +31,11 @@ class DollhouseAudio(object):
         self.conservatory_voice = self.audio.import_wav(CONSERVATORY_WAV)
 
         self.turn_off_voice = self.audio.import_wav(TURN_OFF_WAV)
+        self.turn_off_voice.volume = 0.3
         self.win_game_voice = self.audio.import_wav(WIN_GAME_WAV)
+        self.win_game_voice.volume = 0.7
+
+        self.correct_voice = self.audio.import_wav(CORRECT_WAV)
 
     def play_ambient(self):
         self.ambient_voice.stop()
@@ -46,7 +52,7 @@ class DollhouseAudio(object):
     def play_win_game(self):
         self._turn_off_rooms()
         self.turn_off_voice.stop()
-        self.ambient_voice.stop()
+        # self.ambient_voice.stop()
         self.audio.mixer.play(self.win_game_voice)
 
     def play_fireplace(self):
@@ -72,3 +78,6 @@ class DollhouseAudio(object):
     def play_turn_off(self):
         self.turn_off_voice.stop()
         self.audio.mixer.play(self.turn_off_voice)
+
+    def play_correct(self):
+        self.audio.mixer.play(self.correct_voice)

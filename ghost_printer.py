@@ -13,6 +13,7 @@ class GhostPrinter(ghost_machine_base.GhostMachine):
         super().__init__("printer")
         self.printer_audio = PrinterAudio(self.audio)
         self.relay = Relay(2)
+        self.ignore_events_while_running = False
 
     async def start(self):
         await super().start()
@@ -23,6 +24,7 @@ class GhostPrinter(ghost_machine_base.GhostMachine):
             # ghost_light_fixtures.InnerTubeLightFixture(start=50, count=100, port=1),
             # ghost_light_fixtures.OuterTubeLightFixture(start=152, count=200, port=1),
         ]
+        self.printer_audio.play_ambient()
 
     def _update_rfid_data(self):
         super()._update_rfid_data()
@@ -50,15 +52,22 @@ class GhostPrinter(ghost_machine_base.GhostMachine):
 
         if self.current_mode in [ghost_machine_base.MODE_READY_TO_PRINT]:
             self.relay.on()
+            self.printer_audio.play_ready()
         elif self.current_mode in [ghost_machine_base.MODE_RUNNING]:
             self.relay.flicker()
+            self.printer_audio.play_scanning()
+        elif self.current_mode in [ghost_machine_base.MODE_FINISHED]:
+            self.relay.off()
+            self.printer_audio.play_printing()
         else:
+            self.printer_audio._stop()
+            self.printer_audio.restart_ambient()
             self.relay.off()
 
-        if event == ghost_machine_base.EVENT_FINISHED_BOOT:
-            self.printer_audio.play_ambient()
-        elif event == ghost_machine_base.EVENT_SET_RUNNING:
-            self.printer_audio.play_printing()
+        # if event == ghost_machine_base.EVENT_FINISHED_BOOT:
+        #     self.printer_audio.play_ambient()
+        # elif event == ghost_machine_base.EVENT_SET_RUNNING:
+        #     self.printer_audio.play_printing()
 
     def _draw_light_patterns(self):
         super()._draw_light_patterns()

@@ -1,6 +1,5 @@
 import ghost_machine_base
 from ghost_scale_audio import GhostScaleAudio
-import ghost_light_fixtures
 
 
 SCANNING_TIME = 8
@@ -10,7 +9,7 @@ class GhostScale(ghost_machine_base.GhostMachine):
 
     def __init__(self, id):
         super().__init__(id)
-        self.scale_audio = GhostScaleAudio(self.audio)
+        self.scale_audio = GhostScaleAudio(self.audio, id)
 
     async def start(self):
         await super().start()

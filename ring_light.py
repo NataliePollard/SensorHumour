@@ -1,4 +1,5 @@
 import canopy
+import time
 
 from audio import Audio
 from ghost_rfid_audio import RFIDAudio
@@ -12,7 +13,7 @@ ArtifactOffPattern = "CTP-eyJpZCI6Ijk2NTRmMDA4LWNlMjUtNDAwNS04MWE0LTc0NzY5MjJlOW
 
 initializing_pattern = canopy.Pattern(PatternInitializing)
 connected_pattern = canopy.Pattern(ArtifactConnectedPattern)
-off_pattern = canopy.Pattern(ArtifactWaitingPattern)
+off_pattern = canopy.Pattern(ArtifactOffPattern)
 incorrect_pattern = canopy.Pattern(ArtifactIncorrectPattern)
 waiting_pattern = canopy.Pattern(ArtifactWaitingPattern)
 writing_pattern = canopy.Pattern(ArtifactConnectedPattern)
@@ -26,15 +27,17 @@ MODE_WRITING = 5
 MODE_RUNNING = 6
 MODE_FINISHED = 7
 
+CONNECTED_WAIT_TIME = 3
+
 
 class RingLight(object):
-    current_mode = MODE_INITIALIZING
-
     def __init__(self, audio: Audio | None):
         if audio:
             self.rfid_audio = RFIDAudio(audio)
+        self.current_mode = MODE_INITIALIZING
         self.segment = canopy.Segment(0, 0, 16)
         self.params = canopy.Params()
+        self.last_played_connected = 0
         self._update_light_pattern()
 
     def _update_light_pattern(self):
@@ -47,7 +50,7 @@ class RingLight(object):
             self.params["Color"] = float(0.3)
         elif self.current_mode == MODE_WAITING:
             self.light_pattern = waiting_pattern
-            self.params["Color"] = float(0.1)
+            self.params["Color"] = float(0.9)
         elif self.current_mode == MODE_WRITING:
             self.light_pattern = writing_pattern
             self.params["Color"] = float(0.5)
@@ -68,7 +71,9 @@ class RingLight(object):
         if self.current_mode == MODE_INVALID:
             self.rfid_audio.play_incorrect()
         elif self.current_mode == MODE_CONNECTED:
-            self.rfid_audio.play_correct()
+            if time.time() > self.last_played_connected + CONNECTED_WAIT_TIME:
+                self.last_played_connected = time.time()
+                self.rfid_audio.play_correct()
         elif self.current_mode == MODE_RUNNING or self.current_mode == MODE_WAITING:
             self.rfid_audio.play_ready_to_write()
         elif self.current_mode == MODE_WRITING:

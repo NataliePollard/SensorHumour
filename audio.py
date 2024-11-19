@@ -29,14 +29,16 @@ class Audio(object):
             self.mixer = mixer.Mixer()
 
     def import_wav(self, path):
-        try:
-            f = open("/sd/{}".format(path), "rb")
-            return mixer.Voice(f)
-        except:
-            print("Can't open WAV file: ", path)
+        if self.mixer:
+            try:
+                f = open("/sd/{}".format(path), "rb")
+                return mixer.Voice(f)
+            except:
+                print("Can't open WAV file: ", path)
 
     def start(self):
-        asyncio.create_task(self.continuous_play())
+        if self.mixer:
+            asyncio.create_task(self.continuous_play())
 
     async def continuous_play(self):
         asyncio.sleep(5)

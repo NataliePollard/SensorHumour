@@ -4,7 +4,7 @@ import fern
 import time
 from button import Button
 
-from fps import FPS
+# from fps import FPS
 from nfc import NfcWrapper
 from rat_relay import Relay
 from ghost_magnet import Magnet
@@ -75,19 +75,18 @@ class GhostDollhouse(object):
     room_states_map = {}
 
     def __init__(self):
+        print("Starting Dollhouse")
         self.audio = Audio()
-        self.dollhouse_audio = DollhouseAudio(self.audio)
         self.nfc = NfcWrapper(self._tag_found, self._tag_lost)
         self.relay = Relay(pin=self.relay_pin)
         self.magnet = Magnet(pin=self.magnet_pin)
 
         def get_button_callback(button_num):
             print("Button callback for ", button_num)
-            
+
             def button(btn):
                 print("Button inner callback for ", button_num)
-                if btn.pressed():
-                    self.button_callback(button_num)
+                self.button_callback(button_num)
             return button
 
         self.buttons = [
@@ -98,14 +97,20 @@ class GhostDollhouse(object):
             Button(fern.D7, get_button_callback(BUTTON_BEDROOM)),
             Button(fern.D8, get_button_callback(BUTTON_ATTIC)),
         ]
+        asyncio.create_task(self.buttons[0].run())
+        asyncio.create_task(self.buttons[1].run())
+        asyncio.create_task(self.buttons[2].run())
+        asyncio.create_task(self.buttons[3].run())
+        asyncio.create_task(self.buttons[4].run())
+        asyncio.create_task(self.buttons[5].run())
 
     async def start(self):
         await self.nfc.start()
         self.audio.start()
-
         print("Starting canopy")
         canopy.init([fern.LED1_DATA, fern.LED2_DATA], 300)
         asyncio.create_task(self._render_loop())
+        self.dollhouse_audio = DollhouseAudio(self.audio)
 
         self.ring_light = ring_light.RingLight(self.audio)
         self.room_states = {}
@@ -191,7 +196,7 @@ class GhostDollhouse(object):
             self._update_state(EVENT_DONE_WRITING)
         else:
             print("Cannot write NFC without a tag")
-
+    
     def _can_connect_tag(self):
         return self.current_mode == MODE_GAME_WON  # and self.current_tag and not self.current_tag_data.dollhouse
 
@@ -294,7 +299,7 @@ class GhostDollhouse(object):
         #     self.relay.off()
 
     async def _render_loop(self):
-        f = FPS(verbose=True)
+        # f = FPS(verbose=True)
         while True:
             try:
                 if self.current_mode == MODE_GAME_WON and (
@@ -306,7 +311,7 @@ class GhostDollhouse(object):
                     print("Resetting Magnet")
                     self.magnet.close()
                     self.magnet_open_time = -1
-                f.tick()
+                # f.tick()
                 canopy.clear()
                 self.ring_light.draw()
                 for room in self.room_states:

@@ -388,18 +388,21 @@ class NfcWrapper(object):
                     found = True
                     existing = r.payload[3:].decode("utf-8")
                     break
-        except NfcTagNotFormatted:
-            print("Tag not formatted")
+        except Exception as e: # NfcTagNotFormatted:
+            print("Tag not formatted", e)
         if not found:
             r = ndef.NdefRecord()
             self.ndefmsg = ndef.NdefMessage()
             self.ndefmsg.records.append(r)
-       
+
         if existing != new_payload:
-            r.tnf = ndef.TNF_WELL_KNOWN
-            r.set_type(ndef.RTD_TEXT)
-            r.set_id(b"CT")
-            r.set_payload(b"\x02en" + bytes(new_payload, "utf-8"))
-            self.ndefmsg.fix()
-            await self.reader.writeNdef(self.ndefmsg)
-            print(f"Updated tag with => {new_payload}")
+            try:
+                r.tnf = ndef.TNF_WELL_KNOWN
+                r.set_type(ndef.RTD_TEXT)
+                r.set_id(b"CT")
+                r.set_payload(b"\x02en" + bytes(new_payload, "utf-8"))
+                self.ndefmsg.fix()
+                await self.reader.writeNdef(self.ndefmsg)
+                print(f"Updated tag with => {new_payload}")
+            except Exception as e:
+                print("Failed to write tag", e)

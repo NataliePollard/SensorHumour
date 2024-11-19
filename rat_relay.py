@@ -14,7 +14,6 @@ class Relay(object):
     last_flicker_event = 0
     state = False
 
-
     def __init__(self, pin=1, pull_up=False):
         self.pin = Pin(pin, Pin.OUT, Pin.PULL_UP if pull_up else Pin.PULL_DOWN)
 

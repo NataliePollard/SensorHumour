@@ -10,7 +10,7 @@ class Mqtt(object):
     lost_connection_count = 0
 
     def __init__(
-        self, name, on_message_callback, topic="mqtt/timemachine", server="10.0.1.2"
+        self, name, on_message_callback, topic="mqtt/timemachine", server="10.0.1.208"
     ):
         self.on_message_callback = on_message_callback
         self.topic = topic
