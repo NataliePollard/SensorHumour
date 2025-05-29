@@ -92,7 +92,7 @@ class BankSlotMachine(object):
 
         print("Starting canopy")
         canopy.init([fern.LED1_DATA, fern.LED2_DATA], self.num_leds)
-        self.ring_light = ring_light.RingLight()
+        self.ring_light = ring_light.RingLight(audio=None)
         asyncio.create_task(self._render_loop())
 
     def _handle_mqtt_event(self, event, data):
@@ -158,7 +158,7 @@ class BankSlotMachine(object):
         elif event == EVENT_PLAY_ENDED:
             if (random.random() < 0.33):
                 self.current_mode = MODE_WON
-                self.dispenser.dispense(self.wager, random.randint(1, min(self.wager // 4 + 1), 4))
+                self.dispenser.dispense(random.randint(1, min((self.wager // 4) + 1, 4)))
                 self.slot_audio.play_win()
             else:
                 self.current_mode = MODE_LOST

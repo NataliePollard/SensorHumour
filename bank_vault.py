@@ -25,6 +25,7 @@ EVENT_FINISHED_BOOT = "finishedBoot"
 EVENT_SENSOR_TRIGGERED = "sensorTriggered"
 EVENT_DOOR_OPEN = "doorOpen"
 EVENT_DOOR_CLOSE = "doorClose"
+EVENT_DOOR_EXIT = "doorExit"
 EVENT_UPDATE_POWER = "updatePower"
 EVENT_FOUNDER = "founder"
 EVENT_MOTIVATION = "motivation"
@@ -37,8 +38,9 @@ EVENT_RESET_COMMAND = "reset"
 BUTTON_ZERO = 0
 BUTTON_ONE = 1
 BUTTON_TWO = 2
-BUTTON_MOTIVATION = 3
-BUTTON_DIAL_LOCK = 4
+BUTTON_DIAL_LOCK = 3
+BUTTON_EXIT = 4
+BUTTON_MOTIVATION = 5
 
 DOOR_TIMEOUT_S = 10
 DIAL_LOCK_TIME_S = 1
@@ -63,7 +65,7 @@ class BankVaultDoor(object):
             self.mqtt = Mqtt(name, self._onMqttMessage)
             self.wifi = Wifi(hostname=self.name)
         self.num_leds = 100
-        self.magnet = Magnet(pin=1)
+        self.magnet = Magnet(pin=fern.D5)
         self.state = [False, False, False]
         self.magnet_open_time = 0
         self.dial_lock_time = 0
@@ -83,18 +85,20 @@ class BankVaultDoor(object):
             return button
 
         self.buttons = [
-            Button(fern.D5, get_button_callback(BUTTON_ZERO)),
-            Button(fern.D8, get_button_callback(BUTTON_ONE)),
-            Button(fern.D4, get_button_callback(BUTTON_TWO)),
+            Button(fern.D3, get_button_callback(BUTTON_ZERO), wait_time_ms=1),
+            Button(fern.D2, get_button_callback(BUTTON_ONE), wait_time_ms=1),
+            Button(fern.D4, get_button_callback(BUTTON_TWO), wait_time_ms=1),
+            Button(fern.D1, get_button_callback(BUTTON_DIAL_LOCK), pull_up=False),
+            Button(fern.D6, get_button_callback(BUTTON_EXIT)),
             Button(fern.D7, get_button_callback(BUTTON_MOTIVATION)),
-            Button(fern.D6, get_button_callback(BUTTON_DIAL_LOCK)),
         ]
         
         asyncio.create_task(self.buttons[BUTTON_ZERO].run())
         asyncio.create_task(self.buttons[BUTTON_ONE].run())
         asyncio.create_task(self.buttons[BUTTON_TWO].run())
-        asyncio.create_task(self.buttons[BUTTON_MOTIVATION].run())
+        asyncio.create_task(self.buttons[BUTTON_EXIT].run())
         asyncio.create_task(self.buttons[BUTTON_DIAL_LOCK].run())
+        asyncio.create_task(self.buttons[BUTTON_MOTIVATION].run())
 
         print("Starting canopy")
         canopy.init([fern.LED1_DATA, fern.LED2_DATA], self.num_leds)
@@ -135,12 +139,20 @@ class BankVaultDoor(object):
     def button_callback(self, button):
         print("Button Pressed: ", button)
 
-        if button == BUTTON_DIAL_LOCK:
+        if button == BUTTON_EXIT:
+            self._update_state(EVENT_DOOR_EXIT)
+        elif button == BUTTON_DIAL_LOCK:
             self._update_state(EVENT_DIAL_LOCK)
         elif button == BUTTON_MOTIVATION:
             self._update_state(EVENT_MOTIVATION)
         else:
-            self.state[button] = True
+            if button == BUTTON_ZERO:
+                self.state = [True, False, False]
+            elif button == BUTTON_ONE:
+                self.state[1] = True
+                self.state[2] = False
+            elif button == BUTTON_TWO:
+                self.state[2] = True
 
             if button == BUTTON_TWO and self.state[0] and self.state[1] and self.state[2]:
                 self._update_state(EVENT_DOOR_OPEN)
@@ -154,31 +166,41 @@ class BankVaultDoor(object):
         if event == EVENT_FINISHED_BOOT:
             self.current_mode = MODE_READY
             self.vault_audio.play_ambient()
+            self.magnet.close()
+            print("Vault Door is ready")
         elif event == EVENT_SENSOR_TRIGGERED:
             if self.current_mode in (MODE_READY, MODE_PARTIAL):
                 self.current_mode = MODE_PARTIAL
-        elif event == EVENT_DOOR_OPEN or event == EVENT_FOUNDER:
+                print("Vault Door is partially open", self.state)
+            
+        elif event == EVENT_DOOR_OPEN or event == EVENT_FOUNDER or event == EVENT_DOOR_EXIT:
             self.current_mode = MODE_OPEN
             self.magnet_open_time = time.time() + DOOR_TIMEOUT_S
             self.magnet.open()
-            self.vault_audio.play_open()
+            if event != EVENT_DOOR_EXIT:
+                self.state = [False, False, False]
+                print("Vault door open, resetting state")
+            if event == EVENT_DOOR_OPEN:
+                self.vault_audio.play_open()
+                print("Vault Door is open")
+            elif event == EVENT_FOUNDER and self.current_mode:
+                self.vault_audio.play_founder()
+                self.current_mode = MODE_FOUNDER
+                print("Vault combo entered, founder mode activated")
+            else:
+                print("Exiting Vault")
         elif event == EVENT_DOOR_CLOSE:
             self.current_mode = MODE_READY
             self.magnet_open_time = 0
             self.magnet.close()
             self.reset_time = -1
-            self.vault_audio.play_open()
+            print("Vault Door closing")
         elif event == EVENT_MOTIVATION and self.current_mode in (MODE_READY, MODE_PARTIAL):
             self.vault_audio.play_motivation()
-        elif event == EVENT_DIAL_LOCK:
-            self.dial_lock_time = time.time() + DIAL_LOCK_TIME_S
-    
-        if event == EVENT_FOUNDER:
-            self.vault_audio.play_founder()
-            self.current_mode = MODE_FOUNDER
-
-        if self.current_mode not in (MODE_READY, MODE_PARTIAL):
             self.state = [False, False, False]
+        elif event == EVENT_DIAL_LOCK and self.dial_lock_time <= 0:
+            print("Dial lock solved, waiting...")
+            self.dial_lock_time = time.time() + DIAL_LOCK_TIME_S
         
         print("updated mode: ", self.current_mode, event)
         self._update_ring_light_pattern()
@@ -201,9 +223,9 @@ class BankVaultDoor(object):
         elif self.current_mode == MODE_PARTIAL:
             self.ring_light.set_mode(ring_light.MODE_CONNECTED)
         elif self.current_mode == MODE_OPEN:
-            self.ring_light.set_mode(ring_light.MODE_RUNNING)
+            self.ring_light.set_mode(ring_light.MODE_INVALID)
         elif self.current_mode == MODE_FOUNDER:
-            self.ring_light.set_mode(ring_light.MODE_FINISHED)
+            self.ring_light.set_mode(ring_light.MODE_INVALID)
         print("Updated light pattern to: ", self.ring_light.current_mode)
 
 

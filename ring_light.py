@@ -31,9 +31,11 @@ CONNECTED_WAIT_TIME = 3
 
 
 class RingLight(object):
-    def __init__(self, audio: Audio | None):
+    def __init__(self, audio = None):
         if audio:
             self.rfid_audio = RFIDAudio(audio)
+        else:
+            self.rfid_audio = None
         self.current_mode = MODE_INITIALIZING
         self.segment = canopy.Segment(0, 0, 16)
         self.params = canopy.Params()
@@ -65,7 +67,7 @@ class RingLight(object):
         print("Updated light pattern to: ", self.light_pattern)
 
     def _update_audio(self):
-        if not self.rfid_audio:
+        if self.rfid_audio is None:
             print("No audio to update")
             return
         if self.current_mode == MODE_INVALID:

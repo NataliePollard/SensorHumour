@@ -12,18 +12,32 @@ class Button(object):
     waiting = 0
     button_press_time = 0
 
-    def __init__(self, button_pin, callback=None):
+    def __init__(self, button_pin, callback=None, wait_time_ms=WAIT_TIME_MS, pull_up=True):
         self.button_pin = button_pin
         self.callback = callback
-
-        self.pin = Pin(self.button_pin, Pin.IN, Pin.PULL_UP)
+        self.wait_time_ms = wait_time_ms
+        self.pull_up = pull_up
+        if pull_up:
+            self.pin = Pin(self.button_pin, Pin.IN, Pin.PULL_UP)
+        else:
+            self.pin = Pin(self.button_pin, Pin.IN, Pin.PULL_DOWN)
         self.pin.irq(trigger=Pin.IRQ_FALLING, handler=self.__on_press)
+
+    def is_pressed(self):
+        if self.pull_up:
+            return self.pin.value() == 0
+        else:
+            return self.pin.value() == 1
 
     def __on_press(self, pin):
         now = time.time() * 1000
         print("Button pressed", pin)
-        if now > self.waiting:
-            self.waiting = now + WAIT_TIME_MS
+        if self.wait_time_ms <= 0:
+            self.button_press_time = 0
+            if self.callback:
+                self.callback(1)
+        elif now > self.waiting:
+            self.waiting = now + self.wait_time_ms
             self.button_press_time = now
 
     async def run(self):
@@ -33,7 +47,7 @@ class Button(object):
                 state = self.pin.value()
                 self.button_press_time = 0
                 print("Button State", state)
-                if state == 0:
+                if self.is_pressed():
                     if self.callback:
                         self.callback(1)
                 else:

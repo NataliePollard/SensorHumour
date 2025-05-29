@@ -1,13 +1,13 @@
 from audio import Audio
 
 AMBIENT_WAV = "Dollhouse-ambiance.wav"
-OPEN_WAV = "Dollhouse-wrong.wav"
+OPEN_WAV = "Artifact-Connected.wav"
 FOUNDER_WAV = "Dollhouse-win.wav"
  
 MOTIVATION_WAVS = [
-    "Dollhouse-motivation-1.wav",
-    "Dollhouse-motivation-2.wav",
-    "Dollhouse-motivation-3.wav",
+    "Dollhouse-button1.wav",
+    "Dollhouse-button2.wav",
+    "Dollhouse-button3.wav",
 ]
 
 
@@ -44,7 +44,7 @@ class VaultDoorAudio(object):
         self.ambient_voice.stop()
         self.founder_voice.stop()
         self.open_voice.stop()
-        self.audio.mixer.play(self.ambient_voice)
+        # self.audio.mixer.play(self.ambient_voice)
 
     def play_open(self):
         self.audio.mixer.play(self.open_voice)
