@@ -5,6 +5,7 @@ import fern
 import time
 
 # from fps import FPS
+from nfc import NfcWrapper
 from rat_mqtt import Mqtt
 from rat_wifi import Wifi
 from audio import Audio
@@ -31,6 +32,9 @@ EVENT_FOUNDER = "founder"
 EVENT_MOTIVATION = "motivation"
 EVENT_DIAL_LOCK = "dialLock"
 
+EVENT_CARD_FOUND = "cardFound"
+EVENT_CARD_REMOVED = "cardRemoved"
+
 # Remote Events
 EVENT_BANK_UPDATE = "bankUpdate"
 EVENT_RESET_COMMAND = "reset"
@@ -50,6 +54,9 @@ class BankVaultDoor(object):
     is_wifi_connected = False
     is_connected = False
 
+    current_tag = None
+    has_invalid_tag = False
+
     current_mode = MODE_INITIALIZING
 
     def __init__(
@@ -64,16 +71,17 @@ class BankVaultDoor(object):
         if has_wifi:
             self.mqtt = Mqtt(name, self._onMqttMessage)
             self.wifi = Wifi(hostname=self.name)
+        self.nfc = NfcWrapper(self._tag_found, self._tag_lost)
         self.num_leds = 100
         self.magnet = Magnet(pin=fern.D5)
         self.state = [False, False, False]
         self.magnet_open_time = 0
         self.dial_lock_time = 0
-        
 
     async def start(self):
         if self.has_wifi:
             self.wifi.start(self._on_wifi_connected)
+        await self.nfc.start()
         self.audio.start()
 
         def get_button_callback(button_num):
@@ -136,6 +144,18 @@ class BankVaultDoor(object):
         except:
             print("Failed to start Mqtt")
 
+    async def _tag_found(self, uid):
+        self.current_tag = uid
+        self._update_state(EVENT_CARD_FOUND)
+
+    def _tag_lost(self):
+        self.has_invalid_tag = False
+        self.current_tag = None
+        self._update_state(EVENT_CARD_REMOVED)
+
+    def is_valid_tag(self):
+        return self.current_tag in ['']
+
     def button_callback(self, button):
         print("Button Pressed: ", button)
 
@@ -163,6 +183,17 @@ class BankVaultDoor(object):
         print("is wifi connected: ", self.is_wifi_connected)
         print("is connected: ", self.is_connected)
 
+        has_valid_tag = False
+        if event == EVENT_CARD_FOUND:
+            if self.is_valid_tag():
+                self.has_invalid_tag = False
+                has_valid_tag = True
+                print("Valid tag found, vault door ready")
+            else:
+                self.has_invalid_tag = True
+        elif event == EVENT_CARD_REMOVED:
+            self.has_invalid_tag = False
+
         if event == EVENT_FINISHED_BOOT:
             self.current_mode = MODE_READY
             self.vault_audio.play_ambient()
@@ -171,9 +202,8 @@ class BankVaultDoor(object):
         elif event == EVENT_SENSOR_TRIGGERED:
             if self.current_mode in (MODE_READY, MODE_PARTIAL):
                 self.current_mode = MODE_PARTIAL
-                print("Vault Door is partially open", self.state)
-            
-        elif event == EVENT_DOOR_OPEN or event == EVENT_FOUNDER or event == EVENT_DOOR_EXIT:
+                print("Vault Door is partially open", self.state)      
+        elif event == EVENT_DOOR_OPEN or event == EVENT_FOUNDER or event == EVENT_DOOR_EXIT or has_valid_tag:
             self.current_mode = MODE_OPEN
             self.magnet_open_time = time.time() + DOOR_TIMEOUT_S
             self.magnet.open()
@@ -187,7 +217,11 @@ class BankVaultDoor(object):
                 self.vault_audio.play_founder()
                 self.current_mode = MODE_FOUNDER
                 print("Vault combo entered, founder mode activated")
+            elif has_valid_tag:
+                print("Valid tag found, vault door opening")
+                self.vault_audio.play_quiet_open()
             else:
+                self.vault_audio.play_quiet_open()
                 print("Exiting Vault")
         elif event == EVENT_DOOR_CLOSE:
             self.current_mode = MODE_READY
@@ -201,7 +235,7 @@ class BankVaultDoor(object):
         elif event == EVENT_DIAL_LOCK and self.dial_lock_time <= 0:
             print("Dial lock solved, waiting...")
             self.dial_lock_time = time.time() + DIAL_LOCK_TIME_S
-        
+
         print("updated mode: ", self.current_mode, event)
         self._update_ring_light_pattern()
 
@@ -216,7 +250,9 @@ class BankVaultDoor(object):
             )
 
     def _update_ring_light_pattern(self):
-        if self.current_mode == MODE_INITIALIZING:
+        if self.has_invalid_tag:
+            self.ring_light.set_mode(ring_light.MODE_INVALID)
+        elif self.current_mode == MODE_INITIALIZING:
             self.ring_light.set_mode(ring_light.MODE_INITIALIZING)
         elif self.current_mode == MODE_READY:
             self.ring_light.set_mode(ring_light.MODE_WAITING)
