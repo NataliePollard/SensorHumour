@@ -1,8 +1,8 @@
 from audio import Audio
 
 AMBIENT_WAV = "Dollhouse-ambiance.wav"
-OPEN_WAV = "Artifact-Connected.wav"
-QUIET_OPEN_WAV = "Artifact-Connected.wav"
+OPEN_WAV = "VaultPuzzleOpen.wav"
+QUIET_OPEN_WAV = "VaultSimpleOpen.wav"
 FOUNDER_WAV = "Dollhouse-win.wav"
  
 MOTIVATION_WAVS = [

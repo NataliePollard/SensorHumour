@@ -154,7 +154,7 @@ class BankVaultDoor(object):
         self._update_state(EVENT_CARD_REMOVED)
 
     def is_valid_tag(self):
-        return self.current_tag in ['']
+        return self.current_tag in ['80118708530104e0', '22e48608530104e0', 'bd7e8608530104e0', 'a50d8708530104e0', 'd47c8608530104e0', '05598608530104e0']
 
     def button_callback(self, button):
         print("Button Pressed: ", button)
@@ -176,6 +176,8 @@ class BankVaultDoor(object):
 
             if button == BUTTON_TWO and self.state[0] and self.state[1] and self.state[2]:
                 self._update_state(EVENT_DOOR_OPEN)
+            else:
+                self._update_state(EVENT_SENSOR_TRIGGERED, should_broadcast=False)
 
             print("New State: ", self.state)
 
@@ -251,13 +253,18 @@ class BankVaultDoor(object):
 
     def _update_ring_light_pattern(self):
         if self.has_invalid_tag:
-            self.ring_light.set_mode(ring_light.MODE_INVALID)
+            self.ring_light.set_mode(ring_light.MODE_OFF)
         elif self.current_mode == MODE_INITIALIZING:
             self.ring_light.set_mode(ring_light.MODE_INITIALIZING)
         elif self.current_mode == MODE_READY:
-            self.ring_light.set_mode(ring_light.MODE_WAITING)
+            self.ring_light.set_mode(ring_light.MODE_OFF)
         elif self.current_mode == MODE_PARTIAL:
-            self.ring_light.set_mode(ring_light.MODE_CONNECTED)
+            if (self.state[0] and not self.state[1] and not self.state[2]):
+                self.ring_light.set_mode(ring_light.MODE_WAITING)
+            elif (self.state[0] and self.state[1] and not self.state[2]):
+                self.ring_light.set_mode(ring_light.MODE_WRITING)
+            else:
+                self.ring_light.set_mode(ring_light.MODE_RUNNING)
         elif self.current_mode == MODE_OPEN:
             self.ring_light.set_mode(ring_light.MODE_INVALID)
         elif self.current_mode == MODE_FOUNDER:

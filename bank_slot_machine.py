@@ -36,7 +36,7 @@ EVENT_RESET_COMMAND = "reset"
 
 PAYMENT_TIMEOUT_S = 60
 WIN_TIMEOUT_S = 10
-PLAY_TIMEOUT_S = 3
+PLAY_TIMEOUT_S = 4
 
 BUTTON_PLAY = 0
 BUTTON_BEAN_SENSOR = 1
@@ -55,17 +55,22 @@ class BankSlotMachine(object):
     ):
         self.audio = Audio()
         self.slot_audio = BankSlotMachineAudio(self.audio)
-        self.dispenser = BeanDispenser(pin=fern.D6)
+        self.dispenser = BeanDispenser(pin=fern.D1, slot_audio=self.slot_audio)
         self.name = name
         self.has_wifi = has_wifi
         if has_wifi:
             self.mqtt = Mqtt(name, self._onMqttMessage)
             self.wifi = Wifi(hostname=self.name)
+        else:
+            self.current_mode = MODE_READY
         self.num_leds = 100
         self.payment_timeout = 0
         self.win_timeout = 0   
         self.play_timeout = 0 
         self.wager = 0
+        self.win_big_counter = 0
+        self.win_big_time = 0
+        self.revenue = 0
         
 
     async def start(self):
@@ -83,8 +88,8 @@ class BankSlotMachine(object):
             return button
 
         self.buttons = [
-            Button(fern.D5, get_button_callback(BUTTON_PLAY)),
-            Button(fern.D8, get_button_callback(BUTTON_BEAN_SENSOR)),
+            Button(2, get_button_callback(BUTTON_PLAY), light_pin=fern.D3, pull_up=False),
+            Button(fern.D8, get_button_callback(BUTTON_BEAN_SENSOR), wait_time_ms=1),
         ]
         
         asyncio.create_task(self.buttons[BUTTON_PLAY].run())
@@ -132,7 +137,10 @@ class BankSlotMachine(object):
         if button == BUTTON_BEAN_SENSOR:
             self._update_state(EVENT_SENSOR_TRIGGERED)
         elif button == BUTTON_PLAY:
-            self._update_state(EVENT_TRIGGER_PLAY)
+            if self.current_mode == MODE_HAS_PAYMENT:
+                self._update_state(EVENT_TRIGGER_PLAY)
+            else:
+                print("Cannot play, you have not paid.")
 
     def _update_state(self, event, should_broadcast=True):
         print("is wifi connected: ", self.is_wifi_connected)
@@ -141,28 +149,63 @@ class BankSlotMachine(object):
         if event == EVENT_FINISHED_BOOT:
             self.current_mode = MODE_READY
             self.slot_audio.play_ambient()
+            self.buttons[BUTTON_PLAY].set_light(False)
         elif event == EVENT_SENSOR_TRIGGERED:
-            if self.current_mode in (MODE_READY, MODE_LOST, MODE_WON):
+            if self.current_mode in (MODE_READY, MODE_HAS_PAYMENT, MODE_LOST, MODE_WON):
                 self.current_mode = MODE_HAS_PAYMENT
+                self.buttons[BUTTON_PLAY].set_light(True)
                 self.wager += 1
+                print("Wager increased to: ", self.wager)
                 self.payment_timeout = time.time() + PAYMENT_TIMEOUT_S
                 self.play_timeout = 0
                 self.win_timeout = 0
                 self.slot_audio.play_payment()
         elif event == EVENT_TRIGGER_PLAY:
+            self.buttons[BUTTON_PLAY].set_light(False)
             self.current_mode = MODE_PLAYING
             self.payment_timeout = 0
             self.win_timeout = 0
             self.play_timeout = time.time() + PLAY_TIMEOUT_S
             self.slot_audio.play_playing()
         elif event == EVENT_PLAY_ENDED:
-            if (random.random() < 0.33):
+            self.revenue += self.wager
+            reward = 0
+            equal_reward = self.wager / 20
+            win_big_chance = random.random() * self.win_big_counter / 5
+
+            regular_chance = random.random()
+            if self.revenue < 0:
+                regular_chance = min((regular_chance * 1.15) - .15, 0)
+            else:
+                regular_chance = min((regular_chance * .85) + .15, 1)
+            print("Equal reward: ", equal_reward)
+            print("Win big chance: ", win_big_chance)
+            print("Regular chance: ", regular_chance)
+            if win_big_chance > 0.7 and self.win_big_counter > 5 and time.time() > self.win_big_time + 60 and self.revenue > 0:
+                self.win_big_counter = 0
+                self.win_big_time = time.time()
+                reward = random.randint(3, min(max(4, int(equal_reward * 3)), 10))
+                print("Big win! Reward: ", reward)
+            elif equal_reward < .5 and regular_chance > 0.65:
+                reward = 1
+                print("Small win! Reward: ", reward)
+            elif 0.5 < equal_reward < 1 and regular_chance > 0.55:
+                reward = 1
+                print("Small win! Reward: ", reward)
+            elif equal_reward > 1 and regular_chance > 0.45:
+                reward = random.randint(1, min(int(equal_reward) * 2, 6))
+                print("Regular win! Reward: ", reward)
+            
+            if (reward > 0):
                 self.current_mode = MODE_WON
-                self.dispenser.dispense(random.randint(1, min((self.wager // 4) + 1, 4)))
-                self.slot_audio.play_win()
+                self.dispenser.dispense(reward)
+                # self.slot_audio.play_win()
+                self.revenue -= (reward * 20)
             else:
                 self.current_mode = MODE_LOST
                 self.slot_audio.play_lose()
+            print("Revenue after play: ", self.revenue)
+            self.win_big_counter += 1
             self.wager = 0
             self.play_timeout = 0
             self.payment_timeout = 0
@@ -210,7 +253,7 @@ class BankSlotMachine(object):
                 canopy.clear()
                 self.ring_light.draw()
                 canopy.render()
-                if self.payment_timeout > 0 and time.time() > self.payment_timeout:
+                if self.payment_timeout > 0 and time.time() > self.payment_timeout and self.dispenser.get_amount() <= 0:
                     self.payment_timeout = 0
                     self._update_state(EVENT_GAME_RESET)
                 if self.play_timeout > 0 and time.time() > self.play_timeout:

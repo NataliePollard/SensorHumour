@@ -34,8 +34,8 @@ async def main():
 
     # artifact = BlueCheese()
 
-    artifact = BankVaultDoor()
-    # artifact = BankSlotMachine()
+    # artifact = BankVaultDoor()
+    artifact = BankSlotMachine()
     await artifact.start()
     asyncio.get_event_loop().run_forever()
 

@@ -3,11 +3,13 @@ import asyncio
 import time
 
 
-CLICK_INTERVAL_S = 0.5
+CLICK_INTERVAL_S = 0.1
+CLICK_WAIT_S = 8
 
 
 class BeanDispenser(object):
-    def __init__(self, pin=2):
+    def __init__(self, pin=2, slot_audio=None):
+        self.slot_audio = slot_audio
         self.pin = pin
         self.next_click_time = 0
         self.amount = 0
@@ -15,6 +17,8 @@ class BeanDispenser(object):
     def dispense(self, amount=1):
         self.amount = amount
 
+    def get_amount(self):
+        return self.amount
 
     def start(self):
         print("Initing Dispenser")
@@ -25,15 +29,17 @@ class BeanDispenser(object):
 
     async def _dispenser_loop(self):
         pin = Pin(self.pin, Pin.OUT, Pin.PULL_UP)
-        pin.on()
+        pin.off()
         print("Dispenser Initialized")
         while True:
             now = time.time()
             if self.amount > 0 and now > self.next_click_time:
                 print("Dispensing bean")
-                pin.off()
-                await asyncio.sleep(0.1)
+                if self.slot_audio:
+                    self.slot_audio.play_win()
                 pin.on()
+                await asyncio.sleep(CLICK_INTERVAL_S)
+                pin.off()
                 self.amount -= 1
-                self.next_click_time = now + CLICK_INTERVAL_S
+                self.next_click_time = now + CLICK_WAIT_S
             await asyncio.sleep(0.1)
