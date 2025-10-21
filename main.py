@@ -10,6 +10,7 @@ from ghost_scanner_box import GhostScannerBox
 from rat_bluecheese import BlueCheese
 from bank_slot_machine import BankSlotMachine
 from bank_vault import BankVaultDoor
+from figurine_sensor import FigurineSensor
 
 # MACHINE = DOLLHOUSE
 # MACHINE = AUDIO
@@ -35,7 +36,8 @@ async def main():
     # artifact = BlueCheese()
 
     # artifact = BankVaultDoor()
-    artifact = BankSlotMachine()
+    # artifact = BankSlotMachine()
+    artifact = FigurineSensor()
     await artifact.start()
     asyncio.get_event_loop().run_forever()
 
