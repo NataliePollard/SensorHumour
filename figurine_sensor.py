@@ -25,6 +25,7 @@ RING_PATTERN_BLUE = canopy.Pattern('CTP-eyJpZCI6ImJsdWUiLCJ2ZXJzaW9uIjoxLCJuYW1l
 RING_PATTERN_PURPLE = canopy.Pattern('CTP-eyJrZXkiOiJwdXJwbGUtZmxvdyIsInZlcnNpb24iOjAsIm5hbWUiOiJwdXJwbGUtZmxvdyIsInBhbGV0dGVzIjp7IlBhbGV0dGUzIjpbWzAsWzAsMCwwXV0sWzAuMTUsWzAsMCwwXV0sWzAuMzksWzAuNTIxNTY4NjI3NDUwOTgwNCwwLjA5NDExNzY0NzA1ODgyMzUzLDAuNzg4MjM1Mjk0MTE3NjQ3XV0sWzAuNjEsWzAuMTgwMzkyMTU2ODYyNzQ1MSwwLjAxOTYwNzg0MzEzNzI1NDksMC4zMDE5NjA3ODQzMTM3MjU0N11dLFswLjk5LFswLDAsMF1dXX0sInBhcmFtcyI6eyJkZW5zaXR5Ijp7InR5cGUiOiJzYXciLCJpbnB1dHMiOnsidmFsdWUiOjAuNSwibWluIjowLCJtYXgiOjF9fX0sImxheWVycyI6W3siZWZmZWN0IjoicGlud2hlZWwiLCJvcGFjaXR5IjowLjgxLCJibGVuZCI6Im5vcm1hbCIsInBhbGV0dGUiOiJQYWxldHRlMyIsImlucHV0cyI6eyJvZmZzZXQiOiJkZW5zaXR5Iiwic2l6ZSI6MC4zOCwiY2VudGVyX3giOjAuNSwiY2VudGVyX3kiOjAuNX19XX0')
 RING_PATTERN_YELLOW = canopy.Pattern('CTP-eyJpZCI6InllbGxvdyIsInZlcnNpb24iOjEsIm5hbWUiOiJZZWxsb3ciLCJwYWxldHRlcyI6eyJQYWxldHRlMSI6W1swLFswLjk1NywwLjcyMSwwLjE1M11dXX0sInBhcmFtcyI6e30sImxheWVycyI6W3siZWZmZWN0Ijoic29saWQiLCJvcGFjaXR5IjoxLCJibGVuZCI6Im5vcm1hbCIsInBhbGV0dGUiOiJQYWxldHRlMSIsImlucHV0cyI6eyJvZmZzZXQiOjB9fV19')
 RING_PATTERN_AMBIENT_RAINBOW = canopy.Pattern("CTP-eyJrZXkiOiJyYWluYm93IiwidmVyc2lvbiI6MCwibmFtZSI6Ik5ldyBQYXR0ZXJuIiwicGFsZXR0ZXMiOnsiUGFsZXR0ZTEiOltbMCxbMSwwLDBdXSxbMC4xNCxbMSwwLjgyNzQ1MDk4MDM5MjE1NjgsMC4xNDExNzY0NzA1ODgyMzUzXV0sWzAuMzEsWzAuMDUwOTgwMzkyMTU2ODYyNzQ0LDEsMF1dLFswLjUyLFswLDAuOTQxMTc2NDcwNTg4MjM1MywwLjg2Mjc0NTA5ODAzOTIxNTddXSxbMC42OCxbMCwwLjI4MjM1Mjk0MTE3NjQ3MDYsMV1dLFswLjgsWzAuNDExNzY0NzA1ODgyMzUyOSwwLDAuODc4NDMxMzcyNTQ5MDE5Nl1dLFswLjg5LFsxLDAsMC44MTU2ODYyNzQ1MDk4MDM5XV0sWzEsWzEsMCwwXV1dfSwicGFyYW1zIjp7fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzcGFya2xlcyIsIm9wYWNpdHkiOjEsImJsZW5kIjoibm9ybWFsIiwicGFsZXR0ZSI6IlBhbGV0dGUxIiwiaW5wdXRzIjp7ImRlbnNpdHkiOjAuNSwib2Zmc2V0Ijp7InR5cGUiOiJzaW4iLCJpbnB1dHMiOnsidmFsdWUiOjAuMzYsIm1pbiI6MCwibWF4IjoxfX19fV19")
+TEST_PATTERN = canopy.Pattern('CTP-eyJrZXkiOiJzb2xpZC1yZWQiLCJ2ZXJzaW9uIjowLCJuYW1lIjoic29saWQgcmVkIiwicGFsZXR0ZXMiOnsicHJpbWFyeSI6W1swLFsxLDAsMF1dLFswLjE1LFsxLDEsMF1dLFswLjMsWzAsMSwwXV0sWzAuNSxbMCwxLDFdXSxbMC43LFswLDAsMV1dLFswLjg1LFsxLDAsMV1dLFsxLFsxLDAsMF1dXSwiX2JsYWNrLXdoaXRlIjpbWzAsWzAsMCwwXV0sWzEsWzEsMSwxXV1dfSwicGFyYW1zIjp7InNwZWVkIjowLjEsInNpemUiOiJzcGVlZCIsImRlbnNpdHkiOnsidHlwZSI6InNhdyIsImlucHV0cyI6eyJ2YWx1ZSI6MC41LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzb2xpZCIsIm9wYWNpdHkiOjEsImJsZW5kIjoibm9ybWFsIiwicGFsZXR0ZSI6InByaW1hcnkiLCJpbnB1dHMiOnsib2Zmc2V0Ijoic3BlZWQifX0seyJlZmZlY3QiOiJncmFkaWVudCIsIm9wYWNpdHkiOjAuNSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoicHJpbWFyeSIsImlucHV0cyI6eyJvZmZzZXQiOiJkZW5zaXR5Iiwic2l6ZSI6MC41LCJyb3RhdGlvbiI6MH19XX0')
 
 
 class FigurineSensor:
@@ -56,7 +57,9 @@ class FigurineSensor:
         self.sound_end_time = 0  # Track when to stop playing the sound
 
         # Canopy setup
-        self.segment = None
+        self.ring_light_segment = None
+        self.led_strand_segment = None
+        self.d1_segment = None
         self.params = None
 
     async def start(self):
@@ -64,12 +67,16 @@ class FigurineSensor:
         await self.nfc.start()
         self.audio.start()
 
-        print("Starting LED strip")
-        canopy.init([fern.LED1_DATA, fern.LED2_DATA], self.num_leds)
+        print("Starting LED strips")
+        # Initialize three LED data pins - LED1 for ring light, LED2 for LED strand, D1 for test strand
+        canopy.init([fern.LED1_DATA, fern.LED2_DATA, fern.D1], self.num_leds)
 
-        # Create segment and params for rendering
-        self.segment = canopy.Segment(0, 0, self.num_leds)
+        # Create segments for rendering
+        self.ring_light_segment = canopy.Segment(0, 0, self.num_leds)  # Ring light on LED1_DATA
+        self.led_strand_segment = canopy.Segment(1, 0, 100)  # LED strand on LED2_DATA (100 LEDs)
+        self.d1_segment = canopy.Segment(2, 0, 100)  # D1 test strand (100 LEDs)
         self.params = canopy.Params()
+        print("LED segments created: Ring light, LED strand, and D1 test strand")
 
         # Start the render loop
         asyncio.create_task(self._render_loop())
@@ -99,11 +106,11 @@ class FigurineSensor:
             try:
                 current_time = time.time()
 
-                # Check if sound period is over - stop the water sound
+                # Check if sound period is over - fade out the water sound
                 if self.sound_end_time > 0 and current_time > self.sound_end_time:
                     self.sound_end_time = 0
-                    self.figurine_audio.stop_sound()
-                    print("Sound stopped")
+                    asyncio.create_task(self.figurine_audio.fade_out())
+                    print("Sound fading out")
 
                 # Check if pattern period is over
                 if self.pattern_end_time > 0 and current_time > self.pattern_end_time:
@@ -111,11 +118,22 @@ class FigurineSensor:
                     self.current_pattern = RING_PATTERN_AMBIENT_RAINBOW
                     print("Pattern complete - back to rainbow sparkles")
 
-                # Update ring light LEDs
+                # Update LEDs - all strands react to RFID tags
                 canopy.clear()
 
+                # Ring light shows current pattern (RFID triggered or ambient rainbow)
                 if self.current_pattern:
-                    canopy.draw(self.segment, self.current_pattern, params=self.params)
+                    canopy.draw(self.ring_light_segment, self.current_pattern, params=self.params)
+
+                # LED strand and D1 strand show test pattern when idle, or sync with ring light when RFID scanned
+                if self.pattern_end_time > 0:
+                    # RFID tag is active - all strands show the same pattern as ring light
+                    canopy.draw(self.led_strand_segment, self.current_pattern, params=self.params)
+                    canopy.draw(self.d1_segment, self.current_pattern, params=self.params)
+                else:
+                    # Idle - both LED strand and D1 strand show test pattern
+                    canopy.draw(self.led_strand_segment, TEST_PATTERN, params=self.params)
+                    canopy.draw(self.d1_segment, TEST_PATTERN, params=self.params)
 
                 canopy.render()
 
