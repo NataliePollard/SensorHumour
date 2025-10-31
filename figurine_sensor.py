@@ -1,14 +1,14 @@
 """
 Figurine Sensor RFID LED Controller
 
-When an RFID tag is scanned, the ring light displays the corresponding animated pattern
-for 5 seconds with accompanying water sound, then returns to the ambient rainbow sparkle pattern.
+When an RFID tag is scanned, all LED strands display the corresponding flowing water animation
+for 5 seconds with accompanying water sound fade-out, then return to the ambient rainbow sparkle pattern.
 
 Supported RFID tags:
 - Red tag (88ab1466080104e0) - Red flowing water animation
-- Blue tag (e29f1466080104e0) - Solid blue
+- Blue tag (e29f1466080104e0) - Blue flowing water animation
 - Purple tag (24941466080104e0) - Purple flowing water animation
-- Yellow tag (2bb71466080104e0) - Solid yellow
+- Yellow tag (2bb71466080104e0) - Yellow flowing water animation
 """
 import asyncio
 import canopy
@@ -19,22 +19,21 @@ from audio import Audio
 from figurine_sensor_audio import FigurineSensorAudio
 
 
-# Ring light LED patterns
-RING_PATTERN_RED = canopy.Pattern('CTP-eyJrZXkiOiJyZWQtZmxvdyIsInZlcnNpb24iOjAsIm5hbWUiOiJyZWQtZmxvdyIsInBhbGV0dGVzIjp7InByaW1hcnkiOltbMCxbMSwwLDBdXSxbMC4xNSxbMSwxLDBdXSxbMC4zLFswLDEsMF1dLFswLjUsWzAsMSwxXV0sWzAuNyxbMCwwLDFdXSxbMC44NSxbMSwwLDFdXSxbMSxbMSwwLDBdXV0sIl9ibGFjay13aGl0ZSI6W1swLFswLDAsMF1dLFsxLFsxLDEsMV1dXSwiUGFsZXR0ZTMiOltbMCxbMCwwLDBdXSxbMC4zMyxbMCwwLDBdXSxbMC42NixbMC41MDE5NjA3ODQzMTM3MjU1LDAsMC4wNzQ1MDk4MDM5MjE1Njg2M11dLFsxLFswLjUwOTgwMzkyMTU2ODYyNzQsMC4wNzg0MzEzNzI1NDkwMTk2LDAuMTMzMzMzMzMzMzMzMzMzMzNdXV19LCJwYXJhbXMiOnsic3BlZWQiOjAuMzEsInNpemUiOiJzcGVlZCIsImRlbnNpdHkiOnsidHlwZSI6InNhdyIsImlucHV0cyI6eyJ2YWx1ZSI6MC4xOSwibWluIjowLCJtYXgiOjF9fX0sImxheWVycyI6W3siZWZmZWN0IjoicGxhc21hIiwib3BhY2l0eSI6MSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiUGFsZXR0ZTMiLCJpbnB1dHMiOnsiZGVuc2l0eSI6MC40Nywib2Zmc2V0IjoiZGVuc2l0eSIsImNlbnRlcl94IjowLjUsImNlbnRlcl95IjowLjV9fV19')
-RING_PATTERN_BLUE = canopy.Pattern('CTP-eyJpZCI6ImJsdWUiLCJ2ZXJzaW9uIjoxLCJuYW1lIjoiQmx1ZSIsInBhbGV0dGVzIjp7IlBhbGV0dGUxIjpbWzAsWzAuMTY5LDAuOTA2LDAuODQ0XV1dfSwicGFyYW1zIjp7fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzb2xpZCIsIm9wYWNpdHkiOjEsImJsZW5kIjoibm9ybWFsIiwicGFsZXR0ZSI6IlBhbGV0dGUxIiwiaW5wdXRzIjp7Im9mZnNldCI6MH19XX0')
-RING_PATTERN_PURPLE = canopy.Pattern('CTP-eyJrZXkiOiJwdXJwbGUtZmxvdyIsInZlcnNpb24iOjAsIm5hbWUiOiJwdXJwbGUtZmxvdyIsInBhbGV0dGVzIjp7IlBhbGV0dGUzIjpbWzAsWzAsMCwwXV0sWzAuMTUsWzAsMCwwXV0sWzAuMzksWzAuNTIxNTY4NjI3NDUwOTgwNCwwLjA5NDExNzY0NzA1ODgyMzUzLDAuNzg4MjM1Mjk0MTE3NjQ3XV0sWzAuNjEsWzAuMTgwMzkyMTU2ODYyNzQ1MSwwLjAxOTYwNzg0MzEzNzI1NDksMC4zMDE5NjA3ODQzMTM3MjU0N11dLFswLjk5LFswLDAsMF1dXX0sInBhcmFtcyI6eyJkZW5zaXR5Ijp7InR5cGUiOiJzYXciLCJpbnB1dHMiOnsidmFsdWUiOjAuNSwibWluIjowLCJtYXgiOjF9fX0sImxheWVycyI6W3siZWZmZWN0IjoicGlud2hlZWwiLCJvcGFjaXR5IjowLjgxLCJibGVuZCI6Im5vcm1hbCIsInBhbGV0dGUiOiJQYWxldHRlMyIsImlucHV0cyI6eyJvZmZzZXQiOiJkZW5zaXR5Iiwic2l6ZSI6MC4zOCwiY2VudGVyX3giOjAuNSwiY2VudGVyX3kiOjAuNX19XX0')
-RING_PATTERN_YELLOW = canopy.Pattern('CTP-eyJpZCI6InllbGxvdyIsInZlcnNpb24iOjEsIm5hbWUiOiJZZWxsb3ciLCJwYWxldHRlcyI6eyJQYWxldHRlMSI6W1swLFswLjk1NywwLjcyMSwwLjE1M11dXX0sInBhcmFtcyI6e30sImxheWVycyI6W3siZWZmZWN0Ijoic29saWQiLCJvcGFjaXR5IjoxLCJibGVuZCI6Im5vcm1hbCIsInBhbGV0dGUiOiJQYWxldHRlMSIsImlucHV0cyI6eyJvZmZzZXQiOjB9fV19')
-RING_PATTERN_AMBIENT_RAINBOW = canopy.Pattern("CTP-eyJrZXkiOiJyYWluYm93IiwidmVyc2lvbiI6MCwibmFtZSI6Ik5ldyBQYXR0ZXJuIiwicGFsZXR0ZXMiOnsiUGFsZXR0ZTEiOltbMCxbMSwwLDBdXSxbMC4xNCxbMSwwLjgyNzQ1MDk4MDM5MjE1NjgsMC4xNDExNzY0NzA1ODgyMzUzXV0sWzAuMzEsWzAuMDUwOTgwMzkyMTU2ODYyNzQ0LDEsMF1dLFswLjUyLFswLDAuOTQxMTc2NDcwNTg4MjM1MywwLjg2Mjc0NTA5ODAzOTIxNTddXSxbMC42OCxbMCwwLjI4MjM1Mjk0MTE3NjQ3MDYsMV1dLFswLjgsWzAuNDExNzY0NzA1ODgyMzUyOSwwLDAuODc4NDMxMzcyNTQ5MDE5Nl1dLFswLjg5LFsxLDAsMC44MTU2ODYyNzQ1MDk4MDM5XV0sWzEsWzEsMCwwXV1dfSwicGFyYW1zIjp7fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzcGFya2xlcyIsIm9wYWNpdHkiOjEsImJsZW5kIjoibm9ybWFsIiwicGFsZXR0ZSI6IlBhbGV0dGUxIiwiaW5wdXRzIjp7ImRlbnNpdHkiOjAuNSwib2Zmc2V0Ijp7InR5cGUiOiJzaW4iLCJpbnB1dHMiOnsidmFsdWUiOjAuMzYsIm1pbiI6MCwibWF4IjoxfX19fV19")
-TEST_PATTERN = canopy.Pattern('CTP-eyJrZXkiOiJzb2xpZC1yZWQiLCJ2ZXJzaW9uIjowLCJuYW1lIjoic29saWQgcmVkIiwicGFsZXR0ZXMiOnsicHJpbWFyeSI6W1swLFsxLDAsMF1dLFswLjE1LFsxLDEsMF1dLFswLjMsWzAsMSwwXV0sWzAuNSxbMCwxLDFdXSxbMC43LFswLDAsMV1dLFswLjg1LFsxLDAsMV1dLFsxLFsxLDAsMF1dXSwiX2JsYWNrLXdoaXRlIjpbWzAsWzAsMCwwXV0sWzEsWzEsMSwxXV1dfSwicGFyYW1zIjp7InNwZWVkIjowLjEsInNpemUiOiJzcGVlZCIsImRlbnNpdHkiOnsidHlwZSI6InNhdyIsImlucHV0cyI6eyJ2YWx1ZSI6MC41LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzb2xpZCIsIm9wYWNpdHkiOjEsImJsZW5kIjoibm9ybWFsIiwicGFsZXR0ZSI6InByaW1hcnkiLCJpbnB1dHMiOnsib2Zmc2V0Ijoic3BlZWQifX0seyJlZmZlY3QiOiJncmFkaWVudCIsIm9wYWNpdHkiOjAuNSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoicHJpbWFyeSIsImlucHV0cyI6eyJvZmZzZXQiOiJkZW5zaXR5Iiwic2l6ZSI6MC41LCJyb3RhdGlvbiI6MH19XX0')
+# LED patterns
+PATTERN_RED = canopy.Pattern('CTP-eyJrZXkiOiJyZWQtZmxvdyIsInZlcnNpb24iOjAsIm5hbWUiOiJyZWQtZmxvdyIsInBhbGV0dGVzIjp7InByaW1hcnkiOltbMC4wMSxbMSwwLDBdXSxbMC41MixbMC45MjE1Njg2Mjc0NTA5ODAzLDAuMTI5NDExNzY0NzA1ODgyMzcsMC41MzcyNTQ5MDE5NjA3ODQzXV0sWzAuOTksWzAsMCwwXV1dLCJfYmxhY2std2hpdGUiOltbMCxbMCwwLDBdXSxbMSxbMSwxLDFdXV19LCJwYXJhbXMiOnsic2l6ZSI6InNwZWVkIiwic3BlZWQiOjAuMSwiZGVuc2l0eSI6eyJ0eXBlIjoicnNhdyIsImlucHV0cyI6eyJ2YWx1ZSI6MC41LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJncmFkaWVudCIsIm9wYWNpdHkiOjAuMjQsImJsZW5kIjoibm9ybWFsIiwicGFsZXR0ZSI6InByaW1hcnkiLCJpbnB1dHMiOnsib2Zmc2V0IjoiZGVuc2l0eSIsInNpemUiOjAuNSwicm90YXRpb24iOjB9fV19')
+PATTERN_BLUE = canopy.Pattern('CTP-eyJrZXkiOiJibHVlLWZsb3ciLCJ2ZXJzaW9uIjowLCJuYW1lIjoiYmx1ZS1mbG93IiwicGFsZXR0ZXMiOnsicHJpbWFyeSI6W1swLjAxLFswLjAxOTYwNzg0MzEzNzI1NDksMCwwLjYzOTIxNTY4NjI3NDUwOThdXSxbMC41MixbMC4xMjk0MTE3NjQ3MDU4ODIzNywwLjUyMTU2ODYyNzQ1MDk4MDQsMC45MjE1Njg2Mjc0NTA5ODAzXV0sWzAuOTksWzAsMCwwXV1dLCJfYmxhY2std2hpdGUiOltbMCxbMCwwLDBdXSxbMSxbMSwxLDFdXV19LCJwYXJhbXMiOnsic2l6ZSI6InNwZWVkIiwic3BlZWQiOjAuMSwiZGVuc2l0eSI6eyJ0eXBlIjoicnNhdyIsImlucHV0cyI6eyJ2YWx1ZSI6MC41LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJncmFkaWVudCIsIm9wYWNpdHkiOjAuMjQsImJsZW5kIjoibm9ybWFsIiwicGFsZXR0ZSI6InByaW1hcnkiLCJpbnB1dHMiOnsib2Zmc2V0IjoiZGVuc2l0eSIsInNpemUiOjAuNSwicm90YXRpb24iOjB9fV19')
+PATTERN_PURPLE = canopy.Pattern('CTP-eyJrZXkiOiJwdXJwbGUtZmxvdyIsInZlcnNpb24iOjAsIm5hbWUiOiJwdXJwbGUtZmxvdyIsInBhbGV0dGVzIjp7InByaW1hcnkiOltbMC4wMSxbMC41NjQ3MDU4ODIzNTI5NDEyLDAsMV1dLFswLjUyLFswLjc4ODIzNTI5NDExNzY0NywwLjEyOTQxMTc2NDcwNTg4MjM3LDAuOTIxNTY4NjI3NDUwOTgwM11dLFswLjk5LFswLDAsMF1dXSwiX2JsYWNrLXdoaXRlIjpbWzAsWzAsMCwwXV0sWzEsWzEsMSwxXV1dfSwicGFyYW1zIjp7InNpemUiOiJzcGVlZCIsInNwZWVkIjowLjEsImRlbnNpdHkiOnsidHlwZSI6InJzYXciLCJpbnB1dHMiOnsidmFsdWUiOjAuNSwibWluIjowLCJtYXgiOjF9fX0sImxheWVycyI6W3siZWZmZWN0IjoiZ3JhZGllbnQiLCJvcGFjaXR5IjowLjI0LCJibGVuZCI6Im5vcm1hbCIsInBhbGV0dGUiOiJwcmltYXJ5IiwiaW5wdXRzIjp7Im9mZnNldCI6ImRlbnNpdHkiLCJzaXplIjowLjUsInJvdGF0aW9uIjowfX1dfQ')
+PATTERN_YELLOW = canopy.Pattern('CTP-eyJrZXkiOiJ5ZWxsb3ctZmxvdyIsInZlcnNpb24iOjAsIm5hbWUiOiJ5ZWxsb3ctZmxvdyIsInBhbGV0dGVzIjp7InByaW1hcnkiOltbMC4wMSxbMSwwLjg2NjY2NjY2NjY2NjY2NjcsMF1dLFswLjMsWzAuNTQ5MDE5NjA3ODQzMTM3MywwLjMwOTgwMzkyMTU2ODYyNzQ2LDAuMDgyMzUyOTQxMTc2NDcwNTldXSxbMC42LFswLjAxMTc2NDcwNTg4MjM1Mjk0MSwwLjAwNzg0MzEzNzI1NDkwMTk2LDAuMDAzOTIxNTY4NjI3NDUwOThdXSxbMC45OSxbMCwwLDBdXV0sIl9ibGFjay13aGl0ZSI6W1swLFswLDAsMF1dLFsxLFsxLDEsMV1dXX0sInBhcmFtcyI6eyJzaXplIjoic3BlZWQiLCJzcGVlZCI6MC4xLCJkZW5zaXR5Ijp7InR5cGUiOiJyc2F3IiwiaW5wdXRzIjp7InZhbHVlIjowLjUsIm1pbiI6MCwibWF4IjoxfX19LCJsYXllcnMiOlt7ImVmZmVjdCI6ImdyYWRpZW50Iiwib3BhY2l0eSI6MC4yNCwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoicHJpbWFyeSIsImlucHV0cyI6eyJvZmZzZXQiOiJkZW5zaXR5Iiwic2l6ZSI6MC41LCJyb3RhdGlvbiI6MH19XX0')
+PATTERN_AMBIENT_RAINBOW = canopy.Pattern("CTP-eyJrZXkiOiJyYWluYm93IiwidmVyc2lvbiI6MCwibmFtZSI6Ik5ldyBQYXR0ZXJuIiwicGFsZXR0ZXMiOnsiUGFsZXR0ZTEiOltbMCxbMSwwLDBdXSxbMC4xNCxbMSwwLjgyNzQ1MDk4MDM5MjE1NjgsMC4xNDExNzY0NzA1ODgyMzUzXV0sWzAuMzEsWzAuMDUwOTgwMzkyMTU2ODYyNzQ0LDEsMF1dLFswLjUyLFswLDAuOTQxMTc2NDcwNTg4MjM1MywwLjg2Mjc0NTA5ODAzOTIxNTddXSxbMC42OCxbMCwwLjI4MjM1Mjk0MTE3NjQ3MDYsMV1dLFswLjgsWzAuNDExNzY0NzA1ODgyMzUyOSwwLDAuODc4NDMxMzcyNTQ5MDE5Nl1dLFswLjg5LFsxLDAsMC44MTU2ODYyNzQ1MDk4MDM5XV0sWzEsWzEsMCwwXV1dfSwicGFyYW1zIjp7fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzcGFya2xlcyIsIm9wYWNpdHkiOjEsImJsZW5kIjoibm9ybWFsIiwicGFsZXR0ZSI6IlBhbGV0dGUxIiwiaW5wdXRzIjp7ImRlbnNpdHkiOjAuNSwib2Zmc2V0Ijp7InR5cGUiOiJzaW4iLCJpbnB1dHMiOnsidmFsdWUiOjAuMzYsIm1pbiI6MCwibWF4IjoxfX19fV19")
 
 
 class FigurineSensor:
-    # RFID tag to ring light pattern mapping
+    # RFID tag to pattern mapping
     TAG_PATTERNS = {
-        '88ab1466080104e0': RING_PATTERN_RED,
-        'e29f1466080104e0': RING_PATTERN_BLUE,
-        '24941466080104e0': RING_PATTERN_PURPLE,
-        '2bb71466080104e0': RING_PATTERN_YELLOW,
+        '88ab1466080104e0': PATTERN_RED,
+        'e29f1466080104e0': PATTERN_BLUE,
+        '24941466080104e0': PATTERN_PURPLE,
+        '2bb71466080104e0': PATTERN_YELLOW,
     }
 
     def __init__(self, name="figurine_sensor"):
@@ -51,8 +50,8 @@ class FigurineSensor:
         # Ring light configuration
         self.pattern_duration = 5.0  # How long to show pattern after tag scan
 
-        # Ring light state
-        self.current_pattern = RING_PATTERN_AMBIENT_RAINBOW  # Start with rainbow sparkles
+        # LED state
+        self.current_pattern = PATTERN_AMBIENT_RAINBOW  # Start with ambient rainbow
         self.pattern_end_time = 0
         self.sound_end_time = 0  # Track when to stop playing the sound
 
@@ -115,8 +114,8 @@ class FigurineSensor:
                 # Check if pattern period is over
                 if self.pattern_end_time > 0 and current_time > self.pattern_end_time:
                     self.pattern_end_time = 0
-                    self.current_pattern = RING_PATTERN_AMBIENT_RAINBOW
-                    print("Pattern complete - back to rainbow sparkles")
+                    self.current_pattern = PATTERN_AMBIENT_RAINBOW
+                    print("Pattern complete - back to ambient rainbow")
 
                 # Update LEDs - all strands react to RFID tags
                 canopy.clear()
@@ -125,15 +124,12 @@ class FigurineSensor:
                 if self.current_pattern:
                     canopy.draw(self.ring_light_segment, self.current_pattern, params=self.params)
 
-                # LED strand and D1 strand show test pattern when idle, or sync with ring light when RFID scanned
+                # D1 strand always shows current pattern (same as ring light)
+                canopy.draw(self.d1_segment, self.current_pattern, params=self.params)
+
+                # LED strand only lights up when RFID is scanned
                 if self.pattern_end_time > 0:
-                    # RFID tag is active - all strands show the same pattern as ring light
                     canopy.draw(self.led_strand_segment, self.current_pattern, params=self.params)
-                    canopy.draw(self.d1_segment, self.current_pattern, params=self.params)
-                else:
-                    # Idle - both LED strand and D1 strand show test pattern
-                    canopy.draw(self.led_strand_segment, TEST_PATTERN, params=self.params)
-                    canopy.draw(self.d1_segment, TEST_PATTERN, params=self.params)
 
                 canopy.render()
 
