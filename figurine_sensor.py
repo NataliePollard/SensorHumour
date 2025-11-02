@@ -34,24 +34,35 @@ PATTERN_PURPLE_STRAND = canopy.Pattern('CTP-eyJrZXkiOiJwdXJwbGUtZmxvdyIsInZlcnNp
 
 
 class FigurineSensor:
-    # RFID tag to pattern mapping (ring light and LED strand versions)
-    TAG_PATTERNS_RING = {
-        '88ab1466080104e0': PATTERN_RED,
-        'e29f1466080104e0': PATTERN_BLUE,
-        '24941466080104e0': PATTERN_PURPLE,
-        '2bb71466080104e0': PATTERN_YELLOW,
-    }
-
-    TAG_PATTERNS_STRAND = {
-        '88ab1466080104e0': PATTERN_RED_STRAND,
-        'e29f1466080104e0': PATTERN_BLUE_STRAND,
-        '24941466080104e0': PATTERN_PURPLE_STRAND,
-        '2bb71466080104e0': PATTERN_YELLOW,  # Yellow uses same pattern on both
+    # RFID tag to pattern mapping and strand assignment
+    # Each tag triggers its pattern on the ring light and one specific strand
+    TAG_PATTERNS = {
+        '88ab1466080104e0': {  # Red tag
+            'ring': PATTERN_RED,
+            'strand': PATTERN_RED_STRAND,
+            'strand_index': 0,  # LED2_DATA
+        },
+        'e29f1466080104e0': {  # Blue tag
+            'ring': PATTERN_BLUE,
+            'strand': PATTERN_BLUE_STRAND,
+            'strand_index': 1,  # D1
+        },
+        '24941466080104e0': {  # Purple tag
+            'ring': PATTERN_PURPLE,
+            'strand': PATTERN_PURPLE_STRAND,
+            'strand_index': 2,  # D5
+        },
+        '2bb71466080104e0': {  # Yellow tag
+            'ring': PATTERN_YELLOW,
+            'strand': PATTERN_YELLOW,
+            'strand_index': 3,  # D3
+        },
     }
 
     def __init__(self, name="figurine_sensor"):
         self.name = name
-        self.num_leds = 100
+        self.num_leds_ring = 16  # Ring light has 16 LEDs
+        self.num_leds_strand = 400  # LED strand has 400 LEDs
 
         # Audio setup
         self.audio = Audio()
@@ -66,13 +77,13 @@ class FigurineSensor:
         # LED state
         self.current_pattern_ring = PATTERN_AMBIENT_RAINBOW  # Ring light pattern
         self.current_pattern_strand = PATTERN_AMBIENT_RAINBOW  # LED strand pattern
+        self.active_strand_index = -1  # Which strand should be lit (-1 means none)
         self.pattern_end_time = 0
         self.sound_end_time = 0  # Track when to stop playing the sound
 
         # Canopy setup
         self.ring_light_segment = None
-        self.led_strand_segment = None
-        self.d1_segment = None
+        self.strand_segments = []  # LED2_DATA, D1, D2, D3 strands
         self.params = None
 
     async def start(self):
@@ -81,15 +92,21 @@ class FigurineSensor:
         self.audio.start()
 
         print("Starting LED strips")
-        # Initialize three LED data pins - LED1 for ring light, LED2 for LED strand, D1 for test strand
-        canopy.init([fern.LED1_DATA, fern.LED2_DATA, fern.D1], self.num_leds)
+        # Initialize 5 LED data pins - LED1_DATA for ring light, LED2_DATA/D1/D5/D3 for strands
+        # Use max LED count for initialization
+        max_leds = max(self.num_leds_ring, self.num_leds_strand)
+        canopy.init([fern.LED1_DATA, fern.LED2_DATA, fern.D1, fern.D5, fern.D3], max_leds)
 
         # Create segments for rendering
-        self.ring_light_segment = canopy.Segment(0, 0, self.num_leds)  # Ring light on LED1_DATA
-        self.led_strand_segment = canopy.Segment(1, 0, 100)  # LED strand on LED2_DATA (100 LEDs)
-        self.d1_segment = canopy.Segment(2, 0, 100)  # D1 test strand (100 LEDs)
+        self.ring_light_segment = canopy.Segment(0, 0, self.num_leds_ring)  # Ring light on LED1_DATA (16 LEDs)
+        self.strand_segments = [
+            canopy.Segment(1, 0, self.num_leds_strand),  # Red strand on LED2_DATA (400 LEDs)
+            canopy.Segment(2, 0, self.num_leds_strand),  # Blue strand on D1 (400 LEDs)
+            canopy.Segment(3, 0, self.num_leds_strand),  # Purple strand on D5 (400 LEDs)
+            canopy.Segment(4, 0, self.num_leds_strand),  # Yellow strand on D3 (400 LEDs)
+        ]
         self.params = canopy.Params()
-        print("LED segments created: Ring light, LED strand, and D1 test strand")
+        print(f"LED segments created: Ring light on LED1_DATA ({self.num_leds_ring} LEDs), 4 strands on LED2_DATA/D1/D5/D3 ({self.num_leds_strand} LEDs each)")
 
         # Start the render loop
         asyncio.create_task(self._render_loop())
@@ -99,15 +116,15 @@ class FigurineSensor:
         """Called when an RFID tag is detected"""
         print(f"Tag scanned: {uid}")
 
-        pattern_ring = self.TAG_PATTERNS_RING.get(uid)
-        pattern_strand = self.TAG_PATTERNS_STRAND.get(uid)
-        if pattern_ring and pattern_strand:
-            self.current_pattern_ring = pattern_ring
-            self.current_pattern_strand = pattern_strand
+        tag_config = self.TAG_PATTERNS.get(uid)
+        if tag_config:
+            self.current_pattern_ring = tag_config['ring']
+            self.current_pattern_strand = tag_config['strand']
+            self.active_strand_index = tag_config['strand_index']
             self.pattern_end_time = time.time() + self.pattern_duration
             self.sound_end_time = time.time() + self.pattern_duration  # Play sound for same duration
             self.figurine_audio.play_correct()
-            print(f"Playing pattern for tag {uid}")
+            print(f"Playing pattern for tag {uid} on strand {self.active_strand_index}")
         else:
             print("Unknown tag - ignoring")
 
@@ -130,6 +147,7 @@ class FigurineSensor:
                 # Check if pattern period is over
                 if self.pattern_end_time > 0 and current_time > self.pattern_end_time:
                     self.pattern_end_time = 0
+                    self.active_strand_index = -1  # Turn off all strands
                     self.current_pattern_ring = PATTERN_AMBIENT_RAINBOW
                     self.current_pattern_strand = PATTERN_AMBIENT_RAINBOW
                     print("Pattern complete - back to ambient rainbow")
@@ -140,12 +158,9 @@ class FigurineSensor:
                 # Ring light shows current pattern (RFID triggered or ambient rainbow)
                 canopy.draw(self.ring_light_segment, self.current_pattern_ring, params=self.params)
 
-                # D1 strand always shows current ring light pattern
-                canopy.draw(self.d1_segment, self.current_pattern_ring, params=self.params)
-
-                # LED strand only lights up when RFID is scanned (uses color-corrected pattern)
-                if self.pattern_end_time > 0:
-                    canopy.draw(self.led_strand_segment, self.current_pattern_strand, params=self.params)
+                # Only the active strand lights up when RFID is scanned
+                if self.pattern_end_time > 0 and self.active_strand_index >= 0:
+                    canopy.draw(self.strand_segments[self.active_strand_index], self.current_pattern_strand, params=self.params)
 
                 canopy.render()
 
