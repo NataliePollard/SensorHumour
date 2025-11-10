@@ -27,7 +27,7 @@ PATTERN_PURPLE = canopy.Pattern('CTP-eyJrZXkiOiJwdXJwbGUtZmxvdyIsInZlcnNpb24iOjA
 PATTERN_YELLOW = canopy.Pattern('CTP-eyJrZXkiOiJ5ZWxsb3ctZmxvdyIsInZlcnNpb24iOjAsIm5hbWUiOiJ5ZWxsb3ctZmxvdyIsInBhbGV0dGVzIjp7InByaW1hcnkiOltbMC4wMSxbMSwwLjg2NjY2NjY2NjY2NjY2NjcsMF1dLFswLjMsWzAuNTQ5MDE5NjA3ODQzMTM3MywwLjMwOTgwMzkyMTU2ODYyNzQ2LDAuMDgyMzUyOTQxMTc2NDcwNTldXSxbMC42LFswLjAxMTc2NDcwNTg4MjM1Mjk0MSwwLjAwNzg0MzEzNzI1NDkwMTk2LDAuMDAzOTIxNTY4NjI3NDUwOThdXSxbMC45OSxbMCwwLDBdXV0sIl9ibGFjay13aGl0ZSI6W1swLFswLDAsMF1dLFsxLFsxLDEsMV1dXX0sInBhcmFtcyI6eyJzaXplIjoic3BlZWQiLCJzcGVlZCI6MC4xLCJkZW5zaXR5Ijp7InR5cGUiOiJyc2F3IiwiaW5wdXRzIjp7InZhbHVlIjowLjUsIm1pbiI6MCwibWF4IjoxfX19LCJsYXllcnMiOlt7ImVmZmVjdCI6ImdyYWRpZW50Iiwib3BhY2l0eSI6MC4yNCwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoicHJpbWFyeSIsImlucHV0cyI6eyJvZmZzZXQiOiJkZW5zaXR5Iiwic2l6ZSI6MC41LCJyb3RhdGlvbiI6MH19XX0')
 PATTERN_AMBIENT_RAINBOW = canopy.Pattern("CTP-eyJrZXkiOiJyYWluYm93IiwidmVyc2lvbiI6MCwibmFtZSI6Ik5ldyBQYXR0ZXJuIiwicGFsZXR0ZXMiOnsiUGFsZXR0ZTEiOltbMCxbMSwwLDBdXSxbMC4xNSxbMCwwLDBdXSxbMC4yOSxbMSwwLjgyNzQ1MDk4MDM5MjE1NjgsMC4xNDExNzY0NzA1ODgyMzUzXV0sWzAuNDMsWzAsMCwwXV0sWzAuNTksWzAuMDc0NTA5ODAzOTIxNTY4NjMsMC42MzEzNzI1NDkwMTk2MDc4LDBdXSxbMC43MyxbMCwwLDBdXSxbMC44NyxbMC4zMzcyNTQ5MDE5NjA3ODQzNCwwLDAuNDU4ODIzNTI5NDExNzY0N11dLFsxLFswLDAsMF1dXX0sInBhcmFtcyI6e30sImxheWVycyI6W3siZWZmZWN0Ijoic3BhcmtsZXMiLCJvcGFjaXR5IjoxLCJibGVuZCI6Im5vcm1hbCIsInBhbGV0dGUiOiJQYWxldHRlMSIsImlucHV0cyI6eyJkZW5zaXR5IjowLjUsIm9mZnNldCI6eyJ0eXBlIjoic2luIiwiaW5wdXRzIjp7InZhbHVlIjowLjM2LCJtaW4iOjAsIm1heCI6MX19fX1dfQ")
 
-PATTERN_GAME_ON = canopy.Pattern('CTP-eyJrZXkiOiJnYW1lLW9uIiwidmVyc2lvbiI6MCwibmFtZSI6ImdhbWUtb24iLCJwYWxldHRlcyI6eyJwcmltYXJ5IjpbWzAsWzEsMCwwXV0sWzAuMjEsWzEsMCwwXV0sWzAuMjEsWzAuMjgyMzUyOTQxMTc2NDcwNiwxLDBdXSxbMC40NSxbMC4xMTM3MjU0OTAxOTYwNzg0MywwLjQ1ODgyMzUyOTQxMTc2NDcsMF1dLFswLjQ2LFswLjc2NDcwNTg4MjM1Mjk0MTEsMCwxXV0sWzAuNjIsWzAuNDUwOTgwMzkyMTU2ODYyNzUsMC4xNjQ3MDU4ODIzNTI5NDExNywwLjQ1MDk4MDM5MjE1Njg2Mjc1XV0sWzAuNzUsWzAuNTYsMC4xMywwLjM2XV0sWzAuNzYsWzAuNjcwNTg4MjM1Mjk0MTE3NiwwLjY0MzEzNzI1NDkwMTk2MDgsMC4xMDE5NjA3ODQzMTM3MjU0OV1dLFswLjk5LFsxLDAuNzQ5MDE5NjA3ODQzMTM3MywwXV1dLCJfYmxhY2std2hpdGUiOltbMCxbMCwwLDBdXSxbMSxbMSwxLDFdXV19LCJwYXJhbXMiOnsic3BlZWQiOjAuMSwic2l6ZSI6InNwZWVkIiwiZGVuc2l0eSI6eyJ0eXBlIjoic2F3IiwiaW5wdXRzIjp7InZhbHVlIjowLjE1LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzb2xpZCIsIm9wYWNpdHkiOjAuNSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoicHJpbWFyeSIsImlucHV0cyI6eyJvZmZzZXQiOiJkZW5zaXR5In19XX0')
+PATTERN_GAME_ON = canopy.Pattern('CTP-eyJrZXkiOiJnYW1lLW9uIiwidmVyc2lvbiI6MCwibmFtZSI6ImdhbWUtb24iLCJwYWxldHRlcyI6eyJwcmltYXJ5IjpbWzAsWzEsMCwwXV0sWzAuMjEsWzEsMCwwXV0sWzAuMjEsWzAuMjgyMzUyOTQxMTc2NDcwNiwxLDBdXSxbMC40NSxbMC4xMTM3MjU0OTAxOTYwNzg0MywwLjQ1ODgyMzUyOTQxMTc2NDcsMF1dLFswLjQ2LFswLjc2NDcwNTg4MjM1Mjk0MTEsMCwxXV0sWzAuNjIsWzAuNDUwOTgwMzkyMTU2ODYyNzUsMC4xNjQ3MDU4ODIzNTI5NDExNywwLjQ1MDk4MDM5MjE1Njg2Mjc1XV0sWzAuNzUsWzAuNTYsMC4xMywwLjM2XV0sWzAuNzYsWzAuNjcwNTg4MjM1Mjk0MTE3NiwwLjY0MzEzNzI1NDkwMTk2MDgsMC4xMDE5NjA3ODQzMTM3MjU0OV1dLFswLjk4LFswLjk2LDAuNzMsMC4wMV1dLFsxLFsxLDAsMC4xNjg2Mjc0NTA5ODAzOTIxN11dXSwiX2JsYWNrLXdoaXRlIjpbWzAsWzAsMCwwXV0sWzEsWzEsMSwxXV1dfSwicGFyYW1zIjp7InNwZWVkIjowLjEsInNpemUiOiJzcGVlZCIsImRlbnNpdHkiOnsidHlwZSI6InNhdyIsImlucHV0cyI6eyJ2YWx1ZSI6MC4xNSwibWluIjowLCJtYXgiOjF9fX0sImxheWVycyI6W3siZWZmZWN0Ijoic29saWQiLCJvcGFjaXR5IjowLjUsImJsZW5kIjoibm9ybWFsIiwicGFsZXR0ZSI6InByaW1hcnkiLCJpbnB1dHMiOnsib2Zmc2V0IjoiZGVuc2l0eSJ9fV19')
 
 # LED strand color-corrected patterns (compensating for LED strip color imbalance)
 # Red channel is very weak on the LED strand, so these patterns boost red significantly
@@ -117,10 +117,10 @@ class GameSensor:
         self.audio.start()
 
         print("Starting LED strips")
-        # Initialize 5 LED data pins - LED1_DATA for ring light, LED2_DATA/D1/D5/D3 for strands
+        # Initialize 6 LED data pins - LED1_DATA for ring light, LED2_DATA/D1/D5/D3 for color strands, D6 for ambient rainbow
         # Use max LED count for initialization
         max_leds = max(self.num_leds_ring, self.num_leds_strand)
-        canopy.init([fern.LED1_DATA, fern.LED2_DATA, fern.D1, fern.D5, fern.D3], max_leds)
+        canopy.init([fern.LED1_DATA, fern.LED2_DATA, fern.D1, fern.D5, fern.D3, fern.D6], max_leds)
 
         # Create segments for rendering
         self.ring_light_segment = canopy.Segment(0, 0, self.num_leds_ring)  # Ring light on LED1_DATA (16 LEDs)
@@ -130,8 +130,9 @@ class GameSensor:
             canopy.Segment(3, 0, self.num_leds_strand),  # Purple strand on D5 (400 LEDs)
             canopy.Segment(4, 0, self.num_leds_strand),  # Yellow strand on D3 (400 LEDs)
         ]
+        self.ambient_strand_segment = canopy.Segment(5, 0, self.num_leds_strand)  # Game On pattern strand on D6 (400 LEDs)
         self.params = canopy.Params()
-        print(f"LED segments created: Ring light on LED1_DATA ({self.num_leds_ring} LEDs), 4 strands on LED2_DATA/D1/D5/D3 ({self.num_leds_strand} LEDs each)")
+        print(f"LED segments created: Ring light on LED1_DATA ({self.num_leds_ring} LEDs), 4 color strands on LED2_DATA/D1/D5/D3 ({self.num_leds_strand} LEDs each), Game On strand on D6 ({self.num_leds_strand} LEDs)")
 
         # Start the render loop
         asyncio.create_task(self._render_loop())
@@ -204,6 +205,9 @@ class GameSensor:
 
                 # Ring light shows current pattern (RFID triggered or ambient rainbow)
                 canopy.draw(self.ring_light_segment, self.current_pattern_ring, params=self.params)
+
+                # Game On pattern strand on D6 always displays
+                canopy.draw(self.ambient_strand_segment, PATTERN_GAME_ON, params=self.params)
 
                 # Only the active strand lights up when RFID is scanned
                 if self.pattern_end_time > 0 and self.active_strand_index >= 0:
