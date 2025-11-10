@@ -1,14 +1,20 @@
 """
 Game Sensor RFID LED Controller
 
-When an RFID tag is scanned, all LED strands display the corresponding flowing water animation
-for 5 seconds with accompanying water sound fade-out, then return to the ambient rainbow sparkle pattern.
+Hourglass Game Experience:
+- Scan hourglass tag to start 5-minute game
+- Press button 1-4 to win and display color (red, blue, purple, yellow)
+- Press button 5 to turn off lights
+- When game is won, music stops and the matching color pattern displays on ring and both strands
+
+Hardware:
+- Ring light: 16 LEDs on LED1_DATA
+- Game strands: 200 LEDs each on D6 and D7 (same pattern on both)
+- Buttons: D1, D2, D3, D4, D5
 
 Supported RFID tags:
-- Red tag (88ab1466080104e0) - Red flowing water animation
-- Blue tag (e29f1466080104e0) - Blue flowing water animation
-- Purple tag (24941466080104e0) - Purple flowing water animation
-- Yellow tag (2bb71466080104e0) - Yellow flowing water animation
+- Hourglass tag 1 (484e1466080104e0) - Start game
+- Hourglass tag 2 (bc591466080104e0) - Start game
 """
 import asyncio
 import canopy
@@ -38,29 +44,19 @@ PATTERN_YELLOW_STRAND = canopy.Pattern('CTP-eyJrZXkiOiJyZWQtZmxvdyIsInZlcnNpb24i
 
 
 class GameSensor:
-    # RFID tag to pattern mapping and strand assignment
-    # Each tag triggers its pattern on the ring light and one specific strand
+    """
+    Hourglass Game System:
+    - Two hourglass tags trigger a 5-minute game with music
+    - Ring light (16 LEDs) and two game strands on D6/D7 (200 LEDs each)
+    - Both game strands always display the same pattern
+    - 5 buttons (D1-D5) for game interaction:
+      D1 = Red win pattern
+      D2 = Blue win pattern
+      D3 = Purple win pattern
+      D4 = Yellow win pattern
+      D5 = Turn off lights
+    """
     TAG_PATTERNS = {
-        '88ab1466080104e0': {  # Red tag
-            'ring': PATTERN_RED,
-            'strand': PATTERN_RED_STRAND,
-            'strand_index': 0,  # LED2_DATA
-        },
-        'e29f1466080104e0': {  # Blue tag
-            'ring': PATTERN_BLUE,
-            'strand': PATTERN_BLUE_STRAND,
-            'strand_index': 1,  # D1
-        },
-        '24941466080104e0': {  # Purple tag
-            'ring': PATTERN_PURPLE,
-            'strand': PATTERN_PURPLE_STRAND,
-            'strand_index': 2,  # D5
-        },
-        '2bb71466080104e0': {  # Yellow tag
-            'ring': PATTERN_YELLOW,
-            'strand': PATTERN_YELLOW_STRAND,
-            'strand_index': 3,  # D3
-        },
         '484e1466080104e0': {  # Hourglass tag 1 - Game On pattern
             'ring': PATTERN_GAME_ON,
             'strand': None,
@@ -80,7 +76,7 @@ class GameSensor:
     def __init__(self, name="game_sensor"):
         self.name = name
         self.num_leds_ring = 16  # Ring light has 16 LEDs
-        self.num_leds_strand = 400  # LED strand has 400 LEDs
+        self.num_leds_strand = 200  # LED strands on D6 and D7 have 200 LEDs each
 
         # Audio setup
         self.audio = Audio()
@@ -89,10 +85,18 @@ class GameSensor:
         # NFC setup
         self.nfc = NfcWrapper(self._tag_found, self._tag_lost)
 
-        # Button setup on D2 pin (D1 is used for LED strand data)
-        self.button = Pin(fern.D2, Pin.IN, Pin.PULL_UP)
-        self.button_press_count = 0
-        self.button_was_pressed = False
+        # Button setup - 5 game buttons (D1, D2, D3, D4, D5)
+        self.button_pins = {
+            'D1': Pin(fern.D1, Pin.IN, Pin.PULL_UP),   # Button 1 - Red
+            'D2': Pin(fern.D2, Pin.IN, Pin.PULL_UP),   # Button 2 - Blue
+            'D3': Pin(fern.D3, Pin.IN, Pin.PULL_UP),   # Button 3 - Purple
+            'D4': Pin(fern.D4, Pin.IN, Pin.PULL_UP),   # Button 4 - Yellow
+            'D5': Pin(fern.D5, Pin.IN, Pin.PULL_UP),   # Button 5 - Off
+        }
+        self.button_was_pressed = {pin: False for pin in self.button_pins}
+
+        # Game state
+        self.is_game_active = False  # True when hourglass tag has been scanned within 5 minutes
 
         # Ring light configuration
         self.pattern_duration = 10.0  # How long to show pattern after tag scan
@@ -105,6 +109,7 @@ class GameSensor:
         self.sound_end_time = 0  # Track when to stop playing the sound
         self.pattern_start_time = 0  # Track when pattern started for brightness scaling
         self.brightness_scale = 1.0  # Scale factor for LED brightness (0.0 to 1.0)
+        self.win_pattern = None  # Pattern to display on D6/D7 when game is won
 
         # Canopy setup
         self.ring_light_segment = None
@@ -117,22 +122,19 @@ class GameSensor:
         self.audio.start()
 
         print("Starting LED strips")
-        # Initialize 6 LED data pins - LED1_DATA for ring light, LED2_DATA/D1/D5/D3 for color strands, D6 for ambient rainbow
+        # Initialize 8 LED data pins - LED1_DATA for ring light, LED2_DATA/D6/D7 for color strands, D6 for game on
+        # D1, D2, D3, D4, D5 are used for game buttons
         # Use max LED count for initialization
         max_leds = max(self.num_leds_ring, self.num_leds_strand)
-        canopy.init([fern.LED1_DATA, fern.LED2_DATA, fern.D1, fern.D5, fern.D3, fern.D6], max_leds)
+        canopy.init([fern.LED1_DATA, fern.LED2_DATA, fern.D6, fern.D7], max_leds)
 
         # Create segments for rendering
         self.ring_light_segment = canopy.Segment(0, 0, self.num_leds_ring)  # Ring light on LED1_DATA (16 LEDs)
-        self.strand_segments = [
-            canopy.Segment(1, 0, self.num_leds_strand),  # Red strand on LED2_DATA (400 LEDs)
-            canopy.Segment(2, 0, self.num_leds_strand),  # Blue strand on D1 (400 LEDs)
-            canopy.Segment(3, 0, self.num_leds_strand),  # Purple strand on D5 (400 LEDs)
-            canopy.Segment(4, 0, self.num_leds_strand),  # Yellow strand on D3 (400 LEDs)
-        ]
-        self.ambient_strand_segment = canopy.Segment(5, 0, self.num_leds_strand)  # Game On pattern strand on D6 (400 LEDs)
+        self.color_strand_segment = canopy.Segment(1, 0, self.num_leds_strand)  # Color strand on LED2_DATA (400 LEDs)
+        self.game_strand_d6_segment = canopy.Segment(2, 0, self.num_leds_strand)  # Game win strand on D6 (400 LEDs)
+        self.game_strand_d7_segment = canopy.Segment(3, 0, self.num_leds_strand)  # Game win strand on D7 (400 LEDs)
         self.params = canopy.Params()
-        print(f"LED segments created: Ring light on LED1_DATA ({self.num_leds_ring} LEDs), 4 color strands on LED2_DATA/D1/D5/D3 ({self.num_leds_strand} LEDs each), Game On strand on D6 ({self.num_leds_strand} LEDs)")
+        print(f"LED segments created: Ring light on LED1_DATA ({self.num_leds_ring} LEDs), Color strand on LED2_DATA ({self.num_leds_strand} LEDs), Game win strands on D6/D7 ({self.num_leds_strand} LEDs each)")
 
         # Start the render loop
         asyncio.create_task(self._render_loop())
@@ -156,6 +158,8 @@ class GameSensor:
             if 'music_duration' in tag_config:
                 # Hourglass tag - play music for specified duration (5 minutes = 300 seconds)
                 self.sound_end_time = time.time() + tag_config['music_duration']
+                self.is_game_active = True  # Game buttons are now active
+                print("Game is now ACTIVE! Press buttons to win!")
             else:
                 self.sound_end_time = time.time() + duration
 
@@ -169,22 +173,45 @@ class GameSensor:
         """Called when tag is removed"""
         print("Tag removed")
 
+    async def _handle_game_win(self, button_name):
+        """Handle game win condition - stop music and display color"""
+        print(f"GAME WON via {button_name}!")
+        self.is_game_active = False
+
+        # Stop the music immediately
+        asyncio.create_task(self.game_audio.fade_out())
+        self.sound_end_time = 0
+
+        # Set the pattern based on which button was pressed
+        button_to_pattern = {
+            'D1': (PATTERN_RED, PATTERN_RED_STRAND),        # Button 1 - Red
+            'D2': (PATTERN_BLUE, PATTERN_BLUE_STRAND),      # Button 2 - Blue
+            'D3': (PATTERN_PURPLE, PATTERN_PURPLE_STRAND),  # Button 3 - Purple
+            'D4': (PATTERN_YELLOW, PATTERN_YELLOW_STRAND),  # Button 4 - Yellow
+            'D5': (None, None),                              # Button 5 - Off
+        }
+
+        ring_pattern, strand_pattern = button_to_pattern.get(button_name, (PATTERN_AMBIENT_RAINBOW, PATTERN_AMBIENT_RAINBOW))
+
+        self.current_pattern_ring = ring_pattern if ring_pattern else None
+        self.win_pattern = strand_pattern
+        self.pattern_end_time = 0  # Keep the win pattern indefinitely (or set a duration if desired)
+
     async def _render_loop(self):
         """Main rendering loop - handles LED pattern updates"""
         while True:
             try:
                 current_time = time.time()
 
-                # Check button press with debouncing
-                button_is_pressed = self.button.value() == 0  # Button pressed (LOW when pushed with PULL_UP)
-                if button_is_pressed and not self.button_was_pressed:
-                    # Button transitioned from not pressed to pressed
-                    self.button_press_count += 1
-                    print(f"Button pressed! Count: {self.button_press_count}")
-                    # Turn ring light to yellow pattern for 5 seconds
-                    self.current_pattern_ring = PATTERN_YELLOW
-                    self.pattern_end_time = time.time() + 5.0
-                self.button_was_pressed = button_is_pressed
+                # Check all 5 game buttons with debouncing
+                if self.is_game_active:
+                    for button_name, button_pin in self.button_pins.items():
+                        button_is_pressed = button_pin.value() == 0  # Button pressed (LOW when pushed with PULL_UP)
+                        if button_is_pressed and not self.button_was_pressed[button_name]:
+                            # Button transitioned from not pressed to pressed
+                            print(f"Button {button_name} pressed!")
+                            await self._handle_game_win(button_name)
+                        self.button_was_pressed[button_name] = button_is_pressed
 
                 # Check if sound period is over - fade out the water sound
                 if self.sound_end_time > 0 and current_time > self.sound_end_time:
@@ -204,14 +231,18 @@ class GameSensor:
                 canopy.clear()
 
                 # Ring light shows current pattern (RFID triggered or ambient rainbow)
-                canopy.draw(self.ring_light_segment, self.current_pattern_ring, params=self.params)
+                if self.current_pattern_ring:
+                    canopy.draw(self.ring_light_segment, self.current_pattern_ring, params=self.params)
 
-                # Game On pattern strand on D6 always displays
-                canopy.draw(self.ambient_strand_segment, PATTERN_GAME_ON, params=self.params)
-
-                # Only the active strand lights up when RFID is scanned
-                if self.pattern_end_time > 0 and self.active_strand_index >= 0:
-                    canopy.draw(self.strand_segments[self.active_strand_index], self.current_pattern_strand, params=self.params)
+                # D6 and D7 strands - show game win pattern or game on pattern
+                if self.win_pattern:
+                    # Game was won - display the win pattern on both D6 and D7
+                    canopy.draw(self.game_strand_d6_segment, self.win_pattern, params=self.params)
+                    canopy.draw(self.game_strand_d7_segment, self.win_pattern, params=self.params)
+                else:
+                    # Game is running - display Game On pattern on both D6 and D7
+                    canopy.draw(self.game_strand_d6_segment, PATTERN_GAME_ON, params=self.params)
+                    canopy.draw(self.game_strand_d7_segment, PATTERN_GAME_ON, params=self.params)
 
                 canopy.render()
 
