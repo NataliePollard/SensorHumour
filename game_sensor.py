@@ -35,8 +35,6 @@ PATTERN_AMBIENT_RAINBOW = canopy.Pattern("CTP-eyJrZXkiOiJyYWluYm93IiwidmVyc2lvbi
 
 PATTERN_GAME_ON = canopy.Pattern('CTP-eyJrZXkiOiJnYW1lLW9uIiwidmVyc2lvbiI6MCwibmFtZSI6ImdhbWUtb24iLCJwYWxldHRlcyI6eyJwcmltYXJ5IjpbWzAsWzEsMCwwXV0sWzAuMjEsWzEsMCwwXV0sWzAuMjEsWzAuMjgyMzUyOTQxMTc2NDcwNiwxLDBdXSxbMC40NSxbMC4xMTM3MjU0OTAxOTYwNzg0MywwLjQ1ODgyMzUyOTQxMTc2NDcsMF1dLFswLjQ2LFswLjc2NDcwNTg4MjM1Mjk0MTEsMCwxXV0sWzAuNjIsWzAuNDUwOTgwMzkyMTU2ODYyNzUsMC4xNjQ3MDU4ODIzNTI5NDExNywwLjQ1MDk4MDM5MjE1Njg2Mjc1XV0sWzAuNzUsWzAuNTYsMC4xMywwLjM2XV0sWzAuNzYsWzAuNjcwNTg4MjM1Mjk0MTE3NiwwLjY0MzEzNzI1NDkwMTk2MDgsMC4xMDE5NjA3ODQzMTM3MjU0OV1dLFswLjk4LFswLjk2LDAuNzMsMC4wMV1dLFsxLFsxLDAsMC4xNjg2Mjc0NTA5ODAzOTIxN11dXSwiX2JsYWNrLXdoaXRlIjpbWzAsWzAsMCwwXV0sWzEsWzEsMSwxXV1dfSwicGFyYW1zIjp7InNwZWVkIjowLjEsInNpemUiOiJzcGVlZCIsImRlbnNpdHkiOnsidHlwZSI6InNhdyIsImlucHV0cyI6eyJ2YWx1ZSI6MC4xNSwibWluIjowLCJtYXgiOjF9fX0sImxheWVycyI6W3siZWZmZWN0Ijoic29saWQiLCJvcGFjaXR5IjowLjUsImJsZW5kIjoibm9ybWFsIiwicGFsZXR0ZSI6InByaW1hcnkiLCJpbnB1dHMiOnsib2Zmc2V0IjoiZGVuc2l0eSJ9fV19')
 
-# LED strand color-corrected patterns (compensating for LED strip color imbalance)
-# Red channel is very weak on the LED strand, so these patterns boost red significantly
 PATTERN_RED_STRAND = canopy.Pattern('CTP-eyJrZXkiOiJyZWQtZmxvdyIsInZlcnNpb24iOjAsIm5hbWUiOiJyZWQtZmxvdyIsInBhbGV0dGVzIjp7InByaW1hcnkiOltbMC4wMSxbMCwxLDBdXSxbMC4yMixbMC4xMjk0MTE3NjQ3MDU4ODIzNywwLjkyMTU2ODYyNzQ1MDk4MDMsMC41MzcyNTQ5MDE5NjA3ODQzXV0sWzAuNDgsWzAsMCwwXV0sWzAuOTksWzAsMCwwXV1dLCJfYmxhY2std2hpdGUiOltbMCxbMCwwLDBdXSxbMSxbMSwxLDFdXV19LCJwYXJhbXMiOnsic2l6ZSI6InNwZWVkIiwic3BlZWQiOjAuMSwiZGVuc2l0eSI6eyJ0eXBlIjoicnNhdyIsImlucHV0cyI6eyJ2YWx1ZSI6MC41LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJncmFkaWVudCIsIm9wYWNpdHkiOjAuMjQsImJsZW5kIjoibm9ybWFsIiwicGFsZXR0ZSI6InByaW1hcnkiLCJpbnB1dHMiOnsib2Zmc2V0IjoiZGVuc2l0eSIsInNpemUiOjAuMjMsInJvdGF0aW9uIjowfX1dfQ')
 PATTERN_BLUE_STRAND = canopy.Pattern('CTP-eyJrZXkiOiJyZWQtZmxvdyIsInZlcnNpb24iOjAsIm5hbWUiOiJyZWQtZmxvdyIsInBhbGV0dGVzIjp7InByaW1hcnkiOltbMC4wMSxbMCwwLjA5ODAzOTIxNTY4NjI3NDUxLDAuNTgwMzkyMTU2ODYyNzQ1MV1dLFswLjIyLFswLjIyMzUyOTQxMTc2NDcwNTksMC4xMjk0MTE3NjQ3MDU4ODIzNywwLjkyMTU2ODYyNzQ1MDk4MDNdXSxbMC40OCxbMCwwLDBdXSxbMC45OSxbMCwwLDBdXV0sIl9ibGFjay13aGl0ZSI6W1swLFswLDAsMF1dLFsxLFsxLDEsMV1dXX0sInBhcmFtcyI6eyJzaXplIjoic3BlZWQiLCJzcGVlZCI6MC4xLCJkZW5zaXR5Ijp7InR5cGUiOiJyc2F3IiwiaW5wdXRzIjp7InZhbHVlIjowLjUsIm1pbiI6MCwibWF4IjoxfX19LCJsYXllcnMiOlt7ImVmZmVjdCI6ImdyYWRpZW50Iiwib3BhY2l0eSI6MC4yNCwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoicHJpbWFyeSIsImlucHV0cyI6eyJvZmZzZXQiOiJkZW5zaXR5Iiwic2l6ZSI6MC4yMywicm90YXRpb24iOjB9fV19')
 PATTERN_PURPLE_STRAND = canopy.Pattern('CTP-eyJrZXkiOiJyZWQtZmxvdyIsInZlcnNpb24iOjAsIm5hbWUiOiJyZWQtZmxvdyIsInBhbGV0dGVzIjp7InByaW1hcnkiOltbMC4wMSxbMCwwLjQ5NDExNzY0NzA1ODgyMzU1LDAuNTgwMzkyMTU2ODYyNzQ1MV1dLFswLjIxLFswLjEyOTQxMTc2NDcwNTg4MjM3LDAuNjMxMzcyNTQ5MDE5NjA3OCwwLjkyMTU2ODYyNzQ1MDk4MDNdXSxbMC40OCxbMCwwLDBdXSxbMC45OSxbMCwwLDBdXV0sIl9ibGFjay13aGl0ZSI6W1swLFswLDAsMF1dLFsxLFsxLDEsMV1dXX0sInBhcmFtcyI6eyJzaXplIjoic3BlZWQiLCJzcGVlZCI6MC4xLCJkZW5zaXR5Ijp7InR5cGUiOiJyc2F3IiwiaW5wdXRzIjp7InZhbHVlIjowLjUsIm1pbiI6MCwibWF4IjoxfX19LCJsYXllcnMiOlt7ImVmZmVjdCI6ImdyYWRpZW50Iiwib3BhY2l0eSI6MC4yNCwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoicHJpbWFyeSIsImlucHV0cyI6eyJvZmZzZXQiOiJkZW5zaXR5Iiwic2l6ZSI6MC4yMywicm90YXRpb24iOjB9fV19')
@@ -59,22 +57,17 @@ class GameSensor:
     TAG_PATTERNS = {
         '484e1466080104e0': {  # Hourglass tag 1 - Game On pattern
             'ring': PATTERN_GAME_ON,
-            'strand': None,
-            'strand_index': -1,  # No strand
             'duration': 300,  # 5 minutes (300 seconds)
             'music_duration': 300,  # 5 minutes (music duration)
         },
         'bc591466080104e0': {  # Hourglass tag 2 - Game On pattern
             'ring': PATTERN_GAME_ON,
-            'strand': None,
-            'strand_index': -1,  # No strand
             'duration': 300,  # 5 minutes (300 seconds)
             'music_duration': 300,  # 5 minutes (music duration)
         },
     }
 
-    def __init__(self, name="game_sensor"):
-        self.name = name
+    def __init__(self):
         self.num_leds_ring = 16  # Ring light has 16 LEDs
         self.num_leds_strand = 200  # LED strands on D6 and D7 have 200 LEDs each
 
@@ -98,22 +91,14 @@ class GameSensor:
         # Game state
         self.is_game_active = False  # True when hourglass tag has been scanned within 5 minutes
 
-        # Ring light configuration
-        self.pattern_duration = 10.0  # How long to show pattern after tag scan
-
         # LED state
         self.current_pattern_ring = PATTERN_AMBIENT_RAINBOW  # Ring light pattern
-        self.current_pattern_strand = PATTERN_AMBIENT_RAINBOW  # LED strand pattern
-        self.active_strand_index = -1  # Which strand should be lit (-1 means none)
         self.pattern_end_time = 0
         self.sound_end_time = 0  # Track when to stop playing the sound
-        self.pattern_start_time = 0  # Track when pattern started for brightness scaling
-        self.brightness_scale = 1.0  # Scale factor for LED brightness (0.0 to 1.0)
         self.win_pattern = None  # Pattern to display on D6/D7 when game is won
 
         # Canopy setup
         self.ring_light_segment = None
-        self.strand_segments = []  # LED2_DATA, D1, D2, D3 strands
         self.params = None
 
     async def start(self):
@@ -130,11 +115,10 @@ class GameSensor:
 
         # Create segments for rendering
         self.ring_light_segment = canopy.Segment(0, 0, self.num_leds_ring)  # Ring light on LED1_DATA (16 LEDs)
-        self.color_strand_segment = canopy.Segment(1, 0, self.num_leds_strand)  # Color strand on LED2_DATA (400 LEDs)
-        self.game_strand_d6_segment = canopy.Segment(2, 0, self.num_leds_strand)  # Game win strand on D6 (400 LEDs)
-        self.game_strand_d7_segment = canopy.Segment(3, 0, self.num_leds_strand)  # Game win strand on D7 (400 LEDs)
+        self.game_strand_d6_segment = canopy.Segment(2, 0, self.num_leds_strand)  # Game strand on D6 (200 LEDs)
+        self.game_strand_d7_segment = canopy.Segment(3, 0, self.num_leds_strand)  # Game strand on D7 (200 LEDs)
         self.params = canopy.Params()
-        print(f"LED segments created: Ring light on LED1_DATA ({self.num_leds_ring} LEDs), Color strand on LED2_DATA ({self.num_leds_strand} LEDs), Game win strands on D6/D7 ({self.num_leds_strand} LEDs each)")
+        print(f"LED segments created: Ring light on LED1_DATA ({self.num_leds_ring} LEDs), Game strands on D6/D7 ({self.num_leds_strand} LEDs each)")
 
         # Start the render loop
         asyncio.create_task(self._render_loop())
@@ -147,12 +131,8 @@ class GameSensor:
         tag_config = self.TAG_PATTERNS.get(uid)
         if tag_config:
             self.current_pattern_ring = tag_config['ring']
-            self.current_pattern_strand = tag_config['strand']
-            self.active_strand_index = tag_config['strand_index']
-            # Use custom duration if provided, otherwise use default pattern_duration
-            duration = tag_config.get('duration', self.pattern_duration)
-            self.pattern_start_time = time.time()
-            self.pattern_end_time = self.pattern_start_time + duration
+            duration = tag_config['duration']
+            self.pattern_end_time = time.time() + duration
 
             # Check if this is a hourglass tag (has music_duration set)
             if 'music_duration' in tag_config:
@@ -160,12 +140,10 @@ class GameSensor:
                 self.sound_end_time = time.time() + tag_config['music_duration']
                 self.is_game_active = True  # Game buttons are now active
                 print("Game is now ACTIVE! Press buttons to win!")
-            else:
-                self.sound_end_time = time.time() + duration
 
             # Play the game music
             self.game_audio.play_correct()
-            print(f"Playing pattern for tag {uid} on strand {self.active_strand_index} for {duration}s")
+            print(f"Playing pattern for tag {uid} for {duration}s")
         else:
             print("Unknown tag - ignoring")
 
@@ -174,7 +152,7 @@ class GameSensor:
         print("Tag removed")
 
     async def _handle_game_win(self, button_name):
-        """Handle game win condition - stop music and display color"""
+        """Handle game win condition - stop music and display color for 5 seconds"""
         print(f"GAME WON via {button_name}!")
         self.is_game_active = False
 
@@ -195,7 +173,7 @@ class GameSensor:
 
         self.current_pattern_ring = ring_pattern if ring_pattern else None
         self.win_pattern = strand_pattern
-        self.pattern_end_time = 0  # Keep the win pattern indefinitely (or set a duration if desired)
+        self.pattern_end_time = time.time() + 5  # Display win pattern for 5 seconds
 
     async def _render_loop(self):
         """Main rendering loop - handles LED pattern updates"""
@@ -222,9 +200,8 @@ class GameSensor:
                 # Check if pattern period is over
                 if self.pattern_end_time > 0 and current_time > self.pattern_end_time:
                     self.pattern_end_time = 0
-                    self.active_strand_index = -1  # Turn off all strands
                     self.current_pattern_ring = PATTERN_AMBIENT_RAINBOW
-                    self.current_pattern_strand = PATTERN_AMBIENT_RAINBOW
+                    self.win_pattern = None  # Clear win pattern after timeout
                     print("Pattern complete - back to ambient rainbow")
 
                 # Update LEDs
@@ -240,9 +217,9 @@ class GameSensor:
                     canopy.draw(self.game_strand_d6_segment, self.win_pattern, params=self.params)
                     canopy.draw(self.game_strand_d7_segment, self.win_pattern, params=self.params)
                 else:
-                    # Game is running - display Game On pattern on both D6 and D7
-                    canopy.draw(self.game_strand_d6_segment, PATTERN_GAME_ON, params=self.params)
-                    canopy.draw(self.game_strand_d7_segment, PATTERN_GAME_ON, params=self.params)
+                    # Game is running or ambient - display appropriate pattern
+                    canopy.draw(self.game_strand_d6_segment, PATTERN_AMBIENT_RAINBOW, params=self.params)
+                    canopy.draw(self.game_strand_d7_segment, PATTERN_AMBIENT_RAINBOW, params=self.params)
 
                 canopy.render()
 
