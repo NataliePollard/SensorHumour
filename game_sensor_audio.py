@@ -26,34 +26,34 @@ class GameSensorAudio:
             print(f"Error loading game_music.wav: {e}")
 
         # Load the win celebration sounds
-        self.red_win = None
+        self.red_message = None
         try:
-            self.red_win = self.audio.import_wav("sang_win_32000.wav")
-            if self.red_win is None:
+            self.red_message = self.audio.import_wav("sang_win_32000.wav")
+            if self.red_message is None:
                 print("Warning: sang_win_32000.wav not found")
         except Exception as e:
             print(f"Error loading sang_win_32000.wav: {e}")
 
-        self.blue_win = None
+        self.blue_message = None
         try:
-            self.blue_win = self.audio.import_wav("flem_win_32000.wav")
-            if self.blue_win is None:
+            self.blue_message = self.audio.import_wav("flem_win_32000.wav")
+            if self.blue_message is None:
                 print("Warning: flem_win_32000.wav not found")
         except Exception as e:
             print(f"Error loading flem_win_32000.wav: {e}")
 
-        self.purple_win = None
+        self.purple_message = None
         try:
-            self.purple_win = self.audio.import_wav("mel_win_32000.wav")
-            if self.purple_win is None:
+            self.purple_message = self.audio.import_wav("mel_win_32000.wav")
+            if self.purple_message is None:
                 print("Warning: mel_win_32000.wav not found")
         except Exception as e:
             print(f"Error loading mel_win_32000.wav: {e}")
 
-        self.yellow_win = None
+        self.yellow_message = None
         try:
-            self.yellow_win = self.audio.import_wav("cole_win_32000.wav")
-            if self.yellow_win is None:
+            self.yellow_message = self.audio.import_wav("cole_win_32000.wav")
+            if self.yellow_message is None:
                 print("Warning: cole_win_32000.wav not found")
         except Exception as e:
             print(f"Error loading cole_win_32000.wav: {e}")
@@ -128,7 +128,7 @@ class GameSensorAudio:
         """Play a win sound with the given audio attribute
 
         Args:
-            sound_attr: The audio attribute to play (self.red_win, self.blue_win, etc.)
+            sound_attr: The audio attribute to play (self.red_message, self.blue_message, etc.)
             filename: The filename for logging
             button_name: The button/win type name for tracking
         """
@@ -143,21 +143,21 @@ class GameSensorAudio:
         else:
             print(f"Warning: {filename} not loaded")
 
-    def play_red_win(self):
-        """Play the red win sound"""
-        self.play_win_sound(self.red_win, "sang_win_32000.wav", "red_win")
+    def play_red_message(self):
+        """Play the red message sound"""
+        self.play_win_sound(self.red_message, "sang_win_32000.wav", "red_message")
 
-    def play_blue_win(self):
-        """Play the blue win sound"""
-        self.play_win_sound(self.blue_win, "flem_win_32000.wav", "blue_win")
+    def play_blue_message(self):
+        """Play the blue message sound"""
+        self.play_win_sound(self.blue_message, "flem_win_32000.wav", "blue_message")
 
-    def play_purple_win(self):
-        """Play the purple win sound"""
-        self.play_win_sound(self.purple_win, "mel_win_32000.wav", "purple_win")
+    def play_purple_message(self):
+        """Play the purple message sound"""
+        self.play_win_sound(self.purple_message, "mel_win_32000.wav", "purple_message")
 
-    def play_yellow_win(self):
-        """Play the yellow win sound"""
-        self.play_win_sound(self.yellow_win, "cole_win_32000.wav", "yellow_win")
+    def play_yellow_message(self):
+        """Play the yellow message sound"""
+        self.play_win_sound(self.yellow_message, "cole_win_32000.wav", "yellow_message")
 
     async def play_big_win(self):
         """Play the big win sounds in sequence, one after another"""

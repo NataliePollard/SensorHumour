@@ -217,13 +217,13 @@ class GameSensor:
 
         # Play the appropriate win sound
         if button_name == 'D1':
-            self.game_audio.play_red_win()
+            self.game_audio.play_red_message()
         elif button_name == 'D2':
-            self.game_audio.play_blue_win()
+            self.game_audio.play_blue_message()
         elif button_name == 'D3':
-            self.game_audio.play_purple_win()
+            self.game_audio.play_purple_message()
         elif button_name == 'D4':
-            self.game_audio.play_yellow_win()
+            self.game_audio.play_yellow_message()
         elif button_name == 'D5':
             # Run big win audio in background task to avoid blocking render loop
             asyncio.create_task(self.game_audio.play_big_win())
