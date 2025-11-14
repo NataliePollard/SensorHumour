@@ -207,10 +207,19 @@ class GameSensor:
             self.game_audio.play_purple_win()
         elif button_name == 'D4':
             self.game_audio.play_yellow_win()
+        elif button_name == 'D5':
+            await self.game_audio.play_big_win()
 
         self.current_pattern_ring = ring_pattern if ring_pattern else None
         self.win_pattern = strand_pattern
-        self.pattern_end_time = time.time() + 5  # Display win pattern for 5 seconds
+
+        # Set pattern duration based on button type
+        if button_name == 'D5':
+            # Big win: played 4 audio clips with total duration ~18.6s (3.93+3.32+5.15+6.20 + 0.2 gap after each)
+            self.pattern_end_time = time.time() + 19
+        else:
+            # Color wins: play for 5 seconds
+            self.pattern_end_time = time.time() + 5
 
     async def _render_loop(self):
         """Main rendering loop - handles LED pattern updates"""
