@@ -28,35 +28,35 @@ class GameSensorAudio:
         # Load the win celebration sounds
         self.red_message = None
         try:
-            self.red_message = self.audio.import_wav("sang_win_32000.wav")
+            self.red_message = self.audio.import_wav("sang_message.wav")
             if self.red_message is None:
-                print("Warning: sang_win_32000.wav not found")
+                print("Warning: sang_message.wav not found")
         except Exception as e:
-            print(f"Error loading sang_win_32000.wav: {e}")
+            print(f"Error loading sang_message.wav: {e}")
 
         self.blue_message = None
         try:
-            self.blue_message = self.audio.import_wav("flem_win_32000.wav")
+            self.blue_message = self.audio.import_wav("flem_message.wav")
             if self.blue_message is None:
-                print("Warning: flem_win_32000.wav not found")
+                print("Warning: flem_message.wav not found")
         except Exception as e:
-            print(f"Error loading flem_win_32000.wav: {e}")
+            print(f"Error loading flem_message.wav: {e}")
 
         self.purple_message = None
         try:
-            self.purple_message = self.audio.import_wav("mel_win_32000.wav")
+            self.purple_message = self.audio.import_wav("mel_message.wav")
             if self.purple_message is None:
-                print("Warning: mel_win_32000.wav not found")
+                print("Warning: mel_message.wav not found")
         except Exception as e:
-            print(f"Error loading mel_win_32000.wav: {e}")
+            print(f"Error loading mel_message.wav: {e}")
 
         self.yellow_message = None
         try:
-            self.yellow_message = self.audio.import_wav("cole_win_32000.wav")
+            self.yellow_message = self.audio.import_wav("cole_message.wav")
             if self.yellow_message is None:
-                print("Warning: cole_win_32000.wav not found")
+                print("Warning: cole_message.wav not found")
         except Exception as e:
-            print(f"Error loading cole_win_32000.wav: {e}")
+            print(f"Error loading cole_message.wav: {e}")
 
         self.big_win_sang = None
         try:
@@ -145,19 +145,19 @@ class GameSensorAudio:
 
     def play_red_message(self):
         """Play the red message sound"""
-        self.play_win_sound(self.red_message, "sang_win_32000.wav", "red_message")
+        self.play_win_sound(self.red_message, "sang_message.wav", "red_message")
 
     def play_blue_message(self):
         """Play the blue message sound"""
-        self.play_win_sound(self.blue_message, "flem_win_32000.wav", "blue_message")
+        self.play_win_sound(self.blue_message, "flem_message.wav", "blue_message")
 
     def play_purple_message(self):
         """Play the purple message sound"""
-        self.play_win_sound(self.purple_message, "mel_win_32000.wav", "purple_message")
+        self.play_win_sound(self.purple_message, "mel_message.wav", "purple_message")
 
     def play_yellow_message(self):
         """Play the yellow message sound"""
-        self.play_win_sound(self.yellow_message, "cole_win_32000.wav", "yellow_message")
+        self.play_win_sound(self.yellow_message, "cole_message.wav", "yellow_message")
 
     async def play_big_win(self):
         """Play the big win sounds in sequence, one after another"""
