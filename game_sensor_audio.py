@@ -195,7 +195,7 @@ class GameSensorAudio:
                 print(f"Playing {filename}")
                 try:
                     # Set volume to 80% for sang_big_win.wav, 50% for others
-                    clip.volume = 0.8 if filename == "sang_big_win.wav" else 0.5
+                    clip.volume = 1 if filename == "sang_big_win.wav" else 0.5
                     self.audio.mixer.play(clip)
                     self.currently_playing = "big_win"
                     # Wait for the clip to finish playing using actual audio duration
