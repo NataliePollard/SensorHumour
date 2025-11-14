@@ -33,15 +33,16 @@ class Audio(object):
             try:
                 f = open("/sd/{}".format(path), "rb")
                 return mixer.Voice(f)
-            except:
+            except Exception as e:
                 print("Can't open WAV file: ", path)
+                print(f"Error details: {e}")
 
     def start(self):
         if self.mixer:
             asyncio.create_task(self.continuous_play())
 
     async def continuous_play(self):
-        asyncio.sleep(5)
+        await asyncio.sleep(5)
         print("==========  START PLAYBACK ==========")
         audio_out = I2S(
             0,
@@ -52,8 +53,8 @@ class Audio(object):
             mode=I2S.TX,
             bits=16,
             format=I2S.STEREO,
-            rate=16000,
-            ibuf=4000,
+            rate=32000,
+            ibuf=8000,
         )
 
         swriter = asyncio.StreamWriter(audio_out)

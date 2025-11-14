@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m mpremote:*)",
+      "Bash(pkill:*)",
+      "Bash(git add:*)",
+      "Bash(python3 -m mpremote:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

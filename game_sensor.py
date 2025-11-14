@@ -42,10 +42,10 @@ PATTERN_PURPLE_STRAND = canopy.Pattern('CTP-eyJrZXkiOiJyZWQtZmxvdyIsInZlcnNpb24i
 PATTERN_YELLOW_STRAND = canopy.Pattern('CTP-eyJrZXkiOiJyZWQtZmxvdyIsInZlcnNpb24iOjAsIm5hbWUiOiJyZWQtZmxvdyIsInBhbGV0dGVzIjp7InByaW1hcnkiOltbMC4wMixbMC41ODAzOTIxNTY4NjI3NDUxLDAuMzM3MjU0OTAxOTYwNzg0MzQsMF1dLFswLjIxLFswLjg2NjY2NjY2NjY2NjY2NjcsMSwwXV0sWzAuNDgsWzAsMCwwXV0sWzAuOTksWzAsMCwwXV1dLCJfYmxhY2std2hpdGUiOltbMCxbMCwwLDBdXSxbMSxbMSwxLDFdXV19LCJwYXJhbXMiOnsic2l6ZSI6InNwZWVkIiwic3BlZWQiOjAuMSwiZGVuc2l0eSI6eyJ0eXBlIjoicnNhdyIsImlucHV0cyI6eyJ2YWx1ZSI6MC41LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJncmFkaWVudCIsIm9wYWNpdHkiOjAuMjQsImJsZW5kIjoibm9ybWFsIiwicGFsZXR0ZSI6InByaW1hcnkiLCJpbnB1dHMiOnsib2Zmc2V0IjoiZGVuc2l0eSIsInNpemUiOjAuMjMsInJvdGF0aW9uIjowfX1dfQ')
 
 # Fast sparkles patterns (different effect - sparkles with high density variation)
-FAST_SPARKLES_RED = canopy.Pattern('CTP-eyJrZXkiOiJmYXN0LXNwYXJrbGVzIiwidmVyc2lvbiI6MCwibmFtZSI6ImZhc3Qtc3BhcmtsZXMiLCJwYWxldHRlcyI6eyJQcmltYXJ5IjpbWzAsWzAsMCwwXV0sWzEsWzEsMCwwXV1dfSwicGFyYW1zIjp7InNwZWVkIjowLjEsInNpemUiOiJzcGVlZCIsImRlbnNpdHkiOnsidHlwZSI6InNhdyIsImlucHV0cyI6eyJ2YWx1ZSI6MC41LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzcGFya2xlcyIsIm9wYWNpdHkiOjAuNSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiUHJpbWFyeSIsImlucHV0cyI6eyJkZW5zaXR5IjowLjUsIm9mZnNldCI6ImRlbnNpdHkifX1dfQ')
-FAST_SPARKLES_YELLOW = canopy.Pattern('CTP-eyJrZXkiOiJmYXN0LXNwYXJrbGVzIiwidmVyc2lvbiI6MCwibmFtZSI6ImZhc3Qtc3BhcmtsZXMiLCJwYWxldHRlcyI6eyJQcmltYXJ5IjpbWzAuMCxbMC4wLDAuMCwwLjBdXSxbMS4wLFsxLjAsMC44NjY2NjcsMC4wXV1dfSwicGFyYW1zIjp7InNwZWVkIjowLjEsInNpemUiOiJzcGVlZCIsImRlbnNpdHkiOnsidHlwZSI6InNhdyIsImlucHV0cyI6eyJ2YWx1ZSI6MC41LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzcGFya2xlcyIsIm9wYWNpdHkiOjAuNSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiUHJpbWFyeSIsImlucHV0cyI6eyJkZW5zaXR5IjowLjUsIm9mZnNldCI6ImRlbnNpdHkifX1dfQ==')
-FAST_SPARKLES_BLUE = canopy.Pattern('CTP-eyJrZXkiOiJmYXN0LXNwYXJrbGVzIiwidmVyc2lvbiI6MCwibmFtZSI6ImZhc3Qtc3BhcmtsZXMiLCJwYWxldHRlcyI6eyJQcmltYXJ5IjpbWzAuMCxbMC4wLDAuMCwwLjBdXSxbMS4wLFswLjAyLDAuMCwwLjYzOV1dXX0sInBhcmFtcyI6eyJzcGVlZCI6MC4xLCJzaXplIjoic3BlZWQiLCJkZW5zaXR5Ijp7InR5cGUiOiJzYXciLCJpbnB1dHMiOnsidmFsdWUiOjAuNSwibWluIjowLCJtYXgiOjF9fX0sImxheWVycyI6W3siZWZmZWN0Ijoic3BhcmtsZXMiLCJvcGFjaXR5IjowLjUsImJsZW5kIjoibm9ybWFsIiwicGFsZXR0ZSI6IlByaW1hcnkiLCJpbnB1dHMiOnsiZGVuc2l0eSI6MC41LCJvZmZzZXQiOiJkZW5zaXR5In19XX0=')
-FAST_SPARKLES_PURPLE = canopy.Pattern('CTP-eyJrZXkiOiJmYXN0LXNwYXJrbGVzIiwidmVyc2lvbiI6MCwibmFtZSI6ImZhc3Qtc3BhcmtsZXMiLCJwYWxldHRlcyI6eyJQcmltYXJ5IjpbWzAuMCxbMC4wLDAuMCwwLjBdXSxbMS4wLFswLjU2NSwwLjAsMS4wXV1dfSwicGFyYW1zIjp7InNwZWVkIjowLjEsInNpemUiOiJzcGVlZCIsImRlbnNpdHkiOnsidHlwZSI6InNhdyIsImlucHV0cyI6eyJ2YWx1ZSI6MC41LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzcGFya2xlcyIsIm9wYWNpdHkiOjAuNSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiUHJpbWFyeSIsImlucHV0cyI6eyJkZW5zaXR5IjowLjUsIm9mZnNldCI6ImRlbnNpdHkifX1dfQ==')
+FAST_SPARKLES_RED = canopy.Pattern('CTP-eyJrZXkiOiJmYXN0LXNwYXJrbGVzIiwidmVyc2lvbiI6MCwibmFtZSI6ImZhc3Qtc3BhcmtsZXMiLCJwYWxldHRlcyI6eyJQcmltYXJ5IjpbWzAsWzEsMSwxXV0sWzAuNDksWzEsMC4zMDk4MDM5MjE1Njg2Mjc0NiwwLjMwOTgwMzkyMTU2ODYyNzQ2XV0sWzEsWzEsMCwwXV1dfSwicGFyYW1zIjp7InNwZWVkIjowLjEsInNpemUiOiJzcGVlZCIsImRlbnNpdHkiOnsidHlwZSI6InNhdyIsImlucHV0cyI6eyJ2YWx1ZSI6MC41OCwibWluIjowLCJtYXgiOjF9fX0sImxheWVycyI6W3siZWZmZWN0Ijoic3BhcmtsZXMiLCJvcGFjaXR5IjowLjUsImJsZW5kIjoibm9ybWFsIiwicGFsZXR0ZSI6IlByaW1hcnkiLCJpbnB1dHMiOnsiZGVuc2l0eSI6MC44LCJvZmZzZXQiOiJkZW5zaXR5In19XX0')
+FAST_SPARKLES_YELLOW = canopy.Pattern('CTP-eyJrZXkiOiJmYXN0LXNwYXJrbGVzIiwidmVyc2lvbiI6MCwibmFtZSI6ImZhc3Qtc3BhcmtsZXMiLCJwYWxldHRlcyI6eyJQcmltYXJ5IjpbWzAsWzEsMSwxXV0sWzAuNDksWzEsMC44NjcsMF1dLFsxLFsxLDAuODY3LDBdXV19LCJwYXJhbXMiOnsic3BlZWQiOjAuMSwic2l6ZSI6InNwZWVkIiwiZGVuc2l0eSI6eyJ0eXBlIjoic2F3IiwiaW5wdXRzIjp7InZhbHVlIjowLjU4LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzcGFya2xlcyIsIm9wYWNpdHkiOjAuNSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiUHJpbWFyeSIsImlucHV0cyI6eyJkZW5zaXR5IjowLjgsIm9mZnNldCI6ImRlbnNpdHkifX1dfQ==')
+FAST_SPARKLES_BLUE = canopy.Pattern('CTP-eyJrZXkiOiJmYXN0LXNwYXJrbGVzIiwidmVyc2lvbiI6MCwibmFtZSI6ImZhc3Qtc3BhcmtsZXMiLCJwYWxldHRlcyI6eyJQcmltYXJ5IjpbWzAsWzEsMSwxXV0sWzAuNDksWzAuMDIsMCwwLjYzOV1dLFsxLFswLjAyLDAsMC42MzldXV19LCJwYXJhbXMiOnsic3BlZWQiOjAuMSwic2l6ZSI6InNwZWVkIiwiZGVuc2l0eSI6eyJ0eXBlIjoic2F3IiwiaW5wdXRzIjp7InZhbHVlIjowLjU4LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzcGFya2xlcyIsIm9wYWNpdHkiOjAuNSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiUHJpbWFyeSIsImlucHV0cyI6eyJkZW5zaXR5IjowLjgsIm9mZnNldCI6ImRlbnNpdHkifX1dfQ==')
+FAST_SPARKLES_PURPLE = canopy.Pattern('CTP-eyJrZXkiOiJmYXN0LXNwYXJrbGVzIiwidmVyc2lvbiI6MCwibmFtZSI6ImZhc3Qtc3BhcmtsZXMiLCJwYWxldHRlcyI6eyJQcmltYXJ5IjpbWzAsWzEsMSwxXV0sWzAuNDksWzAuNTY1LDAsMV1dLFsxLFswLjU2NSwwLDFdXV19LCJwYXJhbXMiOnsic3BlZWQiOjAuMSwic2l6ZSI6InNwZWVkIiwiZGVuc2l0eSI6eyJ0eXBlIjoic2F3IiwiaW5wdXRzIjp7InZhbHVlIjowLjU4LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzcGFya2xlcyIsIm9wYWNpdHkiOjAuNSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiUHJpbWFyeSIsImlucHV0cyI6eyJkZW5zaXR5IjowLjgsIm9mZnNldCI6ImRlbnNpdHkifX1dfQ==')
 
 # Corrected patterns for D6/D7 strands (compensate for LED hardware color channel issue)
 # D6/D7 strands have a color mapping issue where:
@@ -54,14 +54,19 @@ FAST_SPARKLES_PURPLE = canopy.Pattern('CTP-eyJrZXkiOiJmYXN0LXNwYXJrbGVzIiwidmVyc
 # - Blue displays as Green
 # - Red displays correctly
 # These corrected patterns swap the colors to compensate
-FAST_SPARKLES_YELLOW_D6D7 = canopy.Pattern('CTP-eyJrZXkiOiJmYXN0LXNwYXJrbGVzIiwidmVyc2lvbiI6MCwibmFtZSI6ImZhc3Qtc3BhcmtsZXMiLCJwYWxldHRlcyI6eyJQcmltYXJ5IjpbWzAuMCxbMC4wLDAuMCwwLjBdXSxbMS4wLFswLjU2NSwwLjAsMS4wXV1dfSwicGFyYW1zIjp7InNwZWVkIjowLjEsInNpemUiOiJzcGVlZCIsImRlbnNpdHkiOnsidHlwZSI6InNhdyIsImlucHV0cyI6eyJ2YWx1ZSI6MC41LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzcGFya2xlcyIsIm9wYWNpdHkiOjAuNSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiUHJpbWFyeSIsImlucHV0cyI6eyJkZW5zaXR5IjowLjUsIm9mZnNldCI6ImRlbnNpdHkifX1dfQ==')
-FAST_SPARKLES_BLUE_D6D7 = canopy.Pattern('CTP-eyJrZXkiOiJmYXN0LXNwYXJrbGVzIiwidmVyc2lvbiI6MCwibmFtZSI6ImZhc3Qtc3BhcmtsZXMiLCJwYWxldHRlcyI6eyJQcmltYXJ5IjpbWzAuMCxbMC4wLDAuMCwwLjBdXSxbMS4wLFswLjAsMS4wLDAuMF1dXX0sInBhcmFtcyI6eyJzcGVlZCI6MC4xLCJzaXplIjoic3BlZWQiLCJkZW5zaXR5Ijp7InR5cGUiOiJzYXciLCJpbnB1dHMiOnsidmFsdWUiOjAuNSwibWluIjowLCJtYXgiOjF9fX0sImxheWVycyI6W3siZWZmZWN0Ijoic3BhcmtsZXMiLCJvcGFjaXR5IjowLjUsImJsZW5kIjoibm9ybWFsIiwicGFsZXR0ZSI6IlByaW1hcnkiLCJpbnB1dHMiOnsiZGVuc2l0eSI6MC41LCJvZmZzZXQiOiJkZW5zaXR5In19XX0=')
-FAST_SPARKLES_PURPLE_D6D7 = canopy.Pattern('CTP-eyJrZXkiOiJmYXN0LXNwYXJrbGVzIiwidmVyc2lvbiI6MCwibmFtZSI6ImZhc3Qtc3BhcmtsZXMiLCJwYWxldHRlcyI6eyJQcmltYXJ5IjpbWzAuMCxbMC4wLDAuMCwwLjBdXSxbMS4wLFsxLjAsMC44NjcsMC4wXV1dfSwicGFyYW1zIjp7InNwZWVkIjowLjEsInNpemUiOiJzcGVlZCIsImRlbnNpdHkiOnsidHlwZSI6InNhdyIsImlucHV0cyI6eyJ2YWx1ZSI6MC41LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzcGFya2xlcyIsIm9wYWNpdHkiOjAuNSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiUHJpbWFyeSIsImlucHV0cyI6eyJkZW5zaXR5IjowLjUsIm9mZnNldCI6ImRlbnNpdHkifX1dfQ==')
+FAST_SPARKLES_YELLOW_D6D7 = canopy.Pattern('CTP-eyJrZXkiOiJmYXN0LXNwYXJrbGVzIiwidmVyc2lvbiI6MCwibmFtZSI6ImZhc3Qtc3BhcmtsZXMiLCJwYWxldHRlcyI6eyJQcmltYXJ5IjpbWzAsWzEsMSwxXV0sWzAuNDksWzAuNTY1LDAsMV1dLFsxLFswLjU2NSwwLDFdXV19LCJwYXJhbXMiOnsic3BlZWQiOjAuMSwic2l6ZSI6InNwZWVkIiwiZGVuc2l0eSI6eyJ0eXBlIjoic2F3IiwiaW5wdXRzIjp7InZhbHVlIjowLjU4LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzcGFya2xlcyIsIm9wYWNpdHkiOjAuNSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiUHJpbWFyeSIsImlucHV0cyI6eyJkZW5zaXR5IjowLjgsIm9mZnNldCI6ImRlbnNpdHkifX1dfQ==')
+FAST_SPARKLES_BLUE_D6D7 = canopy.Pattern('CTP-eyJrZXkiOiJmYXN0LXNwYXJrbGVzIiwidmVyc2lvbiI6MCwibmFtZSI6ImZhc3Qtc3BhcmtsZXMiLCJwYWxldHRlcyI6eyJQcmltYXJ5IjpbWzAsWzEsMSwxXV0sWzAuNDksWzAsMC42MzksMF1dLFsxLFswLDAuNjM5LDBdXV19LCJwYXJhbXMiOnsic3BlZWQiOjAuMSwic2l6ZSI6InNwZWVkIiwiZGVuc2l0eSI6eyJ0eXBlIjoic2F3IiwiaW5wdXRzIjp7InZhbHVlIjowLjU4LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzcGFya2xlcyIsIm9wYWNpdHkiOjAuNSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiUHJpbWFyeSIsImlucHV0cyI6eyJkZW5zaXR5IjowLjgsIm9mZnNldCI6ImRlbnNpdHkifX1dfQ==')
+FAST_SPARKLES_PURPLE_D6D7 = canopy.Pattern('CTP-eyJrZXkiOiJmYXN0LXNwYXJrbGVzIiwidmVyc2lvbiI6MCwibmFtZSI6ImZhc3Qtc3BhcmtsZXMiLCJwYWxldHRlcyI6eyJQcmltYXJ5IjpbWzAsWzEsMSwxXV0sWzAuNDksWzEsMC44NjcsMF1dLFsxLFsxLDAuODY3LDBdXV19LCJwYXJhbXMiOnsic3BlZWQiOjAuMSwic2l6ZSI6InNwZWVkIiwiZGVuc2l0eSI6eyJ0eXBlIjoic2F3IiwiaW5wdXRzIjp7InZhbHVlIjowLjU4LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzcGFya2xlcyIsIm9wYWNpdHkiOjAuNSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiUHJpbWFyeSIsImlucHV0cyI6eyJkZW5zaXR5IjowLjgsIm9mZnNldCI6ImRlbnNpdHkifX1dfQ==')
 
-# Rainbow sparkles pattern - cycles through red, yellow, green, and purple with black gaps
+# Rainbow sparkles pattern - cycles through red, yellow, green, and purple with white gaps
 # Uses same sparkles effect and parameters as single-color patterns for consistency
-FAST_SPARKLES_RAINBOW = canopy.Pattern('CTP-eyJrZXkiOiJmYXN0LXNwYXJrbGVzLXJhaW5ib3ciLCJ2ZXJzaW9uIjowLCJuYW1lIjoiZmFzdC1zcGFya2xlcy1yYWluYm93IiwicGFsZXR0ZXMiOnsiUHJpbWFyeSI6W1swLjAsWzAsMCwwXV0sWzAuMTIsWzEsMCwwXV0sWzAuMjUsWzEsMC44NjcsMF1dLFswLjM3LFswLDEsMF1dLFswLjUsWzAuNTY1LDAsMV1dLFswLjYyLFswLDAsMF1dLFswLjc1LFsxLDAsMF1dLFswLjg3LFswLDAsMF1dLFsxLjAsWzAsMCwwXV1dfSwicGFyYW1zIjp7InNwZWVkIjowLjEsInNpemUiOiJzcGVlZCIsImRlbnNpdHkiOnsidHlwZSI6InNhdyIsImlucHV0cyI6eyJ2YWx1ZSI6MC41LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzcGFya2xlcyIsIm9wYWNpdHkiOjAuNSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiUHJpbWFyeSIsImlucHV0cyI6eyJkZW5zaXR5IjowLjUsIm9mZnNldCI6ImRlbnNpdHkifX1dfQ==')
-FAST_SPARKLES_RAINBOW_D6D7 = canopy.Pattern('CTP-eyJrZXkiOiJmYXN0LXNwYXJrbGVzLXJhaW5ib3ciLCJ2ZXJzaW9uIjowLCJuYW1lIjoiZmFzdC1zcGFya2xlcy1yYWluYm93IiwicGFsZXR0ZXMiOnsiUHJpbWFyeSI6W1swLjAsWzAsMCwwXV0sWzAuMTIsWzEsMCwwXV0sWzAuMjUsWzAuNTY1LDAsMV1dLFswLjM3LFswLDEsMF1dLFswLjUsWzEsMC44NjcsMF1dLFswLjYyLFswLDAsMF1dLFswLjc1LFsxLDAsMF1dLFswLjg3LFswLDAsMF1dLFsxLjAsWzAsMCwwXV1dfSwicGFyYW1zIjp7InNwZWVkIjowLjEsInNpemUiOiJzcGVlZCIsImRlbnNpdHkiOnsidHlwZSI6InNhdyIsImlucHV0cyI6eyJ2YWx1ZSI6MC41LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzcGFya2xlcyIsIm9wYWNpdHkiOjAuNSwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiUHJpbWFyeSIsImlucHV0cyI6eyJkZW5zaXR5IjowLjUsIm9mZnNldCI6ImRlbnNpdHkifX1dfQ==')
+FAST_SPARKLES_RAINBOW = canopy.Pattern('CTP-eyJrZXkiOiJmYXN0LXNwYXJrbGVzLXJhaW5ib3ciLCJ2ZXJzaW9uIjowLCJuYW1lIjoiZmFzdC1zcGFya2xlcy1yYWluYm93IiwicGFsZXR0ZXMiOnsiUHJpbWFyeSI6W1swLjAsWzEsMSwxXV0sWzAuMTIsWzEsMCwwXV0sWzAuMjUsWzEsMC44NjcsMF1dLFswLjM3LFswLDEsMF1dLFswLjUsWzAuNTY1LDAsMV1dLFswLjYyLFsxLDEsMV1dLFswLjc1LFsxLDAsMF1dLFswLjg3LFsxLDEsMV1dLFsxLjAsWzEsMSwxXV1dfSwicGFyYW1zIjp7InNwZWVkIjowLjEsInNpemUiOiJzcGVlZCIsImRlbnNpdHkiOnsidHlwZSI6InNhdyIsImlucHV0cyI6eyJ2YWx1ZSI6MC41OCwibWluIjowLCJtYXgiOjF9fX0sImxheWVycyI6W3siZWZmZWN0Ijoic3BhcmtsZXMiLCJvcGFjaXR5IjowLjUsImJsZW5kIjoibm9ybWFsIiwicGFsZXR0ZSI6IlByaW1hcnkiLCJpbnB1dHMiOnsiZGVuc2l0eSI6MC44LCJvZmZzZXQiOiJkZW5zaXR5In19XX0=')
+FAST_SPARKLES_RAINBOW_D6D7 = canopy.Pattern('CTP-eyJrZXkiOiJmYXN0LXNwYXJrbGVzLXJhaW5ib3ciLCJ2ZXJzaW9uIjowLCJuYW1lIjoiZmFzdC1zcGFya2xlcy1yYWluYm93IiwicGFsZXR0ZXMiOnsiUHJpbWFyeSI6W1swLjAsWzEsMSwxXV0sWzAuMTIsWzEsMCwwXV0sWzAuMjUsWzAuNTY1LDAsMV1dLFswLjM3LFswLDAuNjM5LDBdXSxbMC41LFsxLDAuODY3LDBdXSxbMC42MixbMSwxLDFdXSxbMC43NSxbMSwwLDBdXSxbMC44NyxbMSwxLDFdXSxbMS4wLFsxLDEsMV1dXX0sInBhcmFtcyI6eyJzcGVlZCI6MC4xLCJzaXplIjoic3BlZWQiLCJkZW5zaXR5Ijp7InR5cGUiOiJzYXciLCJpbnB1dHMiOnsidmFsdWUiOjAuNTgsIm1pbiI6MCwibWF4IjoxfX19LCJsYXllcnMiOlt7ImVmZmVjdCI6InNwYXJrbGVzIiwib3BhY2l0eSI6MC41LCJibGVuZCI6Im5vcm1hbCIsInBhbGV0dGUiOiJQcmltYXJ5IiwiaW5wdXRzIjp7ImRlbnNpdHkiOjAuOCwib2Zmc2V0IjoiZGVuc2l0eSJ9fV19')
+
+# Slow pastel sparkles pattern for idle state (default)
+# Soft pastel rainbow with gentle sparkle animation
+SLOW_PASTEL_SPARKLES = canopy.Pattern('CTP-eyJrZXkiOiJwYXN0ZWwtc3BhcmtsZXMiLCJ2ZXJzaW9uIjowLCJuYW1lIjoicGFzdGVsLXNwYXJrbGVzIiwicGFsZXR0ZXMiOnsiUGFsZXR0ZTIiOltbMC4wMSxbMC45MTc2NDcwNTg4MjM1Mjk0LDAuNzI5NDExNzY0NzA1ODgyMywxXV0sWzAuMzIsWzAuNTMzMzMzMzMzMzMzMzMzMywwLjQ1MDk4MDM5MjE1Njg2Mjc1LDFdXSxbMC42OCxbMSwwLjg5ODAzOTIxNTY4NjI3NDUsMC40OTAxOTYwNzg0MzEzNzI1M11dLFsxLFsxLDAuNDExNzY0NzA1ODgyMzUyOSwwLjQxMTc2NDcwNTg4MjM1MjldXV19LCJwYXJhbXMiOnsic3BlZWQiOjAuMSwic2l6ZSI6InNwZWVkIiwiZGVuc2l0eSI6eyJ0eXBlIjoic2F3IiwiaW5wdXRzIjp7InZhbHVlIjowLjM2LCJtaW4iOjAsIm1heCI6MX19fSwibGF5ZXJzIjpbeyJlZmZlY3QiOiJzcGFya2xlcyIsIm9wYWNpdHkiOjAuOCwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoiUGFsZXR0ZTIiLCJpbnB1dHMiOnsiZGVuc2l0eSI6MC42NSwib2Zmc2V0IjoiZGVuc2l0eSJ9fV19')
+SLOW_PASTEL_SPARKLES_D6D7 = canopy.Pattern('CTP-eyJrZXkiOiJwYXN0ZWwtc3BhcmtsZXMtZDZkNyIsInZlcnNpb24iOjAsIm5hbWUiOiJwYXN0ZWwtc3BhcmtsZXMtZDZkNyIsInBhbGV0dGVzIjp7IlBhbGV0dGUyIjpbWzAuMDEsWzAuNDExNzY0NzA1ODgyMzUyOSwwLjQxMTc2NDcwNTg4MjM1MjksMV1dLFswLjMyLFswLjcyMzEzNzI1NDkwMTk2MDgsMC43MzcyNTQ5MDE5NjA3ODQ0LDFdXSxbMC42OCxbMCwwLjg5ODAzOTIxNTY4NjI3NDUsMC41NjA3ODQzMTM3MjU0OTAyXV0sWzEsWzEsMC43MzAzOTIxNTY4NjI3NDUxLDAuNTYyNzQ1MDk4MDM5MjE1N11dXX0sInBhcmFtcyI6eyJzcGVlZCI6MC4xLCJzaXplIjoic3BlZWQiLCJkZW5zaXR5Ijp7InR5cGUiOiJzYXciLCJpbnB1dHMiOnsidmFsdWUiOjAuMzYsIm1pbiI6MCwibWF4IjoxfX19LCJsYXllcnMiOlt7ImVmZmVjdCI6InNwYXJrbGVzIiwib3BhY2l0eSI6MC44LCJibGVuZCI6Im5vcm1hbCIsInBhbGV0dGUiOiJQYWxldHRlMiIsImlucHV0cyI6eyJkZW5zaXR5IjowLjY1LCJvZmZzZXQiOiJkZW5zaXR5In19XX0=')
 
 
 class GameSensor:
@@ -77,17 +82,16 @@ class GameSensor:
       D4 = Yellow win pattern
       D5 = Turn off lights
     """
+    # Both hourglass tags trigger the same game configuration
+    GAME_CONFIG = {
+        'ring': PATTERN_GAME_ON,
+        'duration': 300,  # 5 minutes (300 seconds)
+        'music_duration': 300,  # 5 minutes (music duration)
+    }
+
     TAG_PATTERNS = {
-        '484e1466080104e0': {  # Hourglass tag 1 - Game On pattern
-            'ring': PATTERN_GAME_ON,
-            'duration': 300,  # 5 minutes (300 seconds)
-            'music_duration': 300,  # 5 minutes (music duration)
-        },
-        'bc591466080104e0': {  # Hourglass tag 2 - Game On pattern
-            'ring': PATTERN_GAME_ON,
-            'duration': 300,  # 5 minutes (300 seconds)
-            'music_duration': 300,  # 5 minutes (music duration)
-        },
+        '484e1466080104e0': GAME_CONFIG,  # Hourglass tag 1
+        'bc591466080104e0': GAME_CONFIG,  # Hourglass tag 2
     }
 
     def __init__(self):
@@ -115,7 +119,7 @@ class GameSensor:
         self.is_game_active = False  # True when hourglass tag has been scanned within 5 minutes
 
         # LED state
-        self.current_pattern_ring = PATTERN_AMBIENT_RAINBOW  # Ring light pattern
+        self.current_pattern_ring = SLOW_PASTEL_SPARKLES  # Ring light pattern
         self.pattern_end_time = 0
         self.sound_end_time = 0  # Track when to stop playing the sound
         self.win_pattern = None  # Pattern to display on D6/D7 when game is won
@@ -130,16 +134,16 @@ class GameSensor:
         self.audio.start()
 
         print("Starting LED strips")
-        # Initialize 8 LED data pins - LED1_DATA for ring light, LED2_DATA/D6/D7 for color strands, D6 for game on
+        # Initialize 8 LED data pins - LED1_DATA for ring light, D6/D7 for color strands, D6 for game on
         # D1, D2, D3, D4, D5 are used for game buttons
         # Use max LED count for initialization
         max_leds = max(self.num_leds_ring, self.num_leds_strand)
-        canopy.init([fern.LED1_DATA, fern.LED2_DATA, fern.D6, fern.D7], max_leds)
+        canopy.init([fern.LED1_DATA, fern.D6, fern.D7], max_leds)
 
         # Create segments for rendering
         self.ring_light_segment = canopy.Segment(0, 0, self.num_leds_ring)  # Ring light on LED1_DATA (16 LEDs)
-        self.game_strand_d6_segment = canopy.Segment(2, 0, self.num_leds_strand)  # Game strand on D6 (200 LEDs)
-        self.game_strand_d7_segment = canopy.Segment(3, 0, self.num_leds_strand)  # Game strand on D7 (200 LEDs)
+        self.game_strand_d6_segment = canopy.Segment(1, 0, self.num_leds_strand)  # Game strand on D6 (200 LEDs)
+        self.game_strand_d7_segment = canopy.Segment(2, 0, self.num_leds_strand)  # Game strand on D7 (200 LEDs)
         self.params = canopy.Params()
         print(f"LED segments created: Ring light on LED1_DATA ({self.num_leds_ring} LEDs), Game strands on D6/D7 ({self.num_leds_strand} LEDs each)")
 
@@ -184,17 +188,25 @@ class GameSensor:
         self.sound_end_time = 0
 
         # Set the pattern based on which button was pressed
-        # Ring light uses the standard patterns (colors are correct)
-        # D6/D7 strands use corrected patterns to compensate for hardware color channel issue
         button_to_pattern = {
-            'D1': (FAST_SPARKLES_RED, FAST_SPARKLES_RED),              # Button 1 - Red (correct on all strips)
+            'D1': (FAST_SPARKLES_RED, FAST_SPARKLES_RED),              # Button 1 - Red
             'D2': (FAST_SPARKLES_BLUE, FAST_SPARKLES_BLUE_D6D7),       # Button 2 - Blue (ring) / Green pattern for D6/D7
             'D3': (FAST_SPARKLES_PURPLE, FAST_SPARKLES_PURPLE_D6D7),   # Button 3 - Purple (ring) / Yellow pattern for D6/D7
             'D4': (FAST_SPARKLES_YELLOW, FAST_SPARKLES_YELLOW_D6D7),   # Button 4 - Yellow (ring) / Purple pattern for D6/D7
-            'D5': (FAST_SPARKLES_RAINBOW, FAST_SPARKLES_RAINBOW_D6D7), # Button 5 - Big win with rainbow sparkles!
+            'D5': (FAST_SPARKLES_RAINBOW, FAST_SPARKLES_RAINBOW_D6D7), # Button 5 - Rainbow
         }
 
         ring_pattern, strand_pattern = button_to_pattern.get(button_name, (PATTERN_AMBIENT_RAINBOW, PATTERN_AMBIENT_RAINBOW))
+
+        # Play the appropriate win sound
+        if button_name == 'D1':
+            self.game_audio.play_red_win()
+        elif button_name == 'D2':
+            self.game_audio.play_blue_win()
+        elif button_name == 'D3':
+            self.game_audio.play_purple_win()
+        elif button_name == 'D4':
+            self.game_audio.play_yellow_win()
 
         self.current_pattern_ring = ring_pattern if ring_pattern else None
         self.win_pattern = strand_pattern
@@ -225,30 +237,26 @@ class GameSensor:
                 # Check if pattern period is over
                 if self.pattern_end_time > 0 and current_time > self.pattern_end_time:
                     self.pattern_end_time = 0
-                    self.current_pattern_ring = PATTERN_AMBIENT_RAINBOW
+                    self.current_pattern_ring = SLOW_PASTEL_SPARKLES
                     self.win_pattern = None  # Clear win pattern after timeout
-                    print("Pattern complete - back to ambient rainbow")
+                    print("Pattern complete - back to slow pastel sparkles")
 
                 # Update LEDs
                 canopy.clear()
 
-                # Ring light shows current pattern (RFID triggered or ambient rainbow)
+                # Ring light shows current pattern (RFID triggered or ambient)
                 if self.current_pattern_ring:
                     canopy.draw(self.ring_light_segment, self.current_pattern_ring, params=self.params)
 
-                # D6 and D7 strands - show game win pattern, game on pattern, or ambient
+                # D6 and D7 strands - show game win pattern or idle pattern
                 if self.win_pattern:
                     # Game was won - display the win pattern on both D6 and D7
                     canopy.draw(self.game_strand_d6_segment, self.win_pattern, params=self.params)
                     canopy.draw(self.game_strand_d7_segment, self.win_pattern, params=self.params)
-                elif self.is_game_active:
-                    # Game is active - display game on pattern (D6D7 corrected version)
-                    canopy.draw(self.game_strand_d6_segment, PATTERN_GAME_ON_D6D7, params=self.params)
-                    canopy.draw(self.game_strand_d7_segment, PATTERN_GAME_ON_D6D7, params=self.params)
                 else:
-                    # Game is not active - display ambient rainbow pattern
-                    canopy.draw(self.game_strand_d6_segment, PATTERN_AMBIENT_RAINBOW, params=self.params)
-                    canopy.draw(self.game_strand_d7_segment, PATTERN_AMBIENT_RAINBOW, params=self.params)
+                    # Game is not active - display slow pastel sparkles pattern (default)
+                    canopy.draw(self.game_strand_d6_segment, SLOW_PASTEL_SPARKLES_D6D7, params=self.params)
+                    canopy.draw(self.game_strand_d7_segment, SLOW_PASTEL_SPARKLES_D6D7, params=self.params)
 
                 canopy.render()
 
