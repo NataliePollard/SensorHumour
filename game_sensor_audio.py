@@ -9,6 +9,14 @@ import asyncio
 
 FADE_DURATION = 1.0  # Fade out over 1 second
 
+# Message audio durations (in seconds) - determines how long the LED pattern displays
+MESSAGE_DURATIONS = {
+    'D1': 5.56,   # sang_message.wav
+    'D2': 10.63,  # flem_message.wav
+    'D3': 6.14,   # mel_message.wav
+    'D4': 8.96,   # cole_message.wav
+}
+
 
 class GameSensorAudio:
     def __init__(self, audio: Audio):

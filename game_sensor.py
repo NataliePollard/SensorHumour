@@ -22,7 +22,7 @@ import fern
 import time
 from nfc import NfcWrapper
 from audio import Audio
-from game_sensor_audio import GameSensorAudio
+from game_sensor_audio import GameSensorAudio, MESSAGE_DURATIONS
 from machine import Pin
 
 PATTERN_GAME_ON = canopy.Pattern('CTP-eyJrZXkiOiJnYW1lLW9uIiwidmVyc2lvbiI6MCwibmFtZSI6ImdhbWUtb24iLCJwYWxldHRlcyI6eyJwcmltYXJ5IjpbWzAuMDEsWzEsMCwwXV0sWzAuMzMsWzEsMC44NjcsMF1dLFswLjY2LFswLDAsMV1dLFswLjk5LFswLjU2NSwwLDFdXV0sIl9ibGFjay13aGl0ZSI6W1swLFswLDAsMF1dLFsxLFsxLDEsMV1dXX0sInBhcmFtcyI6eyJzaXplIjoic3BlZWQiLCJzcGVlZCI6MC4xLCJkZW5zaXR5Ijp7InR5cGUiOiJyc2F3IiwiaW5wdXRzIjp7InZhbHVlIjowLjUsIm1pbiI6MCwibWF4IjoxfX19LCJsYXllcnMiOlt7ImVmZmVjdCI6ImdyYWRpZW50Iiwib3BhY2l0eSI6MC4yNCwiYmxlbmQiOiJub3JtYWwiLCJwYWxldHRlIjoicHJpbWFyeSIsImlucHV0cyI6eyJvZmZzZXQiOiJkZW5zaXR5Iiwic2l6ZSI6MC41LCJyb3RhdGlvbiI6MH19XX0=')
@@ -196,7 +196,7 @@ class GameSensor:
     async def _handle_button_press(self, button_name):
         """Handle button press
 
-        D1-D4 (color buttons): Play audio message, display color pattern for 5 seconds, return to game pattern
+        D1-D4 (color buttons): Play audio message, display color pattern for message duration, return to game pattern
         D5 (big win): End game, play big win audio, display rainbow for 19 seconds
         """
         print(f"Handling button press: {button_name}")
@@ -248,8 +248,9 @@ class GameSensor:
             elif button_name == 'D4':
                 self.game_audio.play_yellow_message()
 
-            # Color message displays for 5 seconds, then returns to game pattern
-            self.message_end_time = time.time() + 5
+            # Color message displays for the duration of the audio message, then returns to game pattern
+            message_duration = MESSAGE_DURATIONS.get(button_name, 5.0)  # 5 seconds is fallback
+            self.message_end_time = time.time() + message_duration
 
             # Keep game active - don't set pattern_end_time or is_game_active
 
