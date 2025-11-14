@@ -225,7 +225,8 @@ class GameSensor:
         elif button_name == 'D4':
             self.game_audio.play_yellow_win()
         elif button_name == 'D5':
-            await self.game_audio.play_big_win()
+            # Run big win audio in background task to avoid blocking render loop
+            asyncio.create_task(self.game_audio.play_big_win())
 
         # Set pattern duration based on button type
         if button_name == 'D5':
