@@ -53,7 +53,7 @@ class Audio(object):
             mode=I2S.TX,
             bits=16,
             format=I2S.STEREO,
-            rate=32000,
+            rate=16000,
             ibuf=8000,
         )
 
