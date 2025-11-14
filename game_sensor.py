@@ -269,11 +269,12 @@ class GameSensor:
                             await self._handle_button_press(button_name)
                         self.button_was_pressed[button_name] = button_is_pressed
 
-                # Check if sound period is over - fade out the water sound
+                # Check if sound period is over - fade out the music and play fail sound
                 if self.sound_end_time > 0 and current_time > self.sound_end_time:
                     self.sound_end_time = 0
                     asyncio.create_task(self.game_audio.fade_out())
-                    print("Sound fading out")
+                    self.game_audio.play_fail()  # Play fail sound immediately when music finishes
+                    print("Music finished - playing fail sound")
 
                 # Check if message period is over - return to game pattern
                 if self.message_end_time > 0 and current_time > self.message_end_time:

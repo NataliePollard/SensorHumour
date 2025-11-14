@@ -92,6 +92,15 @@ class GameSensorAudio:
         except Exception as e:
             print(f"Error loading cole_big_win.wav: {e}")
 
+        # Load the fail sound (played when music finishes without winning)
+        self.fail_sound = None
+        try:
+            self.fail_sound = self.audio.import_wav("fail.wav")
+            if self.fail_sound is None:
+                print("Warning: fail.wav not found")
+        except Exception as e:
+            print(f"Error loading fail.wav: {e}")
+
     def play_correct(self):
         """Play the game music when an RFID tag is detected"""
         if self.game_music is not None:
@@ -158,6 +167,10 @@ class GameSensorAudio:
     def play_yellow_message(self):
         """Play the yellow message sound"""
         self.play_win_sound(self.yellow_message, "cole_message.wav", "yellow_message")
+
+    def play_fail(self):
+        """Play the fail sound when music finishes without winning"""
+        self.play_win_sound(self.fail_sound, "fail.wav", "fail")
 
     async def play_big_win(self):
         """Play the big win sounds in sequence, one after another"""
