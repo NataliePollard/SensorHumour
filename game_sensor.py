@@ -3,7 +3,7 @@ Game Sensor RFID LED Controller
 
 Hourglass Game Experience:
 - Scan hourglass tag to start 5-minute game
-- Press button 1-4 to win and display color (red, blue, purple, yellow)
+- Press button 1-4 to display color and hear message (red, blue, purple, yellow)
 - Press button 5 to turn off lights
 - When game is won, music stops and the matching color pattern displays on ring and both strands
 
@@ -84,10 +84,10 @@ class GameSensor:
     - Ring light (16 LEDs) and two game strands on D6/D7 (200 LEDs each)
     - Both game strands always display the same pattern
     - 5 buttons (D1-D5) for game interaction:
-      D1 = Red win pattern
-      D2 = Blue win pattern
-      D3 = Purple win pattern
-      D4 = Yellow win pattern
+      D1 = Red message pattern
+      D2 = Blue message pattern
+      D3 = Purple message pattern
+      D4 = Yellow message pattern
       D5 = Turn off lights
     """
     # Both hourglass tags trigger the same game configuration
@@ -130,6 +130,7 @@ class GameSensor:
         self.current_pattern_ring = SLOW_PASTEL_SPARKLES  # Ring light pattern
         self.pattern_end_time = 0
         self.sound_end_time = 0  # Track when to stop playing the sound
+        self.message_end_time = 0  # Track when color message display should end (D1-D4)
         self.win_pattern = None  # Pattern to display on D6/D7 when game is won
 
         # Canopy setup
@@ -180,7 +181,7 @@ class GameSensor:
                 # Hourglass tag - play music for specified duration (5 minutes = 300 seconds)
                 self.sound_end_time = time.time() + tag_config['music_duration']
                 self.is_game_active = True  # Game buttons are now active
-                print("Game is now ACTIVE! Press buttons to win!")
+                print("Game is now ACTIVE! Press buttons!")
 
             # Play the game music
             self.game_audio.play_correct()
@@ -192,49 +193,65 @@ class GameSensor:
         """Called when tag is removed"""
         print("Tag removed")
 
-    async def _handle_game_win(self, button_name):
-        """Handle game win condition - stop music and display color for 5 seconds"""
-        print(f"GAME WON via {button_name}!")
-        self.is_game_active = False
+    async def _handle_button_press(self, button_name):
+        """Handle button press
 
-        # Stop the music immediately
-        asyncio.create_task(self.game_audio.fade_out())
-        self.sound_end_time = 0
+        D1-D4 (color buttons): Play audio message, display color pattern for 5 seconds, return to game pattern
+        D5 (big win): End game, play big win audio, display rainbow for 19 seconds
+        """
+        print(f"Handling button press: {button_name}")
 
-        # Set the pattern pair based on which button was pressed
-        button_to_pattern_pair = {
-            'D1': PATTERN_PAIR_RED,      # Button 1 - Red
-            'D2': PATTERN_PAIR_BLUE,     # Button 2 - Blue (with D6/D7 correction)
-            'D3': PATTERN_PAIR_PURPLE,   # Button 3 - Purple (with D6/D7 correction)
-            'D4': PATTERN_PAIR_YELLOW,   # Button 4 - Yellow (with D6/D7 correction)
-            'D5': PATTERN_PAIR_RAINBOW,  # Button 5 - Rainbow (with D6/D7 correction)
-        }
+        # D5 is the big win button - special handling
+        if button_name == 'D5':
+            # End the game
+            self.is_game_active = False
 
-        pattern_pair = button_to_pattern_pair.get(button_name, PATTERN_PAIR_SLOW_PASTEL)
+            # Stop the music immediately
+            asyncio.create_task(self.game_audio.fade_out())
+            self.sound_end_time = 0
 
-        # Set both ring and strand patterns from the pattern pair
-        self.set_pattern_pair(pattern_pair)
+            # Set to rainbow pattern for big win
+            self.set_pattern_pair(PATTERN_PAIR_RAINBOW)
 
-        # Play the appropriate win sound
-        if button_name == 'D1':
-            self.game_audio.play_red_message()
-        elif button_name == 'D2':
-            self.game_audio.play_blue_message()
-        elif button_name == 'D3':
-            self.game_audio.play_purple_message()
-        elif button_name == 'D4':
-            self.game_audio.play_yellow_message()
-        elif button_name == 'D5':
-            # Run big win audio in background task to avoid blocking render loop
+            # Play big win audio in background task
             asyncio.create_task(self.game_audio.play_big_win())
 
-        # Set pattern duration based on button type
-        if button_name == 'D5':
-            # Big win: played 4 audio clips with total duration ~18.6s (3.93+3.32+5.15+6.20 + 0.2 gap after each)
+            # Big win displays for 19 seconds total
             self.pattern_end_time = time.time() + 19
         else:
-            # Color wins: play for 5 seconds
-            self.pattern_end_time = time.time() + 5
+            # D1-D4: Color message buttons
+            # Only process if a message isn't already playing (prevent overlap)
+            if time.time() < self.message_end_time:
+                print(f"Message already playing, ignoring {button_name}")
+                return
+
+            # Set the pattern pair based on which button was pressed
+            button_to_pattern_pair = {
+                'D1': PATTERN_PAIR_RED,      # Button 1 - Red
+                'D2': PATTERN_PAIR_BLUE,     # Button 2 - Blue
+                'D3': PATTERN_PAIR_PURPLE,   # Button 3 - Purple
+                'D4': PATTERN_PAIR_YELLOW,   # Button 4 - Yellow
+            }
+
+            pattern_pair = button_to_pattern_pair.get(button_name, PATTERN_PAIR_SLOW_PASTEL)
+
+            # Set both ring and strand patterns from the pattern pair
+            self.set_pattern_pair(pattern_pair)
+
+            # Play the appropriate message sound
+            if button_name == 'D1':
+                self.game_audio.play_red_message()
+            elif button_name == 'D2':
+                self.game_audio.play_blue_message()
+            elif button_name == 'D3':
+                self.game_audio.play_purple_message()
+            elif button_name == 'D4':
+                self.game_audio.play_yellow_message()
+
+            # Color message displays for 5 seconds, then returns to game pattern
+            self.message_end_time = time.time() + 5
+
+            # Keep game active - don't set pattern_end_time or is_game_active
 
     async def _render_loop(self):
         """Main rendering loop - handles LED pattern updates"""
@@ -249,7 +266,7 @@ class GameSensor:
                         if button_is_pressed and not self.button_was_pressed[button_name]:
                             # Button transitioned from not pressed to pressed
                             print(f"Button {button_name} pressed!")
-                            await self._handle_game_win(button_name)
+                            await self._handle_button_press(button_name)
                         self.button_was_pressed[button_name] = button_is_pressed
 
                 # Check if sound period is over - fade out the water sound
@@ -257,6 +274,13 @@ class GameSensor:
                     self.sound_end_time = 0
                     asyncio.create_task(self.game_audio.fade_out())
                     print("Sound fading out")
+
+                # Check if message period is over - return to game pattern
+                if self.message_end_time > 0 and current_time > self.message_end_time:
+                    self.message_end_time = 0
+                    if self.is_game_active:
+                        self.set_pattern_pair(PATTERN_PAIR_GAME_ON)
+                        print("Message complete - back to game pattern")
 
                 # Check if pattern period is over
                 if self.pattern_end_time > 0 and current_time > self.pattern_end_time:
